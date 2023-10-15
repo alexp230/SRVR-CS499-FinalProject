@@ -5,7 +5,8 @@ It is not used in the final version of the project.
 from main import db, app, User
 
 # Create a new user object
-new_user = User(name="John Doe", email="johndoe@example.com", password="password123", address="123 Main St", subscriptionType="basic")
+new_user = User(fname="John", lname="Doe", email="johndoe@example.com", password="password123", 
+                address="123 Main St", subscriptionType="basic")
 
 with app.app_context():
     # Add the user to the database
@@ -13,11 +14,11 @@ with app.app_context():
     db.session.commit()
 
     # Query the user within the same app context
-    user = User.query.filter_by(name='John Doe').first()
+    user = User.query.filter_by(fname='John').first()
     print(User.query.all())
 
     for user in User.query.all():
-        print(f"Deleted {user.name} from the database.")
+        print(f"Deleted {user.fname} {user.lname} from the database.")
         db.session.delete(user)
         db.session.commit()
     print(User.query.all())

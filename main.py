@@ -6,9 +6,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
-import re
 from sqlalchemy import LargeBinary, func, desc
 import os
+import re
 
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
@@ -64,21 +64,23 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
+    fname = db.Column(db.Text)
+    lname = db.Column(db.Text)
     email = db.Column(db.Text)
     password = db.Column(db.Text)
     address = db.Column(db.Text)
     subscriptionType = db.Column(db.Text)
 
-    def __init__(self, name, email, password, address, subscriptionType):
-        self.name = name
+    def __init__(self, fname, lname, email, password, address, subscriptionType):
+        self.fname = fname
+        self.lname = lname
         self.email = email
         self.password = password
         self.address = address
         self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"UserName: {self.name} | UserEmail: {self.email} | UserPassword: {self.password} | UserAddress: {self.address} :| UserSubscriptionType: {self.subscriptionType}"
+        return f"Name: {self.fname} {self.lname} [({self.email}) - {self.password}] | UserAddress: {self.address} | UserSubscriptionType: {self.subscriptionType}"
 
 with app.app_context():
     # Create the tables (if not already created)

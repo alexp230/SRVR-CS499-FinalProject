@@ -1,0 +1,7 @@
+CS499/
+migrations/
+__pycache__/
+.vscode/
+
+*.sqlite
+*.db
