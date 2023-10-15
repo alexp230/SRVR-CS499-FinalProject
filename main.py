@@ -78,7 +78,7 @@ class User(db.Model):
         self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"User {self.name} has been created."
+        return f"UserName: {self.name} | UserEmail: {self.email} | UserPassword: {self.password} | UserAddress: {self.address} :| UserSubscriptionType: {self.subscriptionType}"
 
 with app.app_context():
     # Create the tables (if not already created)

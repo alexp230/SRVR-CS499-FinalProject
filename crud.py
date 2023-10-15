@@ -17,7 +17,7 @@ with app.app_context():
     print(User.query.all())
 
     for user in User.query.all():
-        db.session.delete(user)
         print(f"Deleted {user.name} from the database.")
+        db.session.delete(user)
         db.session.commit()
     print(User.query.all())
