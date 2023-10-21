@@ -86,18 +86,27 @@ with app.app_context():
     # Create the tables (if not already created)
     db.create_all()
 
-@app.route('/thankyou')
+# Use this function to contain all the code for the thankyou.html attributes and logic
+# All this function needs to do is display a thankyou message / give conformation that 
+# the account was created, then redirect the user to the login page.
+@app.route('/thankyou', methods = ["GET", "POST"])
 def thankyou():
     return render_template("thankyou.html")
 
-@app.route('/signup')
+# Use this function to contain all the code for the signup.html attributes and logic
+# eg. Saving the users input and creating a record to hold their account in the database.
+@app.route('/signup', methods = ["GET", "POST"])
 def signup():
     return render_template("signup.html")
 
-@app.route('/login')
+# Use this function to contain all the code for the login.html attributes and logic
+# eg. validating user inout and granting user access to their account.
+@app.route('/login', methods = ["GET", "POST"])
 def login():
     return render_template("login.html")
 
+# Use this function to contain all the code for the main.html attributes and logic
+# eg. hold any logic behind the html attributes if any are added.
 @app.route('/')
 def home():
     return render_template("main.html")
