@@ -86,23 +86,59 @@ with app.app_context():
     # Create the tables (if not already created)
     db.create_all()
 
+# Use this function to contain all the code for the signup.html attributes and logic
+# eg. Saving the users input and creating a record to hold their account in the database.
+@app.route('/signup')
+def signup():
+    return render_template("signup.html")
+
 # All this function needs to do is display a thankyou message / give conformation that 
 # the account was created, then redirect the user to the login page.
 @app.route('/thankyou', methods = ["GET", "POST"])
 def thankyou():
-    return render_template("thankyou.html")
-
-# Use this function to contain all the code for the signup.html attributes and logic
-# eg. Saving the users input and creating a record to hold their account in the database.
-@app.route('/signup', methods = ["GET", "POST"])
-def signup():
-    return render_template("signup.html")
+    msg = None
+    if(request.method == "POST"):
+        if(request.form["email"] != "" and request.form["psw"] == request.form["conpsw"]):
+            firstname = request.form["fName"]
+            lastname = request.form["lName"]
+            email = request.form["email"]
+            password = request.form["psw"]
+            # conn = sql.connect("jpm.db")
+            # c = conn.cursor()
+            # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
+            # conn.commit()
+            msg = "Account created successfully. Thank you for creating an account with us!"
+            # conn.close()
+        else:
+            msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
+    return render_template("thankyou.html", msg = msg)
 
 # Use this function to contain all the code for the login.html attributes and logic
 # eg. Validating user input and granting user access to their account.
 @app.route('/login', methods = ["GET", "POST"])
 def login():
-    return render_template("login.html")
+    msg = None
+    global Sign_IN
+    if(request.method == "POST"):
+        email = request.form["email"]
+        password = request.form["psw"]
+        # con = sql.connect("jpm.db")
+        # c = con.cursor()
+        # c.execute("SELECT * FROM accounts WHERE email = '"+email+"' and password = '"+password+"'")
+        # rows = c.fetchall()
+        # for i in rows:
+        #     if(email == i[2] and password == i[3]):
+        #         session["logedin"]  = True
+        #         session["email"] = email
+        #         Sign_IN = True
+        #         if Sign_IN == True:
+        #             return redirect(url_for("userhome"))
+        #     else:
+        #         msg = "Email or Password is invalid. Please try again."
+
+        #     con.commit()
+        #     con.close()
+    return render_template("login.html", msg = msg)
 
 # Use this function to contain all the code for the main.html attributes and logic
 # eg. hold any logic behind the html attributes if any are added.
