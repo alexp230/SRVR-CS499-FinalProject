@@ -86,11 +86,20 @@ with app.app_context():
     # Create the tables (if not already created)
     db.create_all()
 
+@app.route('/thankyou')
+def thankyou():
+    return render_template("thankyou.html")
+
+@app.route('/signup')
+def signup():
+    return render_template("signup.html")
+
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
 @app.route('/')
 def home():
-    global Sign_IN
-    Sign_IN = False
-
     return render_template("main.html")
 
 if __name__ == "__main__":

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRVR</title>
+</head>
+<body>
+    {% extends "menu.html" %}
+    {% block content %}
+    <p>Please fill out the form below to register for a new account</p>
+    <form action="{{url_for('thankyou')}}" method="POST">
+        <label for="formGroupExampleInput">First Name: </label>
+        <input type="text" class="form-control" id="formGroupExampleInput" name="fName" placeholder="John">
+    
+        <label for="formGroupExampleInput2" class="labels">Last Name: </label>
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="lName" placeholder="Doe">
+    
+        <label for="formGroupExampleInput2" class="labels">Email: </label>
+        <input type="text" class="form-control" id="formGroupExampleInput3" name="email" placeholder="johndoe2@example.com">
+    
+        <label for="formGroupExampleInput2" class="labels">Password: </label>
+        <input type="password" class="form-control" id="formGroupExampleInput4" name="psw" placeholder="Password">
+    
+        <label for="formGroupExampleInput2" class="labels">Confirm Password: </label>
+        <input type="password" class="form-control" id="formGroupExampleInput5" name="conpsw" placeholder="Confirm Password">
+    
+        <input type="submit" value="Create Account">
+      </form>
+    <style>
+        p{
+            margin-top: 10px;
+            text-align: center;
+            font-size: large;
+        }
+        form{
+            text-align: center;
+            margin: auto;
+            width: 30%;
+            padding: 10px;
+        }
+        input, label{
+            margin-top: 7.5px;
+        }
+    </style>
+    {% endblock %}
+</body>
+</html>
