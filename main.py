@@ -86,7 +86,6 @@ with app.app_context():
     # Create the tables (if not already created)
     db.create_all()
 
-# Use this function to contain all the code for the thankyou.html attributes and logic
 # All this function needs to do is display a thankyou message / give conformation that 
 # the account was created, then redirect the user to the login page.
 @app.route('/thankyou', methods = ["GET", "POST"])
@@ -100,7 +99,7 @@ def signup():
     return render_template("signup.html")
 
 # Use this function to contain all the code for the login.html attributes and logic
-# eg. validating user inout and granting user access to their account.
+# eg. Validating user input and granting user access to their account.
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     return render_template("login.html")
