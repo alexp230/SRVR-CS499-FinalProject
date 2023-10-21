@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
-from sqlalchemy import LargeBinary, func, desc
+from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstraint, Date, Time
 import os
 import re
 
@@ -19,6 +19,7 @@ app.config['SQLALCHEMY_TRAC_MODIFICATIONS']=False
 app.config['SECRET_KEY'] = 'oursecretkey'
 
 db = SQLAlchemy(app)
+db.init_app(app)
 Migrate(app,db)
 
 # Initialize a global variable to keep track of the user's login status
@@ -63,7 +64,7 @@ class LoginForm(FlaskForm):
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
+    U_id = db.Column(db.Integer, primary_key=True, unique=True)
     fname = db.Column(db.Text)
     lname = db.Column(db.Text)
     email = db.Column(db.Text)
@@ -71,7 +72,8 @@ class User(db.Model):
     address = db.Column(db.Text)
     subscriptionType = db.Column(db.Text)
 
-    def __init__(self, fname, lname, email, password, address, subscriptionType):
+    def __init__(self, U_id, fname, lname, email, password, address, subscriptionType):
+        self.U_id = U_id
         self.fname = fname
         self.lname = lname
         self.email = email
@@ -80,7 +82,84 @@ class User(db.Model):
         self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"Name: {self.fname} {self.lname} [({self.email}) - {self.password}] | UserAddress: {self.address} | UserSubscriptionType: {self.subscriptionType}"
+        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address} | UserSubscriptionType: {self.subscriptionType}"
+
+class Meal(db.Model):
+    __tablename__ = "meals"
+
+    M_id = db.Column(db.Integer, primary_key=True, unique=True)
+    name = db.Column(db.String, unique=True)
+    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable = False)
+
+    def __init__(self, M_id, name, category):
+        self.M_id = M_id
+        self.name = name
+        self.category = category
+    
+    def __repr__(self):
+        return f"{self.M_id}. {self.category} - {self.name}"
+
+class Box(db.Model):
+    __tablename__ = "boxes"
+
+    B_id = db.Column(db.Integer, primary_key=True, unique=True)
+    ordered_meals = db.Column(db.String)
+
+    def __init__(self, B_id, ordered_meals):
+        self.B_id = B_id
+        self.ordered_meals = ordered_meals
+
+    def __repr__(self):
+        return f"Box ID: {self.B_id}, Ordered Meals: {self.ordered_meals}"
+    
+class Payment_Method(db.Method):
+    __tablename__ = "payment_methods"
+
+    card_number = db.Column(db.String, primary_key=True)
+    U_id = db.Column(db.Integer, ForeignKey('users.id'))
+    card_holder_name = db.Column(db.String)
+    card_exp_date = db.Column(db.Date)
+    card_CCV = db.Column(db.Integer)
+
+    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV):
+        self.card_number = card_number
+        self.U_id = U_id
+        self.card_holder_name = card_holder_name
+        self.card_exp_date = card_exp_date
+        self.card_CCV = card_CCV
+
+    def __repr__(self):
+        return f"Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
+               f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV})"
+
+class PastOrders(db.Model):
+    __tablename__ = "past_orders"
+
+    T_ID = db.Column(db.Integer, primary_key=True)
+    U_ID = db.Column(db.Integer, ForeignKey('users.id'))
+    B_ID = db.Column(db.Integer, ForeignKey('boxes.B_id'))
+    email = db.Column(db.String)
+    payment_method = db.Column(db.String)
+    shipping_address = db.Column(db.String)
+    subscription_type = db.Column(db.String)
+    _Date = db.Column(db.Date)
+    _Time = db.Column(db.Time)
+
+    def __init__(self, T_ID, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
+        self.T_ID = T_ID
+        self.U_ID = U_ID
+        self.B_ID = B_ID
+        self.email = email
+        self.payment_method = payment_method
+        self.shipping_address = shipping_address
+        self.subscription_type = subscription_type
+        self._Date = _Date
+        self._Time = _Time
+
+    def __repr__(self):
+        return f"PastOrders(T_ID={self.T_ID}, U_ID={self.U_ID}, B_ID={self.B_ID}, email='{self.email}', " \
+               f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
+               f"subscription_type='{self.subscription_type}', Date={self.Date}, Time={self.Time})"
 
 with app.app_context():
     # Create the tables (if not already created)
