@@ -98,8 +98,8 @@ def signup():
         password = request.form["psw"]
         if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
             msg = "Account created successfully. Thank you for creating an account with us!"
-            return redirect(url_for("thankyou")) 
-        
+
+
             # ---------- Connect to SQLAlchemy ----------
             # conn = sql.connect("jpm.db")
             # c = conn.cursor()
@@ -108,6 +108,7 @@ def signup():
             # conn.close()
 
 
+            return redirect(url_for("thankyou"))
         else:
             msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
     return render_template("signup.html", msg = msg)
