@@ -144,6 +144,9 @@ def login():
 # eg. hold any logic behind the html attributes if any are added.
 @app.route('/')
 def home():
+    global Sign_IN
+    Sign_IN = False
+    
     return render_template("main.html")
 
 if __name__ == "__main__":
