@@ -10,7 +10,7 @@
     {% extends "menu.html" %}
     {% block content %}
     <p>Please fill out the form below to register for a new account</p>
-    <form action="{{url_for('thankyou')}}" method="POST">
+    <form action="{{url_for('signup')}}" method="POST">
         <label for="formGroupExampleInput">First Name: </label>
         <input type="text" class="form-control" id="formGroupExampleInput" name="fName" placeholder="John">
     

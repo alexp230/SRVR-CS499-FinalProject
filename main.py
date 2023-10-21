@@ -96,14 +96,18 @@ def signup():
         lastname = request.form["lName"]
         email = request.form["email"]
         password = request.form["psw"]
-        if(request.form["email"] != "" and request.form["psw"] == request.form["conpsw"]):
+        if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
             msg = "Account created successfully. Thank you for creating an account with us!"
-            return redirect(url_for("thankyou.html", msg = msg)) 
+            return redirect(url_for("thankyou")) 
+        
+            # ---------- Connect to SQLAlchemy ----------
             # conn = sql.connect("jpm.db")
             # c = conn.cursor()
             # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
             # conn.commit()
             # conn.close()
+
+
         else:
             msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
     return render_template("signup.html", msg = msg)
@@ -124,6 +128,8 @@ def login():
     if(request.method == "POST"):
         email = request.form["email"]
         password = request.form["psw"]
+
+        # ---------- Connect to SQLAlchemy ----------
         # con = sql.connect("jpm.db")
         # c = con.cursor()
         # c.execute("SELECT * FROM accounts WHERE email = '"+email+"' and password = '"+password+"'")
@@ -140,6 +146,8 @@ def login():
 
         #     con.commit()
         #     con.close()
+
+
     return render_template("login.html", msg = msg)
 
 # Use this function to contain all the code for the main.html attributes and logic
