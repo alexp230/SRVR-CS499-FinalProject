@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
-from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstraint, Date, Time
+from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstraint, Date, Time, PrimaryKeyConstraint
 import os
 import re
 
@@ -19,7 +19,6 @@ app.config['SQLALCHEMY_TRAC_MODIFICATIONS']=False
 app.config['SECRET_KEY'] = 'oursecretkey'
 
 db = SQLAlchemy(app)
-db.init_app(app)
 Migrate(app,db)
 
 # Initialize a global variable to keep track of the user's login status
@@ -64,7 +63,7 @@ class LoginForm(FlaskForm):
 class User(db.Model):
     __tablename__ = "users"
 
-    U_id = db.Column(db.Integer, primary_key=True, unique=True)
+    U_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.Text)
     lname = db.Column(db.Text)
     email = db.Column(db.Text)
@@ -112,11 +111,11 @@ class Box(db.Model):
     def __repr__(self):
         return f"Box ID: {self.B_id}, Ordered Meals: {self.ordered_meals}"
     
-class Payment_Method(db.Method):
+class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
     card_number = db.Column(db.String, primary_key=True)
-    U_id = db.Column(db.Integer, ForeignKey('users.id'))
+    U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
     card_holder_name = db.Column(db.String)
     card_exp_date = db.Column(db.Date)
     card_CCV = db.Column(db.Integer)
@@ -136,7 +135,7 @@ class PastOrders(db.Model):
     __tablename__ = "past_orders"
 
     T_ID = db.Column(db.Integer, primary_key=True)
-    U_ID = db.Column(db.Integer, ForeignKey('users.id'))
+    U_ID = db.Column(db.Integer, ForeignKey('users.U_id'))
     B_ID = db.Column(db.Integer, ForeignKey('boxes.B_id'))
     email = db.Column(db.String)
     payment_method = db.Column(db.String)

@@ -5,7 +5,7 @@ It is not used in the final version of the project.
 from main import db, app, User
 
 # Create a new user object
-new_user = User(fname="John", lname="Doe", email="johndoe@example.com", password="password123", 
+new_user = User(U_id = 1, fname="John", lname="Doe", email="johndoe@example.com", password="password123", 
                 address="123 Main St", subscriptionType="basic")
 
 with app.app_context():

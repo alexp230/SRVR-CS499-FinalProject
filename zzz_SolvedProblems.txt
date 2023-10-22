@@ -30,11 +30,14 @@ Updating database (adding/removing attributes)
 .gitignore files and folders
     folders
         CS499/
-        migrations/
         __pycache__/
         .vscode/
 
-    files
-        *.sqlite
-        *.db
 ------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------
+How to open and run the website
+    1. Open Terminal (in VSCODE) and run the following commands
+    2. [(Name of your environment)\Scripts\Activate]
+    
+    3. Open the provided link in browser
