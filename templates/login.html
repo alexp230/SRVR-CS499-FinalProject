@@ -11,14 +11,18 @@
 
 <p>Please log in by entering your username and password below</p>
 <form action="{{url_for('login')}}" method="POST">
-    <label for="formGroupExampleInput">Email: </label>
-    <input type="text" class="form-control" id="formGroupExampleInput" name="email" placeholder="johndoe2@example.com">
+    <label for="email">Email: </label>
+    <input type="text" class="form-control" id="email" name="email" placeholder="johndoe2@example.com">
     
     <label for="formGroupExampleInput2" class="labels">Password: </label>
-    <input type="password" class="form-control" id="formGroupExampleInput2" name="psw" placeholder="Password">
+    <input type="password" class="form-control" id="password" name="psw" placeholder="Password">
 
     <input type="submit" value="Login">
 </form>
+{% if user %}
+<p>{{ user.fname }}</p>
+<p>TEST</p>
+{% endif %}
 <style>
     p{
         margin-top: 10px;

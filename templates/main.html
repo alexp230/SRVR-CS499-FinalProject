@@ -12,6 +12,13 @@
     <h3>Welcome to SRVR™</h3>
     <p>Hello, and welcome SRVR™, a customizable meal plan delivery service</p>
     <p>Please login to your account, or sign up from the dropdown menu to get started.</p>
+    {% if user %}
+        <p>{{ user.fname }} is logged in</p>
+    {% endif %}
+    {% if msg %}
+        <p>{{ msg }}</p>
+        <p>TEST</p>
+    {% endif %}
     <style>
         h3{
             margin-top: 80px;

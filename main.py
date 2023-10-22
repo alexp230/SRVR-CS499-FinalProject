@@ -235,10 +235,21 @@ def thankyou():
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     msg = None
+
     global Sign_IN
+    session.clear()
     if(request.method == "POST"):
         email = request.form["email"]
         password = request.form["psw"]
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if user.password == password:
+                Sign_IN = True
+                session["logged_in"] = True
+                session["email"] = email
+                return redirect(url_for("home"))
+            else:
+                msg = "Email or Password is invalid. Please try again."
 
         # ---------- Connect to SQLAlchemy ----------
         # con = sql.connect("jpm.db")
@@ -267,6 +278,11 @@ def login():
 def home():
     global Sign_IN
     Sign_IN = False
+
+    if session.get("logged_in") == True:
+        Sign_IN = True
+        email = session["email"]
+        return render_template("main.html", user=User.query.filter_by(email=email).first(), Sign_IN=Sign_IN)
 
     return render_template("main.html")
 
