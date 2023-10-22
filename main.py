@@ -71,8 +71,7 @@ class User(db.Model):
     address = db.Column(db.Text)
     subscriptionType = db.Column(db.Text)
 
-    def __init__(self, U_id, fname, lname, email, password, address, subscriptionType):
-        self.U_id = U_id
+    def __init__(self, fname, lname, email, password, address, subscriptionType):
         self.fname = fname
         self.lname = lname
         self.email = email
@@ -169,27 +168,60 @@ with app.app_context():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
-    if(request.method == "POST"):
-        firstname = request.form["fName"]
-        lastname = request.form["lName"]
-        email = request.form["email"]
-        password = request.form["psw"]
-        if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
-            msg = "Account created successfully. Thank you for creating an account with us!"
+    # if(request.method == "POST"):
+    #     firstname = request.form["fName"]
+    #     lastname = request.form["lName"]
+    #     email = request.form["email"]
+    #     password = request.form["psw"]
+    #     if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
+    #         msg = "Account created successfully. Thank you for creating an account with us!"
 
 
-            # ---------- Connect to SQLAlchemy ----------
-            # conn = sql.connect("jpm.db")
-            # c = conn.cursor()
-            # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
-            # conn.commit()
-            # conn.close()
+    #         # ---------- Connect to SQLAlchemy ----------
+    #         # conn = sql.connect("jpm.db")
+    #         # c = conn.cursor()
+    #         # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
+    #         # conn.commit()
+    #         # conn.close()
 
 
-            return redirect(url_for("thankyou"))
-        else:
-            msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
+    #         return redirect(url_for("thankyou"))
+    #     else:
+    #         msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
     return render_template("signup.html", msg = msg)
+
+
+# Use this function to contain all the code for the add.html attributes and logic
+# eg. Saving the users input and creating a record to hold their account in the database.
+@app.route("/add", methods = ["POST"])
+def add():
+    fName = request.form.get("fName")
+    lName = request.form.get("lName")
+    email = request.form.get("email")
+    address = request.form.get("address")
+    password = request.form.get("password")
+    confirmpassword = request.form.get("confirmPassword")
+    subscriptionType = "basic"
+
+    emailCheck = User.query.filter_by(email=email).first()
+    if emailCheck: # If email already exists in database
+        error = "The email you entered is already taken."
+        return render_template ('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+    
+    if not passwordValidation(password):
+        error = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
+        return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+    
+    if password != confirmpassword:
+        error = "Passwords do not match."
+        return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+
+    newUser = User(fname=fName, lname=lName,  email=email, password=password, address=address, subscriptionType=subscriptionType)
+
+    db.session.add(newUser)
+    db.session.commit()
+    return redirect('thankyou')
+
 
 # All this function needs to do is display a thankyou message / give conformation that 
 # the account was created, then redirect the user to the login page.
@@ -203,10 +235,21 @@ def thankyou():
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     msg = None
+
     global Sign_IN
+    session.clear()
     if(request.method == "POST"):
         email = request.form["email"]
         password = request.form["psw"]
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if user.password == password:
+                Sign_IN = True
+                session["logged_in"] = True
+                session["email"] = email
+                return redirect(url_for("home"))
+            else:
+                msg = "Email or Password is invalid. Please try again."
 
         # ---------- Connect to SQLAlchemy ----------
         # con = sql.connect("jpm.db")
@@ -235,6 +278,11 @@ def login():
 def home():
     global Sign_IN
     Sign_IN = False
+
+    if session.get("logged_in") == True:
+        Sign_IN = True
+        email = session["email"]
+        return render_template("main.html", user=User.query.filter_by(email=email).first(), Sign_IN=Sign_IN)
 
     return render_template("main.html")
 
