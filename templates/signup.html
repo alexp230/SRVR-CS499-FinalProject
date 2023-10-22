@@ -10,24 +10,33 @@
     {% extends "menu.html" %}
     {% block content %}
     <p>Please fill out the form below to register for a new account</p>
-    <form action="{{url_for('signup')}}" method="POST">
-        <label for="formGroupExampleInput">First Name: </label>
-        <input type="text" class="form-control" id="formGroupExampleInput" name="fName" placeholder="John">
+    <!-- <form action="{{url_for('signup')}}" method="POST"> -->
+    <form class="ui form" action="/add" method="post" enctype="multipart/form-data">
+        <label for="fName">First Name: </label>
+        <input type="text" class="form-control" id="fName" name="fName" placeholder="John">
+
+        <label for="lName">Last Name: </label>
+        <input type="text" class="form-control" id="lName" name="lName" placeholder="Thomas">
     
-        <label for="formGroupExampleInput2" class="labels">Last Name: </label>
-        <input type="text" class="form-control" id="formGroupExampleInput2" name="lName" placeholder="Doe">
+        <label for="email">Email: </label>
+        <input type="text" class="form-control" id="email" name="email" placeholder="johndoe2@example.com">
     
-        <label for="formGroupExampleInput2" class="labels">Email: </label>
-        <input type="text" class="form-control" id="formGroupExampleInput3" name="email" placeholder="johndoe2@example.com">
+        <label for="address">Address: </label>
+        <input type="text" class="form-control" id="address" name="address" placeholder="123 Main St, City, ST 55555">
     
-        <label for="formGroupExampleInput2" class="labels">Password: </label>
-        <input type="password" class="form-control" id="formGroupExampleInput4" name="psw" placeholder="Password">
+        <label for="password">Password: </label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
     
-        <label for="formGroupExampleInput2" class="labels">Confirm Password: </label>
-        <input type="password" class="form-control" id="formGroupExampleInput5" name="conpsw" placeholder="Confirm Password">
+        <label for="confirmPassword">Confirm Password: </label>
+        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
     
         <input type="submit" value="Create Account">
-      </form>
+    </form>
+    {% if error %}
+    <p>{{ error}}</p>
+    <p>{{ password}}</p>
+    <p>{{ confirmpassword}}</p>
+    {% endif %}
     <style>
         p{
             margin-top: 10px;
