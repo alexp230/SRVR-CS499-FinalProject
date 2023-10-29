@@ -59,16 +59,15 @@ class LoginForm(FlaskForm):
     password = StringField(validators = [DataRequired()])
     submit = SubmitField('Login')
 
-
 class User(db.Model):
     __tablename__ = "users"
 
     U_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.Text)
-    lname = db.Column(db.Text)
-    email = db.Column(db.Text)
-    password = db.Column(db.Text)
-    address = db.Column(db.Text)
+    fname = db.Column(db.Text, nullable=False)
+    lname = db.Column(db.Text, nullable=False)
+    email = db.Column(db.Text, nullable=False)
+    password = db.Column(db.Text, nullable=False)
+    address = db.Column(db.Text, nullable=False)
 
     def __init__(self, fname, lname, email, password, address):
         self.fname = fname
@@ -83,9 +82,9 @@ class User(db.Model):
 class Meal(db.Model):
     __tablename__ = "meals"
 
-    M_id = db.Column(db.Integer, primary_key=True, unique=True)
+    M_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable = False)
+    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
 
     def __init__(self, M_id, name, category):
         self.M_id = M_id
@@ -98,7 +97,7 @@ class Meal(db.Model):
 class Box(db.Model):
     __tablename__ = "boxes"
 
-    B_id = db.Column(db.Integer, primary_key=True, unique=True)
+    B_id = db.Column(db.Integer, primary_key=True)
     ordered_meals = db.Column(db.String)
 
     def __init__(self, B_id, ordered_meals):
@@ -111,12 +110,12 @@ class Box(db.Model):
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
-    card_number = db.Column(db.String, primary_key=True)
+    card_number = db.Column(db.String)
     U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
-    card_holder_name = db.Column(db.String)
-    card_exp_date = db.Column(db.Date)
-    card_CCV = db.Column(db.Integer)
-    subscriptionType = db.Column(db.Text)
+    card_holder_name = db.Column(db.String, nullable=False)
+    card_exp_date = db.Column(db.Date, nullable=False)
+    card_CCV = db.Column(db.Integer, nullable=False)
+    subscriptionType = db.Column(db.Text, nullable=False)
 
     def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
         self.card_number = card_number
@@ -137,12 +136,12 @@ class PastOrders(db.Model):
     T_ID = db.Column(db.Integer, primary_key=True)
     U_ID = db.Column(db.Integer, ForeignKey('users.U_id'))
     B_ID = db.Column(db.Integer, ForeignKey('boxes.B_id'))
-    email = db.Column(db.String)
-    payment_method = db.Column(db.String)
-    shipping_address = db.Column(db.String)
-    subscription_type = db.Column(db.String)
-    _Date = db.Column(db.Date)
-    _Time = db.Column(db.Time)
+    email = db.Column(db.String, nullable=False)
+    payment_method = db.Column(db.String, nullable=False)
+    shipping_address = db.Column(db.String, nullable=False)
+    subscription_type = db.Column(db.String, nullable=False)
+    _Date = db.Column(db.Date, nullable=False)
+    _Time = db.Column(db.Time, nullable=False)
 
     def __init__(self, T_ID, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
         self.T_ID = T_ID
@@ -158,7 +157,7 @@ class PastOrders(db.Model):
     def __repr__(self):
         return f"PastOrders(T_ID={self.T_ID}, U_ID={self.U_ID}, B_ID={self.B_ID}, email='{self.email}', " \
                f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
-               f"subscription_type='{self.subscription_type}', Date={self.Date}, Time={self.Time})"
+               f"subscription_type='{self.subscription_type}', Date={self._Date}, Time={self._Time})"
 
 with app.app_context():
     # Create the tables (if not already created)
