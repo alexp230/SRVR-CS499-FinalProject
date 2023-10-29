@@ -69,18 +69,16 @@ class User(db.Model):
     email = db.Column(db.Text)
     password = db.Column(db.Text)
     address = db.Column(db.Text)
-    subscriptionType = db.Column(db.Text)
 
-    def __init__(self, fname, lname, email, password, address, subscriptionType):
+    def __init__(self, fname, lname, email, password, address):
         self.fname = fname
         self.lname = lname
         self.email = email
         self.password = password
         self.address = address
-        self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address} | UserSubscriptionType: {self.subscriptionType}"
+        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}"
 
 class Meal(db.Model):
     __tablename__ = "meals"
@@ -118,17 +116,20 @@ class Payment_Method(db.Model):
     card_holder_name = db.Column(db.String)
     card_exp_date = db.Column(db.Date)
     card_CCV = db.Column(db.Integer)
+    subscriptionType = db.Column(db.Text)
 
-    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV):
+    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
         self.card_number = card_number
         self.U_id = U_id
         self.card_holder_name = card_holder_name
         self.card_exp_date = card_exp_date
         self.card_CCV = card_CCV
+        self.subscriptionType = subscriptionType
 
     def __repr__(self):
         return f"Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
-               f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV})"
+               f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), " \
+               f"Subscription Type={self.subscriptionType}"
 
 class PastOrders(db.Model):
     __tablename__ = "past_orders"
