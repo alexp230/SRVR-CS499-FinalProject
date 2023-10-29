@@ -168,26 +168,7 @@ with app.app_context():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
-    # if(request.method == "POST"):
-    #     firstname = request.form["fName"]
-    #     lastname = request.form["lName"]
-    #     email = request.form["email"]
-    #     password = request.form["psw"]
-    #     if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
-    #         msg = "Account created successfully. Thank you for creating an account with us!"
-
-
-    #         # ---------- Connect to SQLAlchemy ----------
-    #         # conn = sql.connect("jpm.db")
-    #         # c = conn.cursor()
-    #         # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
-    #         # conn.commit()
-    #         # conn.close()
-
-
-    #         return redirect(url_for("thankyou"))
-    #     else:
-    #         msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
+    
     return render_template("signup.html", msg = msg)
 
 
@@ -250,25 +231,6 @@ def login():
                 return redirect(url_for("home"))
             else:
                 msg = "Email or Password is invalid. Please try again."
-
-        # ---------- Connect to SQLAlchemy ----------
-        # con = sql.connect("jpm.db")
-        # c = con.cursor()
-        # c.execute("SELECT * FROM accounts WHERE email = '"+email+"' and password = '"+password+"'")
-        # rows = c.fetchall()
-        # for i in rows:
-        #     if(email == i[2] and password == i[3]):
-        #         session["logedin"]  = True
-        #         session["email"] = email
-        #         Sign_IN = True
-        #         if Sign_IN == True:
-        #             return redirect(url_for("userhome"))
-        #     else:
-        #         msg = "Email or Password is invalid. Please try again."
-
-        #     con.commit()
-        #     con.close()
-
 
     return render_template("login.html", msg = msg)
 
