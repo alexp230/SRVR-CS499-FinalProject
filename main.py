@@ -78,7 +78,7 @@ class User(db.Model):
         self.address = address
 
     def __repr__(self):
-        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}"
+        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}" 
 
 class Meal(db.Model):
     __tablename__ = "meals"
@@ -87,8 +87,7 @@ class Meal(db.Model):
     name = db.Column(db.String, unique=True)
     category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
 
-    def __init__(self, M_id, name, category):
-        self.M_id = M_id
+    def __init__(self, name, category):
         self.name = name
         self.category = category
     
@@ -101,16 +100,16 @@ class Box(db.Model):
     B_id = db.Column(db.Integer, primary_key=True)
     ordered_meals = db.Column(db.String)
 
-    def __init__(self, B_id, ordered_meals):
-        self.B_id = B_id
+    def __init__(self, ordered_meals):
         self.ordered_meals = ordered_meals
 
     def __repr__(self):
-        return f"Box ID: {self.B_id}, Ordered Meals: {self.ordered_meals}"
+        return f"{self.B_id}. Ordered Meals: {self.ordered_meals}"
     
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
+    PM_id = db.Column(db.Integer, primary_key=True)
     card_number = db.Column(db.String)
     U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
     card_holder_name = db.Column(db.String, nullable=False)
@@ -118,7 +117,7 @@ class Payment_Method(db.Model):
     card_CCV = db.Column(db.Integer, nullable=False)
     subscriptionType = db.Column(db.Text, nullable=False)
 
-    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
+    def __init__(self,card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
         self.card_number = card_number
         self.U_id = U_id
         self.card_holder_name = card_holder_name
@@ -127,7 +126,7 @@ class Payment_Method(db.Model):
         self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
+        return f"{self.PM_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
                f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), " \
                f"Subscription Type={self.subscriptionType}"
 
@@ -144,8 +143,7 @@ class PastOrders(db.Model):
     _Date = db.Column(db.Date, nullable=False)
     _Time = db.Column(db.Time, nullable=False)
 
-    def __init__(self, T_ID, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
-        self.T_ID = T_ID
+    def __init__(self, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
         self.U_ID = U_ID
         self.B_ID = B_ID
         self.email = email

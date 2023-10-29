@@ -1,0 +1,18 @@
+Seafood_Meals = [
+    Meal(name="Cajun_Baked_Catfish", category="Seafood"),
+    Meal(name="Crab_Cakes", category="Seafood"),
+    Meal(name="Garlic_Butter_Salmon", category="Seafood"),
+    Meal(name="Greek-Style_Garlic_Calamari", category="Seafood"),
+    Meal(name="Lobster_Tail_with_Pasta_and_White_Wine_Cream_Sauce", category="Seafood"),
+    Meal(name="Roasted_Chili-Lime_Cod_with_Corn_and_White_Rice", category="Seafood"),
+    Meal(name="Sardines_with_Sriracha_Sauce_on_a_Rice_Bowl", category="Seafood")
+]
+
+
+    for meal in Seafood_Meals:
+        db.session.add(meal)
+
+    db.session.commit()
+
+    for meal in Meal.query.all():
+        print(meal)
