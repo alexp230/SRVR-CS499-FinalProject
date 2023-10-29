@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstraint, Date, Time, PrimaryKeyConstraint
+import hashlib
 import os
 import re
 
@@ -183,7 +184,9 @@ def add():
     address = request.form.get("address")
     password = request.form.get("password")
     confirmpassword = request.form.get("confirmPassword")
-    subscriptionType = "basic"
+
+    # Using MD5 to hash the password to be more secure.
+    hash = hashlib.md5(password.encode()) 
 
     emailCheck = User.query.filter_by(email=email).first()
     if emailCheck: # If email already exists in database
@@ -198,7 +201,7 @@ def add():
         error = "Passwords do not match."
         return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
 
-    newUser = User(fname=fName, lname=lName,  email=email, password=password, address=address, subscriptionType=subscriptionType)
+    newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
 
     db.session.add(newUser)
     db.session.commit()
@@ -222,10 +225,11 @@ def login():
     session.clear()
     if(request.method == "POST"):
         email = request.form["email"]
-        password = request.form["psw"]
+        password = hashlib.md5(request.form["psw"].encode())
+
         user = User.query.filter_by(email=email).first()
         if user:
-            if user.password == password:
+            if user.password == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
