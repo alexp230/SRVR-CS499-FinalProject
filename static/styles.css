@@ -1,0 +1,319 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Ubuntu&display=swap");
+
+:root{
+  --red:#ee231e;
+  --tan: #f2d1ad;
+  --gray: #35383d;
+  --green: #84bc17;
+}
+
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  transition: all 0.2s linear;
+}
+
+*::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+html{
+  font-size: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  }
+
+body {
+  background: #f7f7f7;
+}
+
+/* what the header background will look like and positioning of items */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--tan);
+  padding: 2rem 9%;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+/* SRVR logo */
+header .logo{
+  font-size: 2.5rem;
+  font-weight: bolder;
+  color: var(--gray);
+}
+
+/* supposed to be TM but i cant find it */
+header .logo i{
+  padding-left: 0.5rem;
+  font-size: 1.5rem;
+  color: var(--red);
+}
+
+/* the actual words on the navbar */
+header .navbar a{
+  font-size: 2rem;
+  margin-left: 2rem;
+  color: var(--gray);
+}
+
+/* changes color when you hover */
+header .navbar a:hover{
+  color: var(--red);
+}
+
+/* logo section on navbar */
+.left-section {
+  margin-right: auto;
+}
+
+/* our menu, how it works, about us */
+.center-section {
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* log in and sign up */
+.right-section {
+  margin-left: auto;
+}
+
+.login{
+  display: grid;
+  min-height: 50vh;
+  align-items: center;
+}
+
+.login label,input{
+  display: block;
+  width: 100%;
+}
+
+
+/* to create a rectangle for sign up  */
+.signup-button {
+  background-color: var(--red); 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  text-decoration: none; 
+  display: inline-block; 
+}
+
+/* Background color on hover */
+.signup-button:hover {
+  background-color: var(--green);
+}
+
+
+/* top part of homepage */
+section{
+  padding: 2rem 9% ;
+}
+
+.home-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  min-height: 100vh;
+  align-items: center;
+  background: url("../static/images/bckgrnd.jpeg") no-repeat center center/cover;
+}
+
+.text-home-top {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  color: var(--tan); 
+}
+
+.chef-crafted, .flavorful-feasts, .straight-to-door {
+  font-size: 70px; 
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+
+/* mid part of homepage, where the menu sneak peek is at */
+.text-home-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--gray);
+  margin-top: 30px;
+}
+
+.discover-menu {
+  font-size: 40px; 
+  font-weight: bold;
+}
+
+.sneak-peek {
+  font-size: 25px; 
+}
+
+.sneak-peek-images {
+  display: flex; 
+}
+
+/* make images round and align properly */
+.sneak-peek-images img {
+  border-radius: 50%; 
+  width: 300px; 
+  height: 300px; 
+  object-fit: cover; 
+  margin-top: 40px; 
+  border: 5px solid var(--red);
+  box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sneak-peek-images {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sneak-peek-item {
+  text-align: center;
+}
+
+
+/* to align and resize why server and the blurbs below the images */
+.why-srvr {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: var(--gray);
+  margin-top: 80px;
+  font-size: 40px; 
+  font-weight: bold;
+
+}
+
+.why-srvr-images {
+  display: flex;
+  justify-content: space-between;
+}
+
+.why-srvr-item {
+  text-align: center;
+}
+
+.why-srvr-item img {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+}
+
+.why-srvr-item p {
+  font-size: 16px;
+  color: var(--gray);
+}
+
+
+/* how it works section */
+.how-it-works {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: var(--gray);
+  margin-top: 80px;
+  font-size: 40px; 
+  font-weight: bold;
+
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.how-it-works-list li {
+  margin-bottom: 30px; 
+}
+
+.ordered-list-description {
+  margin: 20px 0; 
+  font-size: 20px; 
+}
+
+.left-column {
+  flex: 1; 
+  padding: 10px; 
+}
+
+.right-column {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center; 
+}
+
+
+/* how it works section */
+footer {
+  
+  background: var(--tan);
+  padding: 2rem 0; /* Remove the horizontal padding */
+}
+
+
+/* Footer container styles */
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Style for each footer row */
+.footer-row {
+  width: 20%; 
+  margin: 10px; 
+}
+
+/* Social media container styles */
+.social-media {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; 
+}
+
+
+.social-media a {
+  margin: 0 10px; 
+  margin-top: 10px;
+
+}
+
+.social-media a img {
+  width: 50px; 
+  height: 50px; 
+  transition: transform 0.2s, filter 0.2s; 
+}
+
+.social-media a img:hover {
+  filter: grayscale(10%); 
+  transform: scale(1.2); 
+}
+
+
+
+
+
+
+
+
+
+
