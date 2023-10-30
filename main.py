@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstraint, Date, Time, PrimaryKeyConstraint
+import hashlib
 import os
 import re
 
@@ -59,38 +60,34 @@ class LoginForm(FlaskForm):
     password = StringField(validators = [DataRequired()])
     submit = SubmitField('Login')
 
-
 class User(db.Model):
     __tablename__ = "users"
 
     U_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.Text)
-    lname = db.Column(db.Text)
-    email = db.Column(db.Text)
-    password = db.Column(db.Text)
-    address = db.Column(db.Text)
-    subscriptionType = db.Column(db.Text)
+    fname = db.Column(db.Text, nullable=False)
+    lname = db.Column(db.Text, nullable=False)
+    email = db.Column(db.Text, nullable=False)
+    password = db.Column(db.Text, nullable=False)
+    address = db.Column(db.Text, nullable=False)
 
-    def __init__(self, fname, lname, email, password, address, subscriptionType):
+    def __init__(self, fname, lname, email, password, address):
         self.fname = fname
         self.lname = lname
         self.email = email
         self.password = password
         self.address = address
-        self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address} | UserSubscriptionType: {self.subscriptionType}"
+        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}" 
 
 class Meal(db.Model):
     __tablename__ = "meals"
 
-    M_id = db.Column(db.Integer, primary_key=True, unique=True)
+    M_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable = False)
+    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
 
-    def __init__(self, M_id, name, category):
-        self.M_id = M_id
+    def __init__(self, name, category):
         self.name = name
         self.category = category
     
@@ -100,35 +97,38 @@ class Meal(db.Model):
 class Box(db.Model):
     __tablename__ = "boxes"
 
-    B_id = db.Column(db.Integer, primary_key=True, unique=True)
+    B_id = db.Column(db.Integer, primary_key=True)
     ordered_meals = db.Column(db.String)
 
-    def __init__(self, B_id, ordered_meals):
-        self.B_id = B_id
+    def __init__(self, ordered_meals):
         self.ordered_meals = ordered_meals
 
     def __repr__(self):
-        return f"Box ID: {self.B_id}, Ordered Meals: {self.ordered_meals}"
+        return f"{self.B_id}. Ordered Meals: {self.ordered_meals}"
     
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
-    card_number = db.Column(db.String, primary_key=True)
+    PM_id = db.Column(db.Integer, primary_key=True)
+    card_number = db.Column(db.String)
     U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
-    card_holder_name = db.Column(db.String)
-    card_exp_date = db.Column(db.Date)
-    card_CCV = db.Column(db.Integer)
+    card_holder_name = db.Column(db.String, nullable=False)
+    card_exp_date = db.Column(db.Date, nullable=False)
+    card_CCV = db.Column(db.Integer, nullable=False)
+    subscriptionType = db.Column(db.Text, nullable=False)
 
-    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV):
+    def __init__(self,card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
         self.card_number = card_number
         self.U_id = U_id
         self.card_holder_name = card_holder_name
         self.card_exp_date = card_exp_date
         self.card_CCV = card_CCV
+        self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
-               f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV})"
+        return f"{self.PM_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
+               f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), " \
+               f"Subscription Type={self.subscriptionType}"
 
 class PastOrders(db.Model):
     __tablename__ = "past_orders"
@@ -136,15 +136,14 @@ class PastOrders(db.Model):
     T_ID = db.Column(db.Integer, primary_key=True)
     U_ID = db.Column(db.Integer, ForeignKey('users.U_id'))
     B_ID = db.Column(db.Integer, ForeignKey('boxes.B_id'))
-    email = db.Column(db.String)
-    payment_method = db.Column(db.String)
-    shipping_address = db.Column(db.String)
-    subscription_type = db.Column(db.String)
-    _Date = db.Column(db.Date)
-    _Time = db.Column(db.Time)
+    email = db.Column(db.String, nullable=False)
+    payment_method = db.Column(db.String, nullable=False)
+    shipping_address = db.Column(db.String, nullable=False)
+    subscription_type = db.Column(db.String, nullable=False)
+    _Date = db.Column(db.Date, nullable=False)
+    _Time = db.Column(db.Time, nullable=False)
 
-    def __init__(self, T_ID, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
-        self.T_ID = T_ID
+    def __init__(self, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
         self.U_ID = U_ID
         self.B_ID = B_ID
         self.email = email
@@ -157,7 +156,7 @@ class PastOrders(db.Model):
     def __repr__(self):
         return f"PastOrders(T_ID={self.T_ID}, U_ID={self.U_ID}, B_ID={self.B_ID}, email='{self.email}', " \
                f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
-               f"subscription_type='{self.subscription_type}', Date={self.Date}, Time={self.Time})"
+               f"subscription_type='{self.subscription_type}', Date={self._Date}, Time={self._Time})"
 
 with app.app_context():
     # Create the tables (if not already created)
@@ -168,26 +167,7 @@ with app.app_context():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
-    # if(request.method == "POST"):
-    #     firstname = request.form["fName"]
-    #     lastname = request.form["lName"]
-    #     email = request.form["email"]
-    #     password = request.form["psw"]
-    #     if(request.form["email"] != "" and passwordValidation(request.form["psw"]) == True and request.form["psw"] == request.form["conpsw"]):
-    #         msg = "Account created successfully. Thank you for creating an account with us!"
-
-
-    #         # ---------- Connect to SQLAlchemy ----------
-    #         # conn = sql.connect("jpm.db")
-    #         # c = conn.cursor()
-    #         # c.execute("INSERT INTO accounts VALUES('"+firstname+"', '"+lastname+"', '"+email+"', '"+password+"') ")           
-    #         # conn.commit()
-    #         # conn.close()
-
-
-    #         return redirect(url_for("thankyou"))
-    #     else:
-    #         msg = "Something went wrong. Please make sure your email is not blank, and both of your passwords match"
+    
     return render_template("signup.html", msg = msg)
 
 
@@ -201,7 +181,9 @@ def add():
     address = request.form.get("address")
     password = request.form.get("password")
     confirmpassword = request.form.get("confirmPassword")
-    subscriptionType = "basic"
+
+    # Using MD5 to hash the password to be more secure.
+    hash = hashlib.md5(password.encode()) 
 
     emailCheck = User.query.filter_by(email=email).first()
     if emailCheck: # If email already exists in database
@@ -216,7 +198,7 @@ def add():
         error = "Passwords do not match."
         return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
 
-    newUser = User(fname=fName, lname=lName,  email=email, password=password, address=address, subscriptionType=subscriptionType)
+    newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
 
     db.session.add(newUser)
     db.session.commit()
@@ -240,35 +222,17 @@ def login():
     session.clear()
     if(request.method == "POST"):
         email = request.form["email"]
-        password = request.form["psw"]
+        password = hashlib.md5(request.form["psw"].encode())
+
         user = User.query.filter_by(email=email).first()
         if user:
-            if user.password == password:
+            if user.password == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
                 return redirect(url_for("home"))
             else:
                 msg = "Email or Password is invalid. Please try again."
-
-        # ---------- Connect to SQLAlchemy ----------
-        # con = sql.connect("jpm.db")
-        # c = con.cursor()
-        # c.execute("SELECT * FROM accounts WHERE email = '"+email+"' and password = '"+password+"'")
-        # rows = c.fetchall()
-        # for i in rows:
-        #     if(email == i[2] and password == i[3]):
-        #         session["logedin"]  = True
-        #         session["email"] = email
-        #         Sign_IN = True
-        #         if Sign_IN == True:
-        #             return redirect(url_for("userhome"))
-        #     else:
-        #         msg = "Email or Password is invalid. Please try again."
-
-        #     con.commit()
-        #     con.close()
-
 
     return render_template("login.html", msg = msg)
 
