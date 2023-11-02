@@ -250,5 +250,29 @@ def home():
 
     return render_template("main.html")
 
+# WIP
+# This function allows the user to change subsctiption type
+@app.route('/manageSubscription', methods = ["GET"])
+def manageSubscription():
+
+    #allow user to change subscription
+
+    return
+
+# WIP
+# This function allows past order data of a user to be retrieved
+@app.route('/past_orders', methods = ["POST"])
+def pastOrders():
+
+    if not session.get("logged_in"):
+        # might be wrong url redirect name
+        return redirect(url_for("login"))
+    
+    email = session["email"]
+
+    past_orders = PastOrders.query.filter_by(email=email).all()
+
+    return render_template("past_orders.html", past_orders=past_orders)
+
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
