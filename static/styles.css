@@ -323,6 +323,16 @@ footer {
 }
 
 .paycontainer{
+  min-height: 100vh;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  padding-bottom: 60px;
+}
+
+.paycontainer form{
     background: #fff;
     border-radius: 5px;
     box-shadow: 0 10px 15px rgba(0,0,0,0.1);
@@ -341,7 +351,7 @@ footer {
 }
 
 .paycontainer form .inputBox input,
-.payconatiner form .inputBox select{
+.paycontainer form .inputBox select{
     width: 100;
     padding: 10px;
     border-radius: 10px;
