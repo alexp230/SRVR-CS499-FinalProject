@@ -324,7 +324,7 @@ footer {
 
 .paycontainer{
   min-height: 100vh;
-  background: #eee;
+  background: var(--tan);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,7 +346,7 @@ footer {
 
 .paycontainer form .inputBox span{
     display: block;
-    color: #999;
+    color: var(--gray);
     padding-bottom: 5px;
 }
 
@@ -370,7 +370,7 @@ footer {
 
 .paycontainer form .submit-btn{
     width: 100%;
-    background:linear-gradient(45deg,#ff105f,#ffad06);
+    background:linear-gradient(45deg,var(--red),var(--green));
     margin-top: 20px;
     padding: 10px;
     font-size: 20px;
