@@ -308,7 +308,7 @@ footer {
   transform: scale(1.2); 
 }
 
-/* paymentform.html styles */
+/* start of paymentform.html styles */
 @import url("https://fonts.googleapis.com/css?family=Poppins:wght@100;200;300;400;500;600;700&display=swap");
 
 *{
@@ -384,7 +384,7 @@ footer {
     letter-spacing: 2px;
     opacity: .8;
 }
-
+/*end of paymentform.html styles */
 
 
 
