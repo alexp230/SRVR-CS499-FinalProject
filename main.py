@@ -254,8 +254,11 @@ def home():
 # This function allows the user to change subsctiption type
 @app.route('/manageSubscription', methods = ["GET"])
 def manageSubscription():
-
-    #allow user to change subscription
+    # Accessing the inputs from pymtmethod.html
+    cardnum = request.form.get("CardNumber")
+    expiry = request.form.get("Expiry")
+    ccv = request.form.get("CCV")
+    cardname = request.form.get("CardName")
 
     return render_template("pymtmethod.html")
 
