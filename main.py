@@ -257,7 +257,7 @@ def manageSubscription():
 
     #allow user to change subscription
 
-    return
+    return render_template("pymtmethod.html")
 
 # WIP
 # This function allows past order data of a user to be retrieved
