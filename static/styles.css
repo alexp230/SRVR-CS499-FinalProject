@@ -370,7 +370,7 @@ footer {
 
 .paycontainer form .submit-btn{
     width: 100%;
-    background:linear-gradient(45deg,var(--red),var(--green));
+    background:var(--green);
     margin-top: 20px;
     padding: 10px;
     font-size: 20px;
