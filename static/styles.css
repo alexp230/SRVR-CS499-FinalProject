@@ -43,7 +43,7 @@ header {
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   background: var(--tan);
   padding: 2rem 9%;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
@@ -83,13 +83,14 @@ header .navbar a:hover{
 
 /* our menu, how it works, about us */
 .center-section {
+  display: inline-block;
   text-align: center;
   margin: 0 auto;
 }
 
 /* log in and sign up */
 .right-section {
-  margin-left: auto;
+  margin-left: 4.5rem;
 }
 
 .login{

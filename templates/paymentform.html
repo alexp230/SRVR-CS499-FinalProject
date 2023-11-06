@@ -7,6 +7,28 @@
     <title>PaymentForm</title>
 </head>
 <body>
+    <!--navbar-->
+    <header>
+        <div class="left-section">
+            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="ourmenu.html">Our Menu</a>
+                <a href="howitworks.html">How it Works</a>
+                <a href="aboutus.html">About Us</a>
+            </nav>
+        </div>
+
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{{url_for('login')}}">Login</a>
+                <a href="{{url_for('signup')}}" class="signup-button">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+    <!--end navbar-->
     <div class="paycontainer">
         <form action="">
             <div class="flexBox">
