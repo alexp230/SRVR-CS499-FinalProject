@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+{% extends "menu.html" %}
+{% block content %}
+
+<form class="ui form" action="/paymentmethod" method="post" enctype="multipart/form-data">
+    <div class="radiobtns">
+        <input type="radio" class="form-control" id="BasicSub" name="Sub">
+        <label for="BasicSubsc">Basic Subscription (2 Persons): </label>
+        
+        <input type="radio" class="form-control" id="PremiumSub" name="Sub">
+        <label for="PremiumSubsc">Premium Subscription (4 Persons): </label>
+    </div>
+    <div class="paymentform">
+        <label for="CardNumber">Credit Card Number: </label>
+        <input type="text" class="form-control" id="CardNumber" name="CardNumber" placeholder="1234 5678 9123 4567">
+
+        <label for="Expiry">Expiry Date: </label>
+        <input type="text" class="form-control" id="Expiry" name="Expiry" placeholder="01/12">
+
+        <label for="CCV">CCV: </label>
+        <input type="text" class="form-control" id="CCV" name="CCV" placeholder="123">
+
+        <label for="CardName">Name on the Card: </label>
+        <input type="text" class="form-control" id="CardName" name="CardName" placeholder="John M Doe">
+
+        <input type="submit" value="Update Payment Method">
+        <input type="action" value="Generate Test Numbers">
+    </div>
+</form>
+</body>
+<style>
+    p{
+        margin-top: 10px;
+        text-align: center;
+        font-size: large;
+    }.paymentform{
+        text-align: center;
+        margin: auto;
+        width: 30%;
+        padding: 10px;
+    }.radiobtns{
+        align-items: center;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        width: 25%;
+        margin: auto;
+        padding-top: 10px;
+        padding-right: 10px;
+    }input, label{
+        margin-top: 7.5px;
+    }
+</style>
+{% endblock content %}
+</html>
