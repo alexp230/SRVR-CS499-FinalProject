@@ -10,6 +10,7 @@ from sqlalchemy import ForeignKey, LargeBinary, func, desc, Enum, UniqueConstrai
 import hashlib
 import os
 import re
+import random
 
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
@@ -85,14 +86,20 @@ class Meal(db.Model):
 
     M_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
 
-    def __init__(self, name, category):
+    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
+    photo_URL = db.Column(db.String, nullable=True)
+    instructions = db.Column(db.String, nullable=True)
+
+    def __init__(self, name, category, photo_URL, instructions):
         self.name = name
         self.category = category
+        self.photo_URL = photo_URL
+        self.instructions = instructions
+
     
     def __repr__(self):
-        return f"{self.M_id}. {self.category} - {self.name}"
+        return f"{self.M_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
 
 class Box(db.Model):
     __tablename__ = "boxes"
@@ -112,7 +119,7 @@ with app.app_context():
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
-    PM_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    P_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     card_number = db.Column(db.String)
     U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
     card_holder_name = db.Column(db.String, nullable=False)
@@ -120,7 +127,8 @@ class Payment_Method(db.Model):
     card_CCV = db.Column(db.String, nullable=False)
     subscriptionType = db.Column(db.String, nullable=False)
 
-    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
+    def __init__(self, P_id, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
+        self.P_id = P_id
         self.card_number = card_number
         self.U_id = U_id
         self.card_holder_name = card_holder_name
@@ -129,7 +137,7 @@ class Payment_Method(db.Model):
         self.subscriptionType = subscriptionType
 
     def __repr__(self):
-        return f"{self.PM_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
+        return f"{self.P_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
                f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), " \
                f"Subscription Type={self.subscriptionType}"
 
@@ -272,9 +280,15 @@ def manageSubscription():
     usremail = session["email"]
 
     usr = User.query.filter_by(email=usremail).first()
-    # newcard = Payment_Method(card_number=cardnum, U_id=usr.U_id, card_holder_name=cardname, card_exp_date=expiry, card_CCV=cvv, subscriptionType=subtype)
-    # db.session.add(newcard)
-    # db.session.commit()
+    unique_Card_ID = random.randint(usr.U_ID, usr.U_ID+1000000)
+    # By the very small chance that the random number generated is already in the database, add another random amount to it
+    for card in Payment_Method.query.all():
+        if card.P_id == unique_Card_ID:
+            unique_Card_ID += random.randint(1,10)
+    
+    newcard = Payment_Method(P_id=unique_Card_ID ,card_number=cardnum, U_id=usr.U_id, card_holder_name=cardname, card_exp_date=expiry, card_CCV=cvv, subscriptionType=subtype)
+    db.session.add(newcard)
+    db.session.commit()
     msg = "Card Saved Successfully"
 
     return render_template("thankyou.html", msg=msg)
