@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
-    <title>SRVR</title>
+    <title>SRVR Payment Form</title>
+    <style>
+        /* our menu, how it works, about us */
+        .center-section {
+        display: inline-block;
+        text-align: center;
+        margin-left: -9rem;
+        }
+    </style>
 </head>
 <body>
     <!--navbar-->
@@ -21,12 +29,6 @@
             </nav>
         </div>
 
-        <div class="right-section">
-            <nav class="navbar">
-                <a href="{{url_for('login')}}">Login</a>
-                <a href="{{url_for('signup')}}" class="signup-button">Sign Up</a>
-            </nav>
-        </div>
     </header>
     <!--end navbar-->
     <div class="paycontainer">
