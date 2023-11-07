@@ -32,29 +32,29 @@
     </header>
     <!--end navbar-->
     <div class="paycontainer">
-        <form action="/paymentmethod">
+        <form action="/manageSubscription" method="POST" enctype="multipart/form-data">
             <div class="flexBox">
                 <div class="inputBox">
                     <span>choose plan</span>
-                    <select name="" id="" class="plan-input">
+                    <select name="SubPlan" id="" class="plan-input">
                         <option value="plan" selected disabled>plan type</option>
-                        <option value="2-portions">2-portions</option>
-                        <option value="4-portions">4-portions</option>
+                        <option type="text" value="2-portions">2-portions</option>
+                        <option type="text" value="4-portions">4-portions</option>
                     </select>
                 </div>
             </div>
             <div class="inputBox">
                 <span>card number</span>
-                <input type="text" maxlength="16" class="card-number-input">
+                <input type="text" maxlength="16" name="CardNum" class="card-number-input">
             </div>
             <div class="inputBox">
                 <span>card holder</span>
-                <input type="text" class="card-holder-input">
+                <input type="text" name="CardName" class="card-holder-input">
             </div>
             <div class="flexBox">
                 <div class="inputBox">
                     <span>expiration mm</span>
-                    <select name="" id="" class="month-input">
+                    <select name="ExpiryMonth" id="" class="month-input">
                         <option value="month" selected disabled>month</option>
                         <option value="01">01</option>
                         <option value="02">02</option>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="inputBox">
                     <span>expiration yy</span>
-                    <select name="" id="" class="year-input">
+                    <select name="ExpiryYear" id="" class="year-input">
                         <option value="year" selected disabled>year</option>
                         <option value="2021">2021</option>
                         <option value="2022">2022</option>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="inputBox">
                     <span>cvv</span>
-                    <input type="text" maxlength="4" class="cvv-input">
+                    <input type="text" maxlength="4" name="CVV" class="cvv-input">
                 </div>
             </div>
             <input type="submit" value="submit" class="submit-btn">

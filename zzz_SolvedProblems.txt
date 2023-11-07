@@ -24,6 +24,15 @@ Updating database (adding/removing attributes)
         2. [flask db init]
         3. [flask db migrate -m "message"]
         4. [flask db upgrade]
+
+    2. If you delete you migrations folders
+        1. [$env:FLASK_APP = "main"]
+        2. [flask db init]
+        3. [flask db migrate]
+        4. [flask db revision -m "Your migration message"]
+        5. Go to migrations > versions > .py files
+        6. Change the memory address on line 13 to the one in the error message
+        5. [flask db upgrade]
 ------------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------------

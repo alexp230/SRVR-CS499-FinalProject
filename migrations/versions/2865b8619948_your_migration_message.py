@@ -1,8 +1,8 @@
-"""New migration message
+"""Your migration message
 
-Revision ID: 03c61a6eb02a
+Revision ID: 2865b8619948
 Revises: 
-Create Date: 2023-10-28 21:11:45.034692
+Create Date: 2023-11-06 20:23:47.780356
 
 """
 from alembic import op
