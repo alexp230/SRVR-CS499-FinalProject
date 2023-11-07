@@ -109,9 +109,9 @@ class Box(db.Model):
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
-    PM_id = db.Column(db.Integer, primary_key=True)
+    PM_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     card_number = db.Column(db.String)
-    U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
+    U_id = db.Column(db.Integer, nullable=False)
     card_holder_name = db.Column(db.String, nullable=False)
     card_exp_date = db.Column(db.Date, nullable=False)
     card_CCV = db.Column(db.Integer, nullable=False)
@@ -134,8 +134,8 @@ class PastOrders(db.Model):
     __tablename__ = "past_orders"
 
     T_ID = db.Column(db.Integer, primary_key=True)
-    U_ID = db.Column(db.Integer, ForeignKey('users.U_id'))
-    B_ID = db.Column(db.Integer, ForeignKey('boxes.B_id'))
+    U_ID = db.Column(db.Integer)
+    B_ID = db.Column(db.Integer)
     email = db.Column(db.String, nullable=False)
     payment_method = db.Column(db.String, nullable=False)
     shipping_address = db.Column(db.String, nullable=False)
