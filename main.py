@@ -105,19 +105,22 @@ class Box(db.Model):
 
     def __repr__(self):
         return f"{self.B_id}. Ordered Meals: {self.ordered_meals}"
-    
+
+with app.app_context():
+    # Create the tables (if not already created)
+    db.create_all()    
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
-    PM_id = db.Column(db.Integer, primary_key=True)
+    PM_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     card_number = db.Column(db.String)
     U_id = db.Column(db.Integer, ForeignKey('users.U_id'))
     card_holder_name = db.Column(db.String, nullable=False)
-    card_exp_date = db.Column(db.Date, nullable=False)
-    card_CCV = db.Column(db.Integer, nullable=False)
-    subscriptionType = db.Column(db.Text, nullable=False)
+    card_exp_date = db.Column(db.String, nullable=False)
+    card_CCV = db.Column(db.String, nullable=False)
+    subscriptionType = db.Column(db.String, nullable=False)
 
-    def __init__(self,card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
+    def __init__(self, card_number, U_id, card_holder_name, card_exp_date, card_CCV, subscriptionType):
         self.card_number = card_number
         self.U_id = U_id
         self.card_holder_name = card_holder_name
@@ -241,7 +244,7 @@ def login():
 @app.route('/')
 def home():
     global Sign_IN
-    Sign_IN = False
+    # Sign_IN = False
 
     if session.get("logged_in") == True:
         Sign_IN = True
@@ -250,17 +253,31 @@ def home():
 
     return render_template("main.html")
 
+@app.route('/paymentmethod', methods = ["GET", "POST"])
+def paymentmethod():
+    return render_template("paymentform.html")
+
 # WIP
 # This function allows the user to change subsctiption type
-@app.route('/manageSubscription', methods = ["GET"])
+@app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
-    # Accessing the inputs from pymtmethod.html
-    cardnum = request.form.get("CardNumber")
-    expiry = request.form.get("Expiry")
-    ccv = request.form.get("CCV")
+    # if session.get("logged_in") == True:
+    # Accessing the inputs from paymentmethod.html
+    subtype = request.form.get("SubPlan")
+    cardnum = request.form.get("CardNum")
     cardname = request.form.get("CardName")
+    expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
+    cvv = request.form.get("CVV")
 
-    return render_template("paymentform.html")
+    usremail = session["email"]
+
+    usr = User.query.filter_by(email=usremail).first()
+    # newcard = Payment_Method(card_number=cardnum, U_id=usr.U_id, card_holder_name=cardname, card_exp_date=expiry, card_CCV=cvv, subscriptionType=subtype)
+    # db.session.add(newcard)
+    # db.session.commit()
+    msg = "Card Saved Successfully"
+
+    return render_template("thankyou.html", msg=msg)
 
 # WIP
 # This function allows past order data of a user to be retrieved
