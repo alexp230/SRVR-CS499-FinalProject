@@ -16,8 +16,7 @@ with app.app_context():
     # usr = Payment_Method.query.filter_by(fname='Jane').first()
     print(Payment_Method.query.all())
 
-
-    pay = Payment_Method(card_number="987987", U_id="1", card_holder_name="John", card_exp_date=dt(2023, 11, 2), card_CCV=908, subscriptionType="2people")
+    pay = Payment_Method(card_number="987987", U_id="1", card_holder_name="John", card_exp_date="dt(2023, 11, 2)", card_CCV=908, subscriptionType="2people")
     db.session.add(pay)
     db.session.commit()
     print(pay)
