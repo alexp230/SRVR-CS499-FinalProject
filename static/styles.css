@@ -387,8 +387,7 @@ footer {
 }
 /*end of paymentform.html styles */
 
-/* start of signupform.html styles */
-
+/* start of signupform.html and loginform.html styles */
 .form-container {
   min-height: 100vh;
   background: var(--gray);
@@ -397,6 +396,7 @@ footer {
   justify-content: center;
   flex-flow: column;
   padding-bottom: 60px;
+  padding-top: 5%;
 }
 
 .form-container form{
@@ -446,7 +446,4 @@ footer {
 .form-container form p a{
   color: var(--red);
 }
-
-
-
-
+/* end of signupform.html and loginform.html styles */
