@@ -223,16 +223,18 @@ def thankyou():
     msg = "Account created successfully. Thank you for creating an account with us!"
     return render_template("thankyou.html", msg = msg)
 
+# Function is used to display the loginform.html only
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     return render_template("loginform.html")
 
+# Function is used to display the tempusrhome.html only
 @app.route('/usrhome', methods = ["GET", "POST"])
 def usrhome():
     return render_template("tempusrhome.html")
 
-# Use this function to contain all the code for the login.html attributes and logic
-# eg. Validating user input and granting user access to their account.
+# Function is used to grab the input from loginform.html and validate the users input to determine wether the account actually exists.
+# If account exists, redirect the user to the tempusrhome.html
 @app.route('/submitlogin', methods = ["GET", "POST"])
 def submitlogin():
     msg = None
