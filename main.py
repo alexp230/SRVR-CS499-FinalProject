@@ -112,10 +112,7 @@ class Box(db.Model):
 
     def __repr__(self):
         return f"{self.B_id}. Ordered Meals: {self.ordered_meals}"
-
-with app.app_context():
-    # Create the tables (if not already created)
-    db.create_all()    
+    
 class Payment_Method(db.Model):
     __tablename__ = "payment_methods"
 
@@ -173,15 +170,47 @@ with app.app_context():
     # Create the tables (if not already created)
     db.create_all()
 
-# Use this function to contain all the code for the signup.html attributes and logic
-# eg. Saving the users input and creating a record to hold their account in the database.
+
+# All this function needs to do is display a thankyou message / give conformation that 
+# the account was created, then redirect the user to the login page.
+@app.route('/thankyou', methods = ["GET", "POST"])
+def thankyou():
+    msg = "Account created successfully. Thank you for creating an account with us!"
+    return render_template("thankyou.html", msg = msg)
+
+# Function is used to display the signupform.html only, the uses add() to process the data.
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
     return render_template("signupform.html", msg = msg)
 
+# Function is used to display the loginform.html only, the uses submitlogin() to process the data.
+@app.route('/login', methods = ["GET", "POST"])
+def login():
+    return render_template("loginform.html")
 
-# Use this function to contain all the code for the add.html attributes and logic
+# Function is used to display the tempusrhome.html only
+@app.route('/usrhome', methods = ["GET", "POST"])
+def usrhome():
+    return render_template("tempusrhome.html")
+
+# Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
+@app.route('/paymentmethod', methods = ["GET", "POST"])
+def paymentmethod():
+    return render_template("paymentform.html")
+
+# Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
+@app.route('/usrsettings', methods = ["GET", "POST"])
+def usrsettings():
+    return render_template("tempusrsettings.html")
+
+# Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
+@app.route('/changepass', methods = ["GET", "POST"])
+def changepass():
+    return render_template("tempchangepass.html")
+
+
+# Use this function to contain all the code for the signupform.html attributes and logic
 # eg. Saving the users input and creating a record to hold their account in the database.
 @app.route("/add", methods = ["POST"])
 def add():
@@ -198,15 +227,15 @@ def add():
     emailCheck = User.query.filter_by(email=email).first()
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
-        return render_template ('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+        return render_template ('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
     
     if not passwordValidation(password):
         error = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
-        return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+        return render_template('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
     
     if password != confirmpassword:
         error = "Passwords do not match."
-        return render_template('signup.html', error=error, password=password, confirmpassword=confirmpassword)
+        return render_template('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
 
     newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
 
@@ -214,23 +243,6 @@ def add():
     db.session.commit()
     return redirect('thankyou')
 
-
-# All this function needs to do is display a thankyou message / give conformation that 
-# the account was created, then redirect the user to the login page.
-@app.route('/thankyou', methods = ["GET", "POST"])
-def thankyou():
-    msg = "Account created successfully. Thank you for creating an account with us!"
-    return render_template("thankyou.html", msg = msg)
-
-# Function is used to display the loginform.html only
-@app.route('/login', methods = ["GET", "POST"])
-def login():
-    return render_template("loginform.html")
-
-# Function is used to display the tempusrhome.html only
-@app.route('/usrhome', methods = ["GET", "POST"])
-def usrhome():
-    return render_template("tempusrhome.html")
 
 # Function is used to grab the input from loginform.html and validate the users input to determine wether the account actually exists.
 # If account exists, redirect the user to the tempusrhome.html
@@ -272,11 +284,7 @@ def home():
 
     return render_template("main.html")
 
-@app.route('/paymentmethod', methods = ["GET", "POST"])
-def paymentmethod():
-    return render_template("paymentform.html")
 
-# WIP
 # This function allows the user to change subsctiption type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
