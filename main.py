@@ -178,20 +178,19 @@ with app.app_context():
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
-    
-    return render_template("signup.html", msg = msg)
+    return render_template("signupform.html", msg = msg)
 
 
 # Use this function to contain all the code for the add.html attributes and logic
 # eg. Saving the users input and creating a record to hold their account in the database.
 @app.route("/add", methods = ["POST"])
 def add():
-    fName = request.form.get("fName")
-    lName = request.form.get("lName")
+    fName = request.form.get("fname")
+    lName = request.form.get("lname")
     email = request.form.get("email")
     address = request.form.get("address")
     password = request.form.get("password")
-    confirmpassword = request.form.get("confirmPassword")
+    confirmpassword = request.form.get("confirm_password")
 
     # Using MD5 to hash the password to be more secure.
     hash = hashlib.md5(password.encode()) 

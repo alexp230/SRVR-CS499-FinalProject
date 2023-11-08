@@ -11,6 +11,8 @@
         display: inline-block;
         text-align: center;
         margin-left: -9rem;
+        }.form-container{
+            padding-top: 5%;
         }
     </style>
 </head>
@@ -32,9 +34,10 @@
     </header>
     <!--end navbar-->
     <div class="form-container">
-        <form action="" method="post">
+        <form action="/add" method="post">
             <h3>Signup Now</h3>
-            <input type="text" name="name" required placeholder="Enter your name">
+            <input type="text" name="fname" required placeholder="Enter your first name">
+            <input type="text" name="lname" required placeholder="Enter your last name">
             <input type="email" name="email" required placeholder="Enter your email">
             <input type="text" name="address" required placeholder="Enter your address">
             <input type="password" name="password" required placeholder="Enter your password">
