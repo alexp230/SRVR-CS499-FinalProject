@@ -10,23 +10,23 @@ new_user = User(fname="John", lname="Doe", email="johndoe@example.com", password
 
 with app.app_context():
 
-    new_user = User(fname="John", lname="Doe", email="johndoe@example.com", password="password123", address="123 Main St")
-    new_payment = Payment_Method(P_id=2,card_number="55555555555555", U_id=new_user.U_id, card_holder_name="johndoe@example.com", card_exp_date="Nov 2023", 
-                                card_CCV="123", subscriptionType="Premium")
+    # new_user = User(fname="John", lname="Doe", email="johndoe@example.com", password="password123", address="123 Main St")
+    # new_payment = Payment_Method(P_id=2,card_number="55555555555555", U_id=new_user.U_id, card_holder_name="johndoe@example.com", card_exp_date="Nov 2023", 
+    #                             card_CCV="123", subscriptionType="Premium")
 
-    # Add the user to the database
-    db.session.add(new_user)
-    db.session.add(new_payment)
-    db.session.commit()
+    # # Add the user to the database
+    # db.session.add(new_user)
+    # db.session.add(new_payment)
+    # db.session.commit()
 
     # Query the user within the same app context
     # usr = Payment_Method.query.filter_by(fname='Jane').first()
     print(Payment_Method.query.all())
 
-    pay = Payment_Method(card_number="987987", U_id="1", card_holder_name="John", card_exp_date=dt(2023, 11, 2), card_CCV=908, subscriptionType="2people")
-    db.session.add(pay)
-    db.session.commit()
-    print(pay)
+    # pay = Payment_Method(card_number="987987", U_id="1", card_holder_name="John", card_exp_date=(2023, 11, 2), card_CCV=908, subscriptionType="2people")
+    # db.session.add(pay)
+    # db.session.commit()
+    # print(pay)
 
     print(User.query.all())
 

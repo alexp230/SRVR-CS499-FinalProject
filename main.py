@@ -223,29 +223,39 @@ def thankyou():
     msg = "Account created successfully. Thank you for creating an account with us!"
     return render_template("thankyou.html", msg = msg)
 
-# Use this function to contain all the code for the login.html attributes and logic
-# eg. Validating user input and granting user access to their account.
 @app.route('/login', methods = ["GET", "POST"])
 def login():
-    msg = None
+    return render_template("loginform.html")
 
+@app.route('/usrhome', methods = ["GET", "POST"])
+def usrhome():
+    return render_template("tempusrhome.html")
+
+# Use this function to contain all the code for the login.html attributes and logic
+# eg. Validating user input and granting user access to their account.
+@app.route('/submitlogin', methods = ["GET", "POST"])
+def submitlogin():
+    msg = None
     global Sign_IN
     session.clear()
+    
     if(request.method == "POST"):
         email = request.form["email"]
-        password = hashlib.md5(request.form["psw"].encode())
+        password = hashlib.md5(request.form["password"].encode())
 
         user = User.query.filter_by(email=email).first()
+
         if user:
             if user.password == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
-                return redirect(url_for("home"))
+                msg = "Login Successful"
+                return redirect(url_for("usrhome"))
             else:
                 msg = "Email or Password is invalid. Please try again."
 
-    return render_template("login.html", msg = msg)
+    return render_template("loginform.html", msg = msg)
 
 # Use this function to contain all the code for the main.html attributes and logic
 # eg. hold any logic behind the html attributes if any are added.
