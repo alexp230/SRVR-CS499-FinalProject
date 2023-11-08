@@ -30,18 +30,18 @@ with app.app_context():
 
     print(User.query.all())
 
-    for user in User.query.all():
-        print(f"Deleted {user.fname} {user.lname} from the database.")
-        print("\n")
-        db.session.delete(user)
-        db.session.commit()
+    # for user in User.query.all():
+    #     print(f"Deleted {user.fname} {user.lname} from the database.")
+    #     print("\n")
+    #     db.session.delete(user)
+    #     db.session.commit()
 
 
-    for payment in Payment_Method.query.all():
-        print(f"Deleted {payment} from the database.")
-        print("\n")
-        db.session.delete(payment)
-        db.session.commit()
+    # for payment in Payment_Method.query.all():
+    #     print(f"Deleted {payment} from the database.")
+    #     print("\n")
+    #     db.session.delete(payment)
+    #     db.session.commit()
     for meal in Meal.query.all():
         print(meal)
 

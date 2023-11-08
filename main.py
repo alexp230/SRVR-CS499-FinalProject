@@ -290,7 +290,7 @@ def manageSubscription():
     usremail = session["email"]
 
     usr = User.query.filter_by(email=usremail).first()
-    unique_Card_ID = random.randint(usr.U_ID, usr.U_ID+1000000)
+    unique_Card_ID = random.randint(usr.U_id, usr.U_id+1000000)
     # By the very small chance that the random number generated is already in the database, add another random amount to it
     for card in Payment_Method.query.all():
         if card.P_id == unique_Card_ID:
