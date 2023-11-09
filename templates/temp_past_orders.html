@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% extends "menu.html" %}
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="message">
+        {{ msg }}
+    </div>
+
+    <!-- page to display past orders -->
+    <h1>Past Orders</h1>
+
+    <ul>
+        {% for order in past_orders %}
+            <li>
+                <strong>Order ID (T_ID):</strong> {{ order.T_ID }}<br>
+                <strong>Box ID (B_ID):</strong> {{ order.B_ID }}<br>
+                <strong>Shipping Address:</strong> {{ order.shipping_address }}<br>
+                <strong>Date:</strong> {{ order._Date }}
+            </li>
+            <br>
+        {% endfor %}
+    </ul>
+
+    <style type="text/css">
+        .message, p, h1, form, ul{
+            text-align: center;
+            margin: auto;
+            width: 30%;
+            padding: 10px;
+        }
+    </style>
+{% endblock %}

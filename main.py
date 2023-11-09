@@ -314,18 +314,17 @@ def manageSubscription():
 
 # WIP
 # This function allows past order data of a user to be retrieved
-@app.route('/past_orders', methods = ["POST"])
+@app.route('/past_orders', methods = ["GET", "POST"])
 def pastOrders():
 
     if not session.get("logged_in"):
-        # might be wrong url redirect name
         return redirect(url_for("login"))
     
-    email = session["email"]
+    usremail = session["email"]
 
-    past_orders = PastOrders.query.filter_by(email=email).all()
+    past_orders = PastOrders.query.filter_by(email=usremail).all()
 
-    return render_template("past_orders.html", past_orders=past_orders)
+    return render_template("temp_past_orders.html", past_orders=past_orders)
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
