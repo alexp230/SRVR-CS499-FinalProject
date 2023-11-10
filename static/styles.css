@@ -520,3 +520,66 @@ footer {
   color: #fff;
 }
 /* end of aboutus.html styles */
+
+
+/* meal selection navbar */
+.meal-selection {
+  position: sticky;
+  margin-top: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 9%;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  overflow: hidden;
+}
+
+.meal-navbar {
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.meal-navbar a {
+  display: inline-block; /* Ensures items are on the same line */
+  margin-left: 10px;
+  color: black;
+  text-align: center;
+}
+
+/* changes color when you hover */
+.meal-navbar a:hover{
+  color: var(--green);
+}
+
+
+/*meals in the browsemenu for all meals*/
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+
+.meals-grid-item {
+  flex: 0 0 calc(33.33% - 10px); /* Set the width of each item to one-third with some spacing */
+  text-align: center;
+  margin: 40px 10px 60px 0; /* Adjust the margin for spacing (top, right, bottom, left) */
+  box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+
+
+img {
+  width: 350px; /* Set a fixed width for the images */
+  height: 250px; /* Set a fixed height for the images */
+  object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+  border-radius: 5%;
+}
+
+.meals-grid-item img:hover {
+  filter: grayscale(10%);
+  transform: scale(1.2);
+}
