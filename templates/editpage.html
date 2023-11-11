@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% extends "menu.html" %}
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="message">
+        {{ msg }}
+    </div>
+    <a href="{{ url_for('login') }}" class="button">Go to Login</a>
+    <style type="text/css">
+        .message{
+            text-align: center;
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+{% endblock %}
