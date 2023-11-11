@@ -39,6 +39,9 @@
             <input type="submit" value="Login Now" class="form-btn">
             <p>don't have an account? <a href="{{url_for('signup')}}">signup now</a></p>
         </form>
+        {% if msg %}
+        <p>{{ msg}}</p>
+        {% endif %}
     </div>
 </body>
 </html>
