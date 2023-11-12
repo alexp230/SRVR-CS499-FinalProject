@@ -63,13 +63,13 @@ with app.app_context():
 
     pdf_folder = os.path.join(script_dir, "static", "Seafood", "Pictures")
     # List all PDF files in the folder
-    pdf_files = [f for f in os.listdir(pdf_folder) if f.endswith(".jpg")]
+    jpg_files = [f for f in os.listdir(pdf_folder) if f.endswith(".jpg")]
 
-
+    # Iterate through meals and update photo_URL if a matching PDF file is found
     for meal in Meal.query.all():
-        for pdf_file in pdf_files:
-            if meal.name == os.path.splitext(pdf_file)[0]:
-                meal.photo_URL = "/static/Seafood/Pictures/" + pdf_file
+        for jpg_file in jpg_files:
+            if meal.name == os.path.splitext(jpg_file)[0]:
+                meal.photo_URL = "/static/Seafood/Pictures/" + jpg_file
 
     # Commit the changes to the database
     db.session.commit()

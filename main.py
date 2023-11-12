@@ -1,5 +1,5 @@
 # import the required libraries/modules
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import sqlite3 as sql
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
@@ -218,7 +218,7 @@ def login():
 @app.route('/usrhome/<string:fname>', methods = ["GET", "POST"])
 def usrhome(fname):
     user = User.query.filter_by(fname=fname).first()
-    return render_template("tempusrhome.html", user=user)
+    return render_template("tempusrhome.html", fname=fname, user=user)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # FOR SOME ODD REASON I CANT ADD FNAME TO THE URL FOR THIS FUNCTION WITHOUT IT BREAKING
@@ -234,10 +234,10 @@ def usrsettings(fname):
     return render_template("tempusrsettings.html", user=user)
 
 
-@app.route('/tempusrsettings/<string:fname>', methods = ["GET", "POST"])
-def tempusrsettings(fname):
-    user = User.query.filter_by(fname=fname).first()
-
+@app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
+def updateInfo(fname):
+    user = User.query.filter_by(email=session["email"]).first()
+    msg=None
     if request.method == "POST":
         fname = request.form.get("fname")
         lname = request.form.get("lname")
@@ -269,7 +269,7 @@ def tempusrsettings(fname):
 # Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
 @app.route('/changepass/<string:fname>', methods = ["GET", "POST"])
 def changepass(fname):
-    user = User.query.filter_by(fname=fname).first()
+    user = User.query.filter_by(email=session["email"]).first()
     return render_template("tempchangepass.html", user=user)
 
 
@@ -326,9 +326,13 @@ def submitlogin():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
+                session["fname"] = user.fname
+                session["lname"] = user.lname
+                session["address"] = user.address
+                session["U_id"] = user.U_id
                 msg = "Login Successful"
 
-                return redirect(url_for("usrhome", fname=user.fname))
+                return redirect(url_for("usrhome", fname = session["fname"]))
             else:
                 msg = "Email or Password is invalid. Please try again."
 
@@ -348,6 +352,18 @@ def home():
 
     return render_template("main.html")
 
+@app.route('/browsemenu/')
+def browsemenu():
+    all_meals = Meal.query.all()
+    return render_template("browsemenu.html", all_meals=all_meals)
+
+@app.route('/category/<string:category>')
+def get_meals_by_category(category):
+    meals = Meal.query.filter_by(category=category).all()
+    
+    meals_data = [{'name': meal.name, 'photo_URL': meal.photo_URL} for meal in meals]
+
+    return jsonify(meals_data)
 
 # This function allows the user to change subsctiption type
 @app.route('/manageSubscription', methods = ["GET", "POST"])

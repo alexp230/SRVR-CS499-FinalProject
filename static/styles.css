@@ -549,7 +549,6 @@ footer {
   color: black;
   text-align: center;
 }
-
 /* changes color when you hover */
 .meal-navbar a:hover{
   color: var(--green);
