@@ -233,7 +233,7 @@ def usrsettings(fname):
     user = User.query.filter_by(fname=fname).first()
     return render_template("tempusrsettings.html", user=user)
 
-
+# Function works, but needs to be routed to the correct page
 @app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
 def updateInfo(fname):
     user = User.query.filter_by(email=session["email"]).first()
@@ -244,33 +244,56 @@ def updateInfo(fname):
         email = request.form.get("email")
         address = request.form.get("address")
         password = request.form.get("password")
-
-        if password and password == user.password:
-            if email and email != user.email:
-                updateEmail(user.email, email)
-                msg = "Email updated successfully."
-            if address and address != user.address:
-                updateAddress(user.email, address)
-                msg = "Address updated successfully."
-            if fname and fname != user.fname:
-                user.fname = fname
-                db.session.commit()
-                msg = "First name updated successfully."
-            if lname and lname != user.lname:
-                user.lname = lname
-                db.session.commit()
-                msg = "Last name updated successfully."
-            if not msg:
-                msg = "No changes were made."
+        if password:
+            print("Made it here")
+            passwordEncode = hashlib.md5(request.form["password"].encode())
+            if passwordEncode.digest() == user.password and passwordValidation(password):
+                print("Made it here too")
+                if email and email != user.email:
+                    updateEmail(user.email, email)
+                    msg = "Email updated successfully."
+                if address and address != user.address:
+                    updateAddress(user.email, address)
+                    msg = "Address updated successfully."
+                if fname and fname != user.fname:
+                    user.fname = fname
+                    db.session.commit()
+                    msg = "First name updated successfully."
+                if lname and lname != user.lname:
+                    user.lname = lname
+                    db.session.commit()
+                    msg = "Last name updated successfully."
+                if not msg:
+                    msg = "No changes were made."
         else:
             msg = "Incorrect password. Please try again."
     return render_template("tempusrsettings.html", user=user, msg=msg)
 
 # Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
+# Currently, the function is not working properly. It is not updating the password in the database.
 @app.route('/changepass/<string:fname>', methods = ["GET", "POST"])
 def changepass(fname):
     user = User.query.filter_by(email=session["email"]).first()
-    return render_template("tempchangepass.html", user=user)
+    msg=None
+    if request.method == "POST":
+        oldpassword = request.form.get("oldpassword")
+        newpassword = request.form.get("newpassword")
+        confirmpassword = request.form.get("confirmpassword")
+        if oldpassword and newpassword and confirmpassword:
+            if hashlib.md5(oldpassword.encode()).digest() == user.password:
+                if newpassword == confirmpassword:
+                    if passwordValidation(newpassword):
+                        updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
+                        msg = "Password updated successfully."
+                    else:
+                        msg = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
+                else:
+                    msg = "New passwords do not match."
+            else:
+                msg = "Incorrect password. Please try again."
+        else:
+            msg = "Please fill out all fields."
+    return render_template("tempchangepass.html", user=user, msg=msg)
 
 
 # Use this function to contain all the code for the signupform.html attributes and logic
