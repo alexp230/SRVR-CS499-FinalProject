@@ -1,5 +1,5 @@
 # import the required libraries/modules
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import sqlite3 as sql
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
@@ -47,6 +47,31 @@ def passwordValidation(PWD):
         return True
     else:
         return False
+
+# Need to encrypt password
+def updatePassword(email, password):
+    """
+    This function takes an email and password as input and updates the password for the user with the matching email.
+    """
+    user = User.query.filter_by(email=email).first()
+    user.password = password
+    db.session.commit()
+
+def updateAddress(email, address):
+    """
+    This function takes an email and address as input and updates the address for the user with the matching email.
+    """
+    user = User.query.filter_by(email=email).first()
+    user.address = address
+    db.session.commit()
+
+def updateEmail(email, newEmail):
+    """
+    This function takes an email and newEmail as input and updates the email for the user with the matching email.
+    """
+    user = User.query.filter_by(email=email).first()
+    user.email = newEmail
+    db.session.commit()
 
 def registrationForm(FlaskForm):
     name = StringField(validators = [DataRequired()])
@@ -190,24 +215,85 @@ def login():
     return render_template("loginform.html")
 
 # Function is used to display the tempusrhome.html only
-@app.route('/usrhome', methods = ["GET", "POST"])
-def usrhome():
-    return render_template("tempusrhome.html")
+@app.route('/usrhome/<string:fname>', methods = ["GET", "POST"])
+def usrhome(fname):
+    user = User.query.filter_by(fname=fname).first()
+    return render_template("tempusrhome.html", fname=fname, user=user)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
+# FOR SOME ODD REASON I CANT ADD FNAME TO THE URL FOR THIS FUNCTION WITHOUT IT BREAKING
 @app.route('/paymentmethod', methods = ["GET", "POST"])
 def paymentmethod():
+    
     return render_template("paymentform.html")
 
 # Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
-@app.route('/usrsettings', methods = ["GET", "POST"])
-def usrsettings():
-    return render_template("tempusrsettings.html")
+@app.route('/usrsettings/<string:fname>', methods = ["GET", "POST"])
+def usrsettings(fname):
+    user = User.query.filter_by(fname=fname).first()
+    return render_template("tempusrsettings.html", user=user)
+
+# Function works, but needs to be routed to the correct page
+@app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
+def updateInfo(fname):
+    user = User.query.filter_by(email=session["email"]).first()
+    msg=None
+    if request.method == "POST":
+        fname = request.form.get("fname")
+        lname = request.form.get("lname")
+        email = request.form.get("email")
+        address = request.form.get("address")
+        password = request.form.get("password")
+        if password:
+            print("Made it here")
+            passwordEncode = hashlib.md5(request.form["password"].encode())
+            if passwordEncode.digest() == user.password and passwordValidation(password):
+                print("Made it here too")
+                if email and email != user.email:
+                    updateEmail(user.email, email)
+                    msg = "Email updated successfully."
+                if address and address != user.address:
+                    updateAddress(user.email, address)
+                    msg = "Address updated successfully."
+                if fname and fname != user.fname:
+                    user.fname = fname
+                    db.session.commit()
+                    msg = "First name updated successfully."
+                if lname and lname != user.lname:
+                    user.lname = lname
+                    db.session.commit()
+                    msg = "Last name updated successfully."
+                if not msg:
+                    msg = "No changes were made."
+        else:
+            msg = "Incorrect password. Please try again."
+    return render_template("tempusrsettings.html", user=user, msg=msg)
 
 # Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
-@app.route('/changepass', methods = ["GET", "POST"])
-def changepass():
-    return render_template("tempchangepass.html")
+# Currently, the function is not working properly. It is not updating the password in the database.
+@app.route('/changepass/<string:fname>', methods = ["GET", "POST"])
+def changepass(fname):
+    user = User.query.filter_by(email=session["email"]).first()
+    msg=None
+    if request.method == "POST":
+        oldpassword = request.form.get("oldpassword")
+        newpassword = request.form.get("newpassword")
+        confirmpassword = request.form.get("confirmpassword")
+        if oldpassword and newpassword and confirmpassword:
+            if hashlib.md5(oldpassword.encode()).digest() == user.password:
+                if newpassword == confirmpassword:
+                    if passwordValidation(newpassword):
+                        updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
+                        msg = "Password updated successfully."
+                    else:
+                        msg = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
+                else:
+                    msg = "New passwords do not match."
+            else:
+                msg = "Incorrect password. Please try again."
+        else:
+            msg = "Please fill out all fields."
+    return render_template("tempchangepass.html", user=user, msg=msg)
 
 
 # Use this function to contain all the code for the signupform.html attributes and logic
@@ -263,8 +349,13 @@ def submitlogin():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
+                session["fname"] = user.fname
+                session["lname"] = user.lname
+                session["address"] = user.address
+                session["U_id"] = user.U_id
                 msg = "Login Successful"
-                return redirect(url_for("usrhome"))
+
+                return redirect(url_for("usrhome", fname = session["fname"]))
             else:
                 msg = "Email or Password is invalid. Please try again."
 
@@ -284,6 +375,18 @@ def home():
 
     return render_template("main.html")
 
+@app.route('/browsemenu/')
+def browsemenu():
+    all_meals = Meal.query.all()
+    return render_template("browsemenu.html", all_meals=all_meals)
+
+@app.route('/category/<string:category>')
+def get_meals_by_category(category):
+    meals = Meal.query.filter_by(category=category).all()
+    
+    meals_data = [{'name': meal.name, 'photo_URL': meal.photo_URL} for meal in meals]
+
+    return jsonify(meals_data)
 
 # This function allows the user to change subsctiption type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
@@ -325,6 +428,11 @@ def pastOrders():
     past_orders = PastOrders.query.filter_by(email=usremail).all()
 
     return render_template("temp_past_orders.html", past_orders=past_orders)
+
+
+        
+
+
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host

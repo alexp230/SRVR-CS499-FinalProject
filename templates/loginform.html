@@ -23,7 +23,7 @@
 
         <div class="center-section">
             <nav class="navbar">
-                <a href="ourmenu.html">Our Menu</a>
+                <a href="{{ url_for ('browsemenu') }}">Our Menu</a>
                 <a href="howitworks.html">How it Works</a>
                 <a href="aboutus.html">About Us</a>
             </nav>
@@ -37,8 +37,11 @@
             <input type="email" name="email" required placeholder="Enter your email">
             <input type="password" name="password" required placeholder="Enter your password">
             <input type="submit" value="Login Now" class="form-btn">
-            <p>don't have an account? <a href="signupform.html">signup now</a></p>
+            <p>don't have an account? <a href="{{url_for('signup')}}">signup now</a></p>
         </form>
+        {% if msg %}
+        <p>{{ msg}}</p>
+        {% endif %}
     </div>
 </body>
 </html>

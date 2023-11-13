@@ -7,13 +7,13 @@
     </div>
     <p>Temporary user home page for testing</p>
 
-    <form action="/paymentmethod" >
+    <form action="{{ url_for('paymentmethod', fname=fname) }}" method="post">
         <button type="submit"> Update Payment Method </button>
     </form>
-    <form action="/usrsettings" >
+    <form action="{{ url_for('usrsettings', fname=fname) }}" method="post">
         <button type="submit"> Update User Info </button>
     </form>
-    <form action="/changepass" >
+    <form action="{{ url_for('changepass', fname=fname) }}" method="post">
         <button type="submit"> Change Password </button>
     </form>
     <form action="/past_orders" >
