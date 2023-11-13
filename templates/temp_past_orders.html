@@ -21,6 +21,24 @@
         {% endfor %}
     </ul>
 
+    <!-- possible different way to display data 
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Box ID</th>
+            <th>Shipping Address</th>
+            <th>Date</th>
+        </tr>
+        {% for order in past_orders %}
+            <tr>
+                <td>{{ order.T_ID }}</td>
+                <td>{{ order.B_ID }}</td>
+                <td>{{ order.shipping_address }}</td>
+                <td>{{ order._Date }}</td>
+            </tr>
+        {% endfor %}
+    </table> -->
+
     <style type="text/css">
         .message, p, h1, form, ul{
             text-align: center;
