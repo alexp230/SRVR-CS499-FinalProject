@@ -49,9 +49,9 @@ with app.app_context():
     # pdf_folder = "/static/Seafood/Instructions/"
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-
+    category="Seafood"
     # Construct the path to the "static" folder in the same directory
-    pdf_folder = os.path.join(script_dir, "static", "Seafood", "Instructions")
+    pdf_folder = os.path.join(script_dir, "static", category, "Instructions")
     # List all PDF files in the folder
     pdf_files = [f for f in os.listdir(pdf_folder) if f.endswith(".pdf")]
 
@@ -59,9 +59,9 @@ with app.app_context():
     for meal in Meal.query.all():
         for pdf_file in pdf_files:
             if meal.name == os.path.splitext(pdf_file)[0]:
-                meal.instructions = "/static/Seafood/Instructions/" + pdf_file
+                meal.instructions = "/static/"+category+"/Instructions/" + pdf_file
 
-    pdf_folder = os.path.join(script_dir, "static", "Seafood", "Pictures")
+    pdf_folder = os.path.join(script_dir, "static", category, "Pictures")
     # List all PDF files in the folder
     jpg_files = [f for f in os.listdir(pdf_folder) if f.endswith(".jpg")]
 
@@ -69,7 +69,7 @@ with app.app_context():
     for meal in Meal.query.all():
         for jpg_file in jpg_files:
             if meal.name == os.path.splitext(jpg_file)[0]:
-                meal.photo_URL = "/static/Seafood/Pictures/" + jpg_file
+                meal.photo_URL = "/static/"+category+"/Pictures/" + jpg_file
 
     # Commit the changes to the database
     db.session.commit()

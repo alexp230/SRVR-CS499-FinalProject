@@ -115,6 +115,7 @@ class Meal(db.Model):
     category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
     photo_URL = db.Column(db.String, nullable=True)
     instructions = db.Column(db.String, nullable=True)
+    # Allergen information needs to be added to the database
 
     def __init__(self, name, category, photo_URL, instructions):
         self.name = name
