@@ -26,7 +26,7 @@
 
     <div class="right-section">
         <nav class="navbar">
-            <a href="login.html">Cart</a>
+            <a href="{{ url_for ('cart') }}">Cart</a>
             <a href="account.html">Account</a>
         </nav>
     </div>
@@ -67,28 +67,74 @@
     </div>
 </div>
 <script>
-    
-function loadMeals() {
-    const category = document.getElementById("categoryDropdown").value;
-    const url = `/category/${category}`;
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const mealsContainer = document.getElementById("mealsContainer");
-            // Clear existing meals
-            mealsContainer.innerHTML = "";
+    // Declare a global array to keep track of selected meals
+    const selectedMeals = [];
+    // Load meals when the page loads
+    function loadMeals() {
+        // Get the selected category
+        const category = document.getElementById("categoryDropdown").value;
+        // Fetch meals from the server
+        const url = `/category/${category}`;
+        // Fetch meals from the server
+        fetch(url)
+        // Convert the response to JSON
+            .then(response => response.json())
             // Display meals on the page
-            data.forEach(meal => {
-                const mealDiv = document.createElement('div');
-                mealDiv.innerHTML = `<img src="${meal.photo_URL}" alt="${meal.name}"><p>${meal.name}</p>`;
-                mealsContainer.appendChild(mealDiv);
+            .then(data => {
+                // Get the container for displaying meals
+                const mealsContainer = document.getElementById("mealsContainer");
+                // Clear existing meals
+                mealsContainer.innerHTML = "";
+                // Display meals on the page
+                data.forEach(meal => {
+                    // Create a div for each meal
+                    const mealDiv = document.createElement('div');
+                    // Add a class to the meal div
+                    mealDiv.innerHTML = `
+                    <img src="${meal.photo_URL}" alt="${meal.name}">
+                    <p>${meal.name}</p>
+                    <button onclick="addToCart('${meal.name}')">Add to Cart</button>
+                `;
+                // Add the meal div to the container
+                    mealsContainer.appendChild(mealDiv);
+                });
             });
-        });
+    }
+    // // Add a meal to the cart
+    // function addToCart(mealName) {
+    //     // Add the meal to the array
+    //     if (selectedMeals.length < 7 && !selectedMeals.includes(mealName)) {
+    //         selectedMeals.push(mealName);
+    //         alert(`${mealName} added to the cart!`);
+    //     } else {
+    //         alert(`You can only add up to 7 unique meals to the cart.`);
+    //     }
+
+    //     // You can update the UI or perform additional actions here
+    // }
+    // // Load meals when the page loads
+    function addToCart(mealName) {
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mealName: mealName }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`${mealName} added to the cart!`);
+        } else {
+            alert(`You can only add up to 7 unique meals to the cart.`);
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
-window.onload = loadMeals;
+    window.onload = loadMeals;
 </script>
+
 
 </body>
 </html>

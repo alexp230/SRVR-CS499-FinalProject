@@ -11,7 +11,9 @@ import hashlib
 import os
 import re
 import random
-
+import datetime
+import calendar
+from datetime import datetime
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
 app = Flask (__name__)
@@ -25,6 +27,20 @@ Migrate(app,db)
 
 # Initialize a global variable to keep track of the user's login status
 Sign_IN = False
+
+# Get the current date and time
+current_date = datetime.now()
+# Get the current day of the week as an integer (Monday is 0, Sunday is 6)
+day_of_week_int = current_date.weekday()
+
+# Convert the integer representation to the day name
+day_name = current_date.strftime("%A")
+# Get today's date
+today_date = datetime.today().date()
+
+print(f"Today's date is: {today_date}")
+print(f"Day of the week (integer representation): {day_of_week_int}")
+print(f"Day of the week (name): {day_name}")
 
 def passwordValidation(PWD):
     """
@@ -127,7 +143,8 @@ class Meal(db.Model):
     def __repr__(self):
         return f"{self.M_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
 
-class Box(db.Model):
+class Box(db.Model): # This is the box that will be delivered to the user
+    # A box will contain 7 meals times the number of people in the household
     __tablename__ = "boxes"
 
     B_id = db.Column(db.Integer, primary_key=True)
@@ -167,9 +184,9 @@ class Payment_Method(db.Model):
 class PastOrders(db.Model):
     __tablename__ = "past_orders"
 
-    T_ID = db.Column(db.Integer, primary_key=True)
-    U_ID = db.Column(db.Integer)
-    B_ID = db.Column(db.Integer)
+    T_ID = db.Column(db.Integer, primary_key=True) # Transaction ID
+    U_ID = db.Column(db.Integer) # User ID
+    B_ID = db.Column(db.Integer) # Box ID
     email = db.Column(db.String, nullable=False)
     payment_method = db.Column(db.String, nullable=False)
     shipping_address = db.Column(db.String, nullable=False)
@@ -191,6 +208,27 @@ class PastOrders(db.Model):
         return f"PastOrders(T_ID={self.T_ID}, U_ID={self.U_ID}, B_ID={self.B_ID}, email='{self.email}', " \
                f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
                f"subscription_type='{self.subscription_type}', Date={self._Date}, Time={self._Time})"
+
+
+
+    class Subscription(db.Model):
+        __tablename__ = "subscriptions"
+
+        subscription_id = db.Column(db.Integer, primary_key=True)
+        user_id = db.Column(db.Integer, db.ForeignKey('users.U_id'), nullable=False)
+        delivery_day = db.Column(db.String)  # Monday, Tuesday, etc.
+        household_size = db.Column(db.Integer)  # 2 or 4
+        # Other fields as needed...
+
+        def __init__(self, user_id, delivery_day, household_size):
+            self.user_id = user_id
+            self.delivery_day = delivery_day
+            self.household_size = household_size
+
+        def __repr__(self):
+            return f"Subscription(subscription_id={self.subscription_id}, user_id={self.user_id}, " \
+                   f"delivery_day='{self.delivery_day}', household_size={self.household_size})"
+                   
 
 with app.app_context():
     # Create the tables (if not already created)
@@ -223,16 +261,18 @@ def usrhome(fname):
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # FOR SOME ODD REASON I CANT ADD FNAME TO THE URL FOR THIS FUNCTION WITHOUT IT BREAKING
-@app.route('/paymentmethod', methods = ["GET", "POST"])
-def paymentmethod():
+@app.route('/paymentmethod/<string:fname>', methods = ["GET", "POST"])
+def paymentmethod(fname):
+    email = session["email"]
+    user = User.query.filter_by(email=email).first()
     
-    return render_template("paymentform.html")
+    return render_template("paymentform.html", fname=fname, user=user)
 
 # Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
 @app.route('/usrsettings/<string:fname>', methods = ["GET", "POST"])
 def usrsettings(fname):
     user = User.query.filter_by(fname=fname).first()
-    return render_template("tempusrsettings.html", user=user)
+    return render_template("usrsettings.html", user=user)
 
 # Function works, but needs to be routed to the correct page
 @app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
@@ -268,7 +308,7 @@ def updateInfo(fname):
                     msg = "No changes were made."
         else:
             msg = "Incorrect password. Please try again."
-    return render_template("tempusrsettings.html", user=user, msg=msg)
+    return render_template("usrsettings.html", user=user, msg=msg)
 
 # Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
 # Currently, the function is not working properly. It is not updating the password in the database.
@@ -294,7 +334,7 @@ def changepass(fname):
                 msg = "Incorrect password. Please try again."
         else:
             msg = "Please fill out all fields."
-    return render_template("tempchangepass.html", user=user, msg=msg)
+    return render_template("changepass.html", user=user, msg=msg)
 
 
 # Use this function to contain all the code for the signupform.html attributes and logic
@@ -340,12 +380,14 @@ def submitlogin():
     session.clear()
     
     if(request.method == "POST"):
+        print("request.method == POST")
         email = request.form["email"]
         password = hashlib.md5(request.form["password"].encode())
 
         user = User.query.filter_by(email=email).first()
-
+        print(user)
         if user:
+            print("Is user")
             if user.password == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
@@ -359,6 +401,8 @@ def submitlogin():
                 return redirect(url_for("usrhome", fname = session["fname"]))
             else:
                 msg = "Email or Password is invalid. Please try again."
+        else:
+            msg = "Account does not exist. Please try again."
 
     return render_template("loginform.html", msg = msg)
 
@@ -376,10 +420,16 @@ def home():
 
     return render_template("main.html")
 
-@app.route('/browsemenu/')
-def browsemenu():
-    all_meals = Meal.query.all()
-    return render_template("browsemenu.html", all_meals=all_meals)
+@app.route('/browsemenu/') #not logged in
+@app.route('/browsemenu/<string:fname>') #logged in
+def browsemenu(fname=None):
+    if session.get("logged_in") == True:
+        fname = session["fname"]
+        all_meals = Meal.query.all()
+        return render_template("browsemenu.html", all_meals=all_meals,fname=fname)
+    else:
+        all_meals = Meal.query.all()
+        return render_template("browsemenu.html", all_meals=all_meals)
 
 @app.route('/category/<string:category>')
 def get_meals_by_category(category):
@@ -389,12 +439,54 @@ def get_meals_by_category(category):
 
     return jsonify(meals_data)
 
+
+@app.route('/cart')
+def cart():
+    selected_meals = session.get('selected_meals', [])
+    print(selected_meals) # For debugging purposes  
+    return render_template('cart.html', selected_meals=selected_meals)
+
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    meal_name = request.json.get('mealName')
+    selected_meals = session.get('selected_meals', [])
+
+    if len(selected_meals) < 7 and meal_name not in selected_meals:
+        selected_meals.append(meal_name)
+        session['selected_meals'] = selected_meals
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False})
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    # Parse and collect subscription information from the form
+    delivery_day = request.form.get('delivery_day')
+    household_size = request.form.get('household_size')
+    selected_meals = session.get('selected_meals', [])  # Assuming meals are stored in the session
+
+    # Get user information (email, ID, etc.) from the session
+    user_email = session.get('email')
+    user = User.query.filter_by(email=user_email).first()
+
+    # Create a new subscription record
+    new_subscription = Subscription(user_id=user.U_id, delivery_day=delivery_day, household_size=household_size)
+    db.session.add(new_subscription)
+    db.session.commit()
+
+    # Store selected meals for this subscription (you might need a new table or structure for this)
+    # ...
+
+    return redirect(url_for('subscription_confirmation'))  # Redirect to a confirmation page
+
+
+
 # This function allows the user to change subsctiption type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
     # if session.get("logged_in") == True:
     # Accessing the inputs from paymentmethod.html
-    subtype = request.form.get("SubPlan")
+    subtype = request.form.get("household-size")
     cardnum = request.form.get("CardNum")
     cardname = request.form.get("CardName")
     expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
@@ -418,8 +510,8 @@ def manageSubscription():
 
 # WIP
 # This function allows past order data of a user to be retrieved
-@app.route('/past_orders', methods = ["GET", "POST"])
-def pastOrders():
+@app.route('/pastorders/<string:fname>', methods = ["GET", "POST"])
+def pastOrders(fname):
 
     if not session.get("logged_in"):
         return redirect(url_for("login"))
@@ -428,7 +520,7 @@ def pastOrders():
 
     past_orders = PastOrders.query.filter_by(email=usremail).all()
 
-    return render_template("temp_past_orders.html", past_orders=past_orders)
+    return render_template("temp_past_orders.html", past_orders=past_orders, fname=fname)
 
 
         

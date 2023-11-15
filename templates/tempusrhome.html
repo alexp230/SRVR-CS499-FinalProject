@@ -6,21 +6,21 @@
         {{ msg }}
     </div>
     <p>Temporary user home page for testing</p>
-
-    <form action="{{ url_for('paymentmethod', fname=fname) }}" method="post">
+    <form action="/paymentmethod/{{fname}}" method="post">
         <button type="submit"> Update Payment Method </button>
     </form>
-    <form action="{{ url_for('usrsettings', fname=fname) }}" method="post">
+    <form action="/usrsettings/{{fname}}" method="post">
         <button type="submit"> Update User Info </button>
-    </form>
-    <form action="{{ url_for('changepass', fname=fname) }}" method="post">
+    </form> 
+    <form action="/changepass/{{fname}}" method="post">
         <button type="submit"> Change Password </button>
     </form>
-    <form action="/past_orders" >
+    <!-- <form action="/past_orders" > -->
+    <form action="/pastorders/{{fname}}">
         <button type="submit"> Past Orders </button>
     </form>
 
-    <!-- <button type="button" formaction="{{ url_for('paymentmethod') }}" >Update Payment Method</button> -->
+    
     <style type="text/css">
         .message, p, form{
             text-align: center;
