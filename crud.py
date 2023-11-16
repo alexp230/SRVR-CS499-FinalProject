@@ -2,7 +2,7 @@
 This file is used to create, read, update, and delete data from the database for testing purposes.
 It is not used in the final version of the project.
 """
-from main import db, app, User, Meal, Payment_Methods, Subscription
+from main import db, app, User, Meal, Payment_Methods, Subscription, Box
 import os
 import csv
 
@@ -16,7 +16,7 @@ with app.app_context():
             for row in reader:
                 # print(row)
                 print(row['\ufeffname'], row['category'])
-                meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL")
+                meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
                 db.session.add(meal)
                 db.session.commit()
 
@@ -40,6 +40,11 @@ with app.app_context():
     def delete_all_Payment_Methods():
         for card in Payment_Methods.query.all():
             db.session.delete(card)
+            db.session.commit()
+
+    def delete_all_Boxes():
+        for box in Box.query.all():
+            db.session.delete(box)
             db.session.commit()
 
     # Iterate through meals and update instructions and photo_URL if a matching PDF file is found
@@ -74,14 +79,16 @@ with app.app_context():
 
     print("\nUsers: ")
     print(User.query.all())
-
+    
     print("\nMeals: ")
     print(Meal.query.all())
-
+    
     print("\nSubscriptions: ")
     print(Subscription.query.all())
-
+    delete_all_Subscriptions()
     print("\nPayment Methods: ")
     print(Payment_Methods.query.all())
-
-    
+    # delete_all_Payment_Methods()
+    delete_all_Boxes()
+    read_csv(csv_file_path)
+    update_pdf_jpg_files("Seafood")

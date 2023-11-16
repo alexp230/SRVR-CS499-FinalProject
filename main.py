@@ -105,7 +105,7 @@ class LoginForm(FlaskForm):
 class User(db.Model):
     __tablename__ = "users"
 
-    U_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.Text, nullable=False)
     lname = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, nullable=False)
@@ -120,83 +120,60 @@ class User(db.Model):
         self.address = address
 
     def __repr__(self):
-        return f"{self.U_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}" 
+        return f"{self.user_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}" 
 
 class Meal(db.Model):
     __tablename__ = "meals"
 
-    M_id = db.Column(db.Integer, primary_key=True)
+    meal_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-
     category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
     photo_URL = db.Column(db.String, nullable=True)
     instructions = db.Column(db.String, nullable=True)
-    # Allergen information needs to be added to the database
+    allergens = db.Column(db.String, nullable=True)
 
-    def __init__(self, name, category, photo_URL, instructions):
+    def __init__(self, name, category, photo_URL, instructions, allergens):
         self.name = name
         self.category = category
         self.photo_URL = photo_URL
         self.instructions = instructions
+        self.allergens = allergens
 
     
     def __repr__(self):
-        return f"{self.M_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
+        return f"{self.meal_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
 
 class Box(db.Model): # This is the box that will be delivered to the user
     # A box will contain 7 meals times the number of people in the household
     __tablename__ = "boxes"
 
-    B_id = db.Column(db.Integer, primary_key=True)
+    box_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     ordered_meals = db.Column(db.String)
 
-    def __init__(self, ordered_meals):
+    def __init__(self, user_id, ordered_meals):
+        self.user_id = user_id
         self.ordered_meals = ordered_meals
 
     def __repr__(self):
-        return f"{self.B_id}. Ordered Meals: {self.ordered_meals}"
+        return f"{self.box_id}. Ordered Meals: {self.ordered_meals}"
     
-# class Payment_Method(db.Model):
-#     __tablename__ = "payment_methods"
-
-#     P_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     card_number = db.Column(db.String)
-#     U_id = db.Column(db.Integer, nullable=False)
-#     card_holder_name = db.Column(db.String, nullable=False)
-#     card_exp_date = db.Column(db.String, nullable=False)
-#     card_CCV = db.Column(db.String, nullable=False)
-#     # subscriptionType = db.Column(db.String, nullable=False) 
-#     # should have been an enum. I also think this should be in the subscription table.
-
-#     def __init__(self, P_id, card_number, U_id, card_holder_name, card_exp_date, card_CCV):
-#         self.P_id = P_id
-#         self.card_number = card_number
-#         self.U_id = U_id
-#         self.card_holder_name = card_holder_name
-#         self.card_exp_date = card_exp_date
-#         self.card_CCV = card_CCV
-#         # self.subscriptionType = subscriptionType
-
-#     def __repr__(self):
-#         return f"{self.P_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
-#                f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), "
-
 
 class Payment_Methods(db.Model):
     __tablename__ = "payment_methods"
 
-    P_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    card_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     card_number = db.Column(db.String)
-    U_id = db.Column(db.Integer, nullable=False)
     card_holder_name = db.Column(db.String, nullable=False)
     card_exp_date = db.Column(db.String, nullable=False)
     card_CCV = db.Column(db.String, nullable=False)
     # subscriptionType = db.Column(db.String, nullable=False) 
     # should have been an enum. I also think this should be in the subscription table.
 
-    def __init__(self,card_number, U_id, card_holder_name, card_exp_date, card_CCV):
+    def __init__(self, user_id, card_number, card_holder_name, card_exp_date, card_CCV):
+        self.user_id = user_id
         self.card_number = card_number
-        self.U_id = U_id
         self.card_holder_name = card_holder_name
         self.card_exp_date = card_exp_date
         self.card_CCV = card_CCV
@@ -204,36 +181,43 @@ class Payment_Methods(db.Model):
 
     def __repr__(self):
         hidden_card_number = '*' * (len(self.card_number) - 4) + self.card_number[-4:]
-        # return f"{self.P_id}. Payment_Method(card_number={self.card_number}, U_id={self.U_id}, " \
+        # return f"{self.P_id}. Payment_Method(card_number={self.card_number}, user_id={self.user_id}, " \
         #        f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), "
         return hidden_card_number
+
+    def get_card_number(self):
+        return self.card_number
+
+    def get_card_holder_name(self):
+        return self.card_holder_name
+
+    def get_card_exp_date(self):
+        return self.card_exp_date
 
 
 class PastOrders(db.Model):
     __tablename__ = "past_orders"
 
-    T_ID = db.Column(db.Integer, primary_key=True) # Transaction ID
-    U_ID = db.Column(db.Integer) # User ID
-    B_ID = db.Column(db.Integer) # Box ID
-    email = db.Column(db.String, nullable=False)
+    transaction_id = db.Column(db.Integer, primary_key=True) # Transaction ID
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    box_id = db.Column(db.Integer, db.ForeignKey('boxes.user_id'), nullable=False) # Box ID
     payment_method = db.Column(db.String, nullable=False)
     shipping_address = db.Column(db.String, nullable=False)
     subscription_type = db.Column(db.String, nullable=False)
-    _Date = db.Column(db.Date, nullable=False)
-    _Time = db.Column(db.Time, nullable=False)
+    order_date = db.Column(db.String, nullable=False)
+    order_time = db.Column(db.String, nullable=False)
 
-    def __init__(self, U_ID, B_ID, email, payment_method, shipping_address, subscription_type, _Date, _Time):
-        self.U_ID = U_ID
-        self.B_ID = B_ID
-        self.email = email
+    def __init__(self, user_id, box_id, payment_method, shipping_address, subscription_type, order_date, order_time):
+        self.user_id = user_id
+        self.box_id = box_id
         self.payment_method = payment_method
         self.shipping_address = shipping_address
         self.subscription_type = subscription_type
-        self._Date = _Date
-        self._Time = _Time
+        self.order_date = order_date
+        self.order_time = order_time
 
     def __repr__(self):
-        return f"PastOrders(T_ID={self.T_ID}, U_ID={self.U_ID}, B_ID={self.B_ID}, email='{self.email}', " \
+        return f"PastOrders(T_ID={self.transaction_id}, user_id={self.user_id}, box_id={self.box_id}" \
                f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
                f"subscription_type='{self.subscription_type}', Date={self._Date}, Time={self._Time})"
 
@@ -243,7 +227,7 @@ class Subscription(db.Model):
     __tablename__ = "subscriptions"
 
     subscription_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.U_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     delivery_day = db.Column(db.String)  # Monday, Tuesday, etc.
     household_size = db.Column(db.Integer)  # 2 or 4
     # Other fields as needed...
@@ -423,7 +407,7 @@ def submitlogin():
                 session["fname"] = user.fname
                 session["lname"] = user.lname
                 session["address"] = user.address
-                session["U_id"] = user.U_id
+                session["user_id"] = user.user_id
                 msg = "Login Successful"
 
                 return redirect(url_for("usrhome", fname = session["fname"]))
@@ -489,8 +473,8 @@ def add_to_cart():
 @app.route('/subscribe', methods=['GET','POST'])
 def subscribe():
     # Parse and collect subscription information from the form
-    delivery_day = request.form.get('delivery_day')
-    household_size = request.form.get('household_size')
+    # delivery_day = request.form.get('delivery_day')
+    # household_size = request.form.get('household_size')
     selected_meals = session.get('selected_meals', [])  # Assuming meals are stored in the session
 
     # Get user information (email, ID, etc.) from the session
@@ -498,12 +482,12 @@ def subscribe():
     user = User.query.filter_by(email=user_email).first()
     fname = user.fname
     print(fname)
-    cards = Payment_Methods.query.filter_by(U_id=user.U_id).all()
+    cards = Payment_Methods.query.filter_by(user_id=user.user_id).all()
 
     # Create a new subscription record
-    new_subscription = Subscription(user_id=user.U_id, delivery_day=delivery_day, household_size=household_size)
-    db.session.add(new_subscription)
-    db.session.commit()
+    # new_subscription = Subscription(user_id=user.U_id, delivery_day=delivery_day, household_size=household_size)
+    # db.session.add(new_subscription)
+    # db.session.commit()
 
     # Store selected meals for this subscription (you might need a new table or structure for this)
     # ...
@@ -536,26 +520,49 @@ def numtoDayOfWeek(number):
 def manageSubscription():
     # if session.get("logged_in") == True:
     # Accessing the inputs from paymentmethod.html
+    msg = None
     if request.method == "POST":
         delivery_date = request.form.get("delivery-date")
         day_of_week = datetime.strptime(delivery_date, "%Y-%m-%d").weekday() # returns a number from 0-6
         day = numtoDayOfWeek(day_of_week) # returns the day of the week as a string
         subtype = request.form.get("household-size")
-        # cardNum = request.form.get("card")
-        # cardHolder = request.form.get("CardName")
-        expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
-        cvv = request.form.get("CVV")
+        cardNum = request.form.get("card")
         # if checkDeliveryDate(delivery_date):
         print("Delivery date is valid")
         print(f"Delivery date: {delivery_date}")
         print(f"Subscription type: {subtype}")
         print(f"Card number: {cardNum}")
-        print(f"Card holder: {cardHolder}")
-        print(f"Expiry date: {expiry}")
-        print(f"CVV: {cvv}")
+        
+        if delivery_date and subtype and cardNum:
+            new_subscription = Subscription(user_id=session["user_id"], delivery_day=day, household_size=subtype)
+            # Add the subscription to the database
+            db.session.add(new_subscription)
+            db.session.commit()
 
-        new_subscription = Subscription(user_id=session["U_id"], delivery_day=delivery_date, household_size=subtype)
-        msg = f"Subscription updated successfully. Your delivery is sceduled for this coming {day}."
+            selected_meals = session.get('selected_meals', [])
+            selected_meals_str = ", ".join(selected_meals)
+            # Create a new box record
+            new_box = Box(user_id=session["user_id"], ordered_meals=selected_meals_str)
+            # Add the box to the database
+            db.session.add(new_box)
+            db.session.commit()
+
+            current_time = datetime.now().time()
+            order_datetime = datetime.combine(datetime.strptime(delivery_date, "%Y-%m-%d").date(), current_time)
+            # Create a new past order record
+            new_past_order = PastOrders(
+                                user_id=session["user_id"], 
+                                box_id=new_box.box_id, payment_method=cardNum, 
+                                shipping_address=session["address"], 
+                                subscription_type=subtype, 
+                                order_date=str(delivery_date), 
+                                order_time=str(order_datetime)
+                                )
+            # Add the past order to the database
+            db.session.add(new_past_order)
+            db.session.commit()
+
+            msg = f"Subscription updated successfully. Your reoccurring delivery is scheduled for every {day}."
             # Add the subscription to the database
     return render_template("thankyou.html", msg=msg)
 
@@ -580,7 +587,7 @@ def addNewCard():
         print(f"Expiry date: {expiry}")
         print(f"CVV: {cvv}")
 
-        new_card = Payment_Methods(card_number=cardNum, U_id=session["U_id"], card_holder_name=cardHolder, card_exp_date=expiry, card_CCV=cvv)
+        new_card = Payment_Methods(card_number=cardNum, user_id=session["user_id"], card_holder_name=cardHolder, card_exp_date=expiry, card_CCV=cvv)
         # Add the subscription to the database
         db.session.add(new_card)
         db.session.commit()
@@ -619,11 +626,14 @@ def pastOrders(fname):
     if not session.get("logged_in"):
         return redirect(url_for("login"))
     
-    usremail = session["email"]
+    user_id = session["user_id"]
 
-    past_orders = PastOrders.query.filter_by(email=usremail).all()
+    past_orders = PastOrders.query.filter_by(user_id=user_id).all()
 
-    return render_template("temp_past_orders.html", past_orders=past_orders, fname=fname)
+    meals = Meal.query.all() # Get all meals
+    boxes = Box.query.filter_by(user_id=user_id).all() # Get all boxes for the user
+
+    return render_template("temp_past_orders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
 
 
 if __name__ == "__main__":
