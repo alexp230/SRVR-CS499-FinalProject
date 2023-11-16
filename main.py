@@ -633,7 +633,7 @@ def pastOrders(fname):
     meals = Meal.query.all() # Get all meals
     boxes = Box.query.filter_by(user_id=user_id).all() # Get all boxes for the user
 
-    return render_template("temp_past_orders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
+    return render_template("pastorders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
 
 
 if __name__ == "__main__":
