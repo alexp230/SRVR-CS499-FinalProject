@@ -2,59 +2,82 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Browse Menus</title>
-        <!-- Link to CSS page -->
-        <link rel="stylesheet" type="text/css" href="../static/styles.css">
-    </head>
-    
-    <!-- Navbar -->
-    <header>
-        <div class="left-section">
-            <a href="browsemenus.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
-        </div>
-    
-        <div class="center-section">
-            <nav class="navbar">
-                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
-                <a href="howitworks.html">How it Works</a>
-                <a href="aboutus.html">About Us</a>
-            </nav>
-        </div>
-    
-        <div class="right-section">
-            <nav class="navbar">
-                <a href="{{ url_for ('cart') }}">Cart</a>
-                <a href="account.html">Account</a>
-            </nav>
-        </div>
-    </header>
-    <body>
-        <h1>Subscription Setup</h1>
-        <form action="/subscribe" method="POST">
-            <label for="delivery-day">Select Delivery Day:</label>
-            <select name="delivery-day" id="delivery-day">
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <!-- Other day options -->
-            </select><br><br>
-    
-            <label for="household-size">Household Size:</label><br>
-            <input type="radio" id="size-2" name="household-size" value="2">
-            <label for="size-2">2</label><br>
-            <input type="radio" id="size-4" name="household-size" value="4">
-            <label for="size-4">4</label><br><br>
-    
-            <!-- Other subscription-related form fields -->
-    
-            <!-- If including meal selection -->
-            <h2>Choose Meals:</h2>
-            <!-- Display meals available for selection -->
-    
-            <input type="submit" value="Subscribe">
-        </form>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Menus</title>
+    <!-- Link to CSS page -->
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+    <div class="left-section">
+        <a href="browsemenus.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+    </div>
+
+    <div class="center-section">
+        <nav class="navbar">
+            <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+            <a href="howitworks.html">How it Works</a>
+            <a href="aboutus.html">About Us</a>
+        </nav>
+    </div>
+
+    <div class="right-section">
+        <nav class="navbar">
+            <a href="{{ url_for ('cart') }}">Cart</a>
+            <a href="/usrhome/{{fname}}">Account</a>
+        </nav>
+    </div>
+</header>
+
+<h1>Subscription Setup</h1>
+<form action="/manageSubscription" method="POST">
+    <p> <br> </p>
+    <p> <br> </p>
+    <p></p>
+    <label for="delivery-date">Select Delivery Date:</label>
+    <input type="date" id="delivery-date" name="delivery-date">
+
+    <label for="household-size">Household Size:</label><br>
+    <input type="radio" id="size-2" name="household-size" value="2">
+    <label for="size-2">2</label><br>
+    <input type="radio" id="size-4" name="household-size" value="4">
+    <label for="size-4">4</label><br><br>
+    <select id="card" name="card">
+        {% for card in cards%}
+        <option value={{card}}> {{card}} </option>
+        {% endfor %}
+        <!-- Add more options for other days -->
+    </select>
+
+    <!-- Other subscription-related form fields -->
+
+    <!-- If including meal selection -->
+    <h2>Meals:</h2>
+        {% if selected_meals %}
+        <ul>
+            {% for meal in selected_meals %}
+                <li>{{ meal }} $5.99 per serving</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+    <input type="submit" value="Subscribe">
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    flatpickr('#delivery-date', {
+        dateFormat: 'Y-m-d', // Define date format
+        // You can add more options and customize Flatpickr as needed
+    });
+</script>
+</body>
 </html>

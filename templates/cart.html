@@ -40,7 +40,7 @@
 {% if selected_meals %}
     <ul>
         {% for meal in selected_meals %}
-            <li>{{ meal }}</li>
+            <li>{{ meal }} $5.99 per serving</li>
         {% endfor %}
     </ul>
     <a href="{{ url_for('subscribe') }}">Proceed to Checkout</a>
