@@ -14,11 +14,14 @@ with app.app_context():
             reader = csv.DictReader(csvfile)
             #Used to add meals to the database
             for row in reader:
-                # print(row)
-                print(row['\ufeffname'], row['category'])
-                meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
-                db.session.add(meal)
-                db.session.commit()
+                for meal in Meal.query.all():
+                    if meal.name == row['\ufeffname']:
+                        continue
+                    else:
+                        print(row['\ufeffname'], row['category'])
+                        meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
+                        db.session.add(meal)
+                        db.session.commit()
 
     def delete_csv(csv_file_path):
         #Used to delete meals from the database
@@ -85,10 +88,10 @@ with app.app_context():
     
     print("\nSubscriptions: ")
     print(Subscription.query.all())
-    delete_all_Subscriptions()
+    # delete_all_Subscriptions()
     print("\nPayment Methods: ")
     print(Payment_Methods.query.all())
     # delete_all_Payment_Methods()
-    delete_all_Boxes()
-    read_csv(csv_file_path)
-    update_pdf_jpg_files("Seafood")
+    # delete_all_Boxes()
+    # read_csv(csv_file_path)
+    # update_pdf_jpg_files("Seafood")
