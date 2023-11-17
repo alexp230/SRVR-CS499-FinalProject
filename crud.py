@@ -12,7 +12,7 @@ with app.app_context():
     def pdf_names_to_csv():
         script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 
-        pdf_files = []
+        pdf_files = {}
 
         junk_files = [".DS_Store", "images", "js", "styles.css"]
         for category in os.listdir(script_dir):
@@ -25,7 +25,8 @@ with app.app_context():
 
             for file in os.listdir(pdf_folder_path):
                 if (file.endswith(".pdf")):
-                    pdf_files.append(file.replace(".pdf", ""))
+                    pdf_files[(file.replace(".pdf", ""))] = category
+
 
         # Open the CSV file in append mode to add data
         ignore = []
@@ -36,16 +37,17 @@ with app.app_context():
                 meal_name = row['Name']
                 if meal_name in pdf_files:
                     ignore.append(meal_name)
+
         csvfile.close()
 
         with open(csv_file_path, 'a', newline='', encoding='utf-8-sig') as csvfile:
             csv_writer = csv.writer(csvfile)
             # Write each PDF filename to a new row in the CSV file
-            for pdf_file in pdf_files:
-                if pdf_file in ignore:
+            for name, category in pdf_files.items():
+                if name in ignore:
                     continue
                 else:
-                    csv_writer.writerow([pdf_file, category])
+                    csv_writer.writerow([name, category])
         csvfile.close()
         # Construct the path to the "static" folder in the same directory
 
