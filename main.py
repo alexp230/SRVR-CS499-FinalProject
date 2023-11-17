@@ -139,6 +139,8 @@ class Meal(db.Model):
         self.instructions = instructions
         self.allergens = allergens
 
+    def name(self):
+        return self.name.replace('_', ' ')
     
     def __repr__(self):
         return f"{self.meal_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
