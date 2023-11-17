@@ -14,14 +14,13 @@ with app.app_context():
             reader = csv.DictReader(csvfile)
             #Used to add meals to the database
             for row in reader:
-                for meal in Meal.query.all():
-                    if meal.name == row['\ufeffname']:
-                        continue
-                    else:
-                        print(row['\ufeffname'], row['category'])
-                        meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
-                        db.session.add(meal)
-                        db.session.commit()
+                if Meal.query.filter_by(name=row['\ufeffname']).first() is not None:
+                    continue
+                else:
+                    print(row['\ufeffname'], row['category'])
+                    meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
+                    db.session.add(meal)
+                    db.session.commit()
 
     def delete_csv(csv_file_path):
         #Used to delete meals from the database
@@ -51,7 +50,9 @@ with app.app_context():
             db.session.commit()
 
     # Iterate through meals and update instructions and photo_URL if a matching PDF file is found
-    def update_pdf_jpg_files(category):
+    # category parameter is used to specify the folder to search in
+    # picture_extension parameter is used to specify the file extension to search for
+    def update_pdf_jpg_files(category,picture_extension): # category is a string
         # Get the directory of the current script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         # Construct the path to the "static" folder in the same directory
@@ -59,20 +60,20 @@ with app.app_context():
         # List all PDF files in the folder
         pdf_files = [f for f in os.listdir(pdf_folder) if f.endswith(".pdf")]
 
+        # Iterate through meals and update instructions if a matching PDF file is found
         for meal in Meal.query.all():
             for pdf_file in pdf_files:
                 if meal.name == os.path.splitext(pdf_file)[0]:
                     meal.instructions = "/static/"+category+"/Instructions/" + pdf_file
 
-        pdf_folder = os.path.join(script_dir, "static", category, "Pictures")
-    # List all PDF files in the folder
-        jpg_files = [f for f in os.listdir(pdf_folder) if f.endswith(".jpg")]
+        picture_folder = os.path.join(script_dir, "static", category, "Pictures")
+        picture_files = [f for f in os.listdir(picture_folder) if f.endswith(picture_extension)] #
 
-    # Iterate through meals and update photo_URL if a matching PDF file is found
+        # Iterate through meals and update photo_URL if a matching PDF file is found
         for meal in Meal.query.all():
-            for jpg_file in jpg_files:
-                if meal.name == os.path.splitext(jpg_file)[0]:
-                    meal.photo_URL = "/static/"+category+"/Pictures/" + jpg_file
+            for picture in picture_files:
+                if meal.name == os.path.splitext(picture)[0]:
+                    meal.photo_URL = "/static/"+category+"/Pictures/" + picture
         # Commit the changes to the database
         db.session.commit()
         print("\n\n\n")
@@ -95,3 +96,4 @@ with app.app_context():
     # delete_all_Boxes()
     # read_csv(csv_file_path)
     # update_pdf_jpg_files("Seafood")
+    read_csv(csv_file_path)

@@ -139,6 +139,8 @@ class Meal(db.Model):
         self.instructions = instructions
         self.allergens = allergens
 
+    def name(self):
+        return self.name.replace('_', ' ')
     
     def __repr__(self):
         return f"{self.meal_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
@@ -515,7 +517,7 @@ def numtoDayOfWeek(number):
         if number == day:
             return calendar.day_name[day]
 
-# This function allows the user to change subsctiption type
+# This function allows the user to change subscription type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
     # if session.get("logged_in") == True:
@@ -566,7 +568,7 @@ def manageSubscription():
             # Add the subscription to the database
     return render_template("thankyou.html", msg=msg)
 
-# This function allows the user to change subsctiption type
+# This function allows the user to change subscription type
 @app.route('/addNewCard', methods = ["GET", "POST"])
 def addNewCard():
     # if session.get("logged_in") == True:
