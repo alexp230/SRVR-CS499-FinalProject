@@ -449,7 +449,7 @@ def browsemenu(fname=None):
 def get_meals_by_category(category):
     meals = Meal.query.filter_by(category=category).all()
     
-    meals_data = [{'name': meal.name, 'photo_URL': meal.photo_URL} for meal in meals]
+    meals_data = [{'name': meal.name.replace("_", " "), 'photo_URL': meal.photo_URL} for meal in meals]
 
     return jsonify(meals_data)
 
