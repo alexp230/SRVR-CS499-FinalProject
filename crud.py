@@ -22,9 +22,8 @@ with app.app_context():
             # Check if the CSV file already contains the PDF filenames
             for row in reader:
                 for pdf_file in pdf_files:
-                    if row['name'] == pdf_file.replace(".pdf",""):
+                    if row['\ufeffname'] == pdf_file.replace(".pdf",""):
                         ignore.append(pdf_file)
-                        print("heelo")
         csvfile.close()
 
         with open(csv_file_path, 'a', newline='') as csvfile:
@@ -35,9 +34,10 @@ with app.app_context():
                     continue
                 else:
                     csv_writer.writerow([pdf_file.replace(".pdf",""), category])
+        csvfile.close()
         # Construct the path to the "static" folder in the same directory
     # pdf_names_to_csv("Asian_Delights")
-    pdf_names_to_csv("Comfort_Classics")
+    # pdf_names_to_csv("Comfort_Classics")
     # pdf_names_to_csv("Delightful_Desserts")
     # pdf_names_to_csv("Inspiring_Italian")
     # pdf_names_to_csv("Italian")
@@ -56,10 +56,23 @@ with app.app_context():
                 if Meal.query.filter_by(name=row['\ufeffname']).first() is not None:
                     continue
                 else:
-                    print(row['\ufeffname'], row['category'])
-                    meal = Meal(name=row['\ufeffname'], category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
+                    # print(row['\ufeffname'], row['category'])
+                    name = row['\ufeffname']
+                    print(name)
+                    meal = Meal(name=name, category=row['category'], photo_URL="NULL", instructions="NULL", allergens="NULL")
                     db.session.add(meal)
                     db.session.commit()
+
+
+
+
+
+
+
+
+
+
+
 
     def delete_csv(csv_file_path):
         #Used to delete meals from the database
@@ -86,6 +99,11 @@ with app.app_context():
     def delete_all_Boxes():
         for box in Box.query.all():
             db.session.delete(box)
+            db.session.commit()
+    
+    def delete_all_Meals():
+        for meal in Meal.query.all():
+            db.session.delete(meal)
             db.session.commit()
 
     # Iterate through meals and update instructions and photo_URL if a matching PDF file is found
@@ -117,12 +135,22 @@ with app.app_context():
         db.session.commit()
         print("\n\n\n")
     
-    # read_csv(csv_file_path)
-    # update_pdf_jpg_files("Seafood")
+    read_csv(csv_file_path)
+    update_pdf_jpg_files("Asian_Delights",".jpeg")
+    update_pdf_jpg_files("Comfort_Classics",".jpeg")
+    update_pdf_jpg_files("Delightful_Desserts",".jpeg")
+    update_pdf_jpg_files("Inspiring_Italian",".jpeg")
+    update_pdf_jpg_files("Italian",".jpg")
+    update_pdf_jpg_files("Marvelous_Mexican",".jpeg")
+    update_pdf_jpg_files("Seafood",".jpg")
 
     # print("\nUsers: ")
     # print(User.query.all())
     
+    # meals = Meal.query.filter_by(photo_URL="NULL").all()
+    # for meal in meals:
+    #     db.session.delete(meal)
+    #     db.session.commit()
     # print("\nMeals: ")
     # print(Meal.query.all())
     
@@ -136,3 +164,4 @@ with app.app_context():
     # read_csv(csv_file_path)
     # update_pdf_jpg_files("Seafood")
     # read_csv(csv_file_path)
+    # delete_all_Meals()

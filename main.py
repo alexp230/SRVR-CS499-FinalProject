@@ -127,7 +127,7 @@ class Meal(db.Model):
 
     meal_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-    category = db.Column(Enum('Seafood', 'Italian', 'BBQ', 'Sandwich', 'Chicken', 'Desserts', name='meal_types'), nullable=False)
+    category = db.Column(db.String, nullable=False)
     photo_URL = db.Column(db.String, nullable=True)
     instructions = db.Column(db.String, nullable=True)
     allergens = db.Column(db.String, nullable=True)
@@ -139,7 +139,7 @@ class Meal(db.Model):
         self.instructions = instructions
         self.allergens = allergens
 
-    def name(self):
+    def new_name(self):
         return self.name.replace('_', ' ')
     
     def __repr__(self):
