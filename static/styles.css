@@ -57,6 +57,10 @@ header .logo{
   color: var(--gray);
 }
 
+header .logo:hover{
+  color: var(--red);
+}
+
 /* supposed to be TM but i cant find it */
 header .logo i{
   padding-left: 0.5rem;
