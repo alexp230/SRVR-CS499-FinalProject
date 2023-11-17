@@ -422,6 +422,7 @@ footer {
   border: 1px solid rgba(0,0,0,0.3);
   margin-bottom: 20px;
   color: #444;
+  text-transform: none;
 }
 
 .form-container form .form-btn{
@@ -445,6 +446,11 @@ footer {
 
 .form-container form p a{
   color: var(--red);
+}
+
+.form-container p{
+  color: var(--red);
+  margin-top: 20px;
 }
 /* end of signupform.html and loginform.html styles */
 
@@ -582,3 +588,59 @@ img {
   filter: grayscale(10%);
   transform: scale(1.2);
 }
+
+/*start of thank you page styles */
+
+.thankyou-section{
+  min-height: 100vh;
+  background: var(--gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  padding-bottom: 60px;
+  padding-top: 5%;
+}
+
+.thankyou-container{
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 600px;
+  text-align: center;
+}
+
+.thankyou-container h1{
+  color: var(--gray);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.thankyou-container p{
+  color: var(--gray);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  line-height: 28px;
+  text-transform: capitalize;
+}
+
+.thankyou-container button{
+  background: var(--green);
+  color: var(--gray);
+  text-transform: capitalize;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: none;
+  width: 50%;
+}
+
+.thankyou-container button:hover{
+  background: var(--red);
+  color: #fff;
+  width: 50%;
+}
+
+/*end of thank you page styles */
