@@ -14,44 +14,29 @@ for file in os.listdir(folder_path):
     if (os.path.isfile(os.path.join(folder_path, file))):
         files.append(file)
 
+junk_folder = [".DS_Store", "images", "js", "styles.css"]
+for folder in os.listdir(base):
+    folder_path = os.path.join(base, folder)
+
+    if (folder in junk_folder):
+        continue
+
+    folder_path += "/Pictures"
+
+    for file in os.listdir(folder_path):
+        # Replace "jpeg" with "jpg" in the file name
+        new_file_name = file.replace("jpeg", "jpg")
+
+        # Construct the new file path
+        new_file_path = folder_path
+        new_file_path += "/"
+        new_file_path += new_file_name
+
+        # Rename the file
+        #os.rename(folder_path, new_file_path)
+
+
+
+
 # If you want to include the full path to the files, you can use os.path.abspath
-file_paths = [os.path.abspath(os.path.join(folder_path, f)) for f in files]
-
-
-# # Print the list of file names
-# for file in files:
-#     print(file)
-
-# # Or print the list of file paths
-# for file_path in file_paths:
-#     print(file_path)
-
-# listofimages = ['one.jpg', 'two.jpg', 'three.jpg','four.jpg', 'five.jpg', 'six.jpg']
-
-# def get_avg_size(listofimages):
-#     h, w = 0, 0
-#     for p in listofimages:
-#         im = Image.open(p)
-#         width, height = im.size
-#         h += height
-#         w += width
-#         print('Process image {0} and height-weight is {1} '.format(p, im.size))
-
-#     print('Calculate average w-h: {0} ~ {1}'.format(w //len(listofimages), h//len(listofimages)))
-#     return w//len(listofimages), h//len(listofimages)
-
-
-def _convert_in_same_size(width, height, files):
-    sizes = width, height
-    for p in files:
-        images = Image.open(p)
-        images.thumbnail(sizes)
-        images.save(p)
-        print(f'Saved image {p} and size is {sizes}')
-
-
-# get_width, get_height = get_avg_size(listofimages)
-
-height = 1400
-width = 1400
-_convert_in_same_size(height, width, file_paths)
+#file_paths = [os.path.abspath(os.path.join(folder_path, f)) for f in files]
