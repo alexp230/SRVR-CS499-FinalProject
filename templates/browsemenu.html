@@ -105,7 +105,7 @@ function loadMeals() {
 
                     // Add a class to the meal div
                     mealDiv.innerHTML = `
-                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}">
+                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}" onclick="openPDF('${data[i + j].photo_URL}')">
                         <p>${data[i + j].name}</p>
                         <button onclick="addToCart('${data[i + j].name}')">Add to Cart</button>
                     `;
@@ -119,6 +119,15 @@ function loadMeals() {
             }
         });
 }
+
+    function openPDF(pdfURL) 
+    {
+        let modifiedString = pdfURL.replace(new RegExp("Pictures", "g"), "Instructions");
+        
+        let pdf_url = modifiedString.slice(0, -3) + "pdf";
+        // Open a new window or tab with the PDF file
+        window.open(pdf_url, '_blank');
+    }
 
         // // Add a meal to the cart
         // function addToCart(mealName) {
