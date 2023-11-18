@@ -38,10 +38,10 @@
             <p>{{msg}}</p>
             <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
         {% endif %}
-        {%if 'Card' in msg%}
+        <!-- {%if 'Card' in msg%}
             <h1>Thank you for updating your payment!</h1>
             <p>{{msg}}</p>
-            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</a>
+            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</a> -->
         {% endif %}
         {%if 'created' in msg%}
             <h1>Thank you for signing up!</h1>

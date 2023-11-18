@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,13 @@
     <style>
         /* our menu, how it works, about us */
         .center-section {
-        display: inline-block;
-        text-align: center;
-        margin-left: -9rem;
+            display: inline-block;
+            text-align: center;
+            margin-left: -9rem;
         }
     </style>
 </head>
+
 <body>
     <!--navbar-->
     <header>
@@ -74,8 +76,6 @@
                     <span>expiration yy</span>
                     <select name="ExpiryYear" id="" class="year-input">
                         <option value="year" selected disabled>year</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
                         <option value="2023">2023</option>
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
@@ -89,11 +89,12 @@
                 </div>
                 <div class="inputBox">
                     <span>cvv</span>
-                    <input type="text" maxlength="4" name="CVV" class="cvv-input">
+                    <input type="text" maxlength="3" name="CVV" class="cvv-input">
                 </div>
             </div>
             <input type="submit" href="{{url_for ('login')}}" value="submit" class="submit-btn">
         </form>
     </div>
 </body>0
+
 </html>

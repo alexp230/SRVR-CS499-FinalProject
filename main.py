@@ -600,8 +600,10 @@ def addNewCard():
         # Add the subscription to the database
         db.session.add(new_card)
         db.session.commit()
-        msg = "Card Saved Successfully"
-    return render_template("thankyou.html", msg=msg)
+    #     msg = "Card Saved Successfully"
+    # return render_template("thankyou.html", msg=msg)
+
+    return redirect(url_for("usrhome", fname = session["fname"]))
 
 
 
