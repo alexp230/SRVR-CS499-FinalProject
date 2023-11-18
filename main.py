@@ -52,8 +52,8 @@ def passwordValidation(PWD):
     """
     regexCapLetter = r'[A-Z]'
     regexLowLetter = r'[a-z]'
-    regexEndNumber = r'[0-9]$'
-    regexList = [regexCapLetter, regexLowLetter, regexEndNumber]
+    regexNumber = r'\d'
+    regexList = [regexCapLetter, regexLowLetter, regexNumber]
     count = 0
     for regex in range(0,3):
         match = re.search(regexList[regex],PWD)
