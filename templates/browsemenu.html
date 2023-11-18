@@ -73,36 +73,53 @@
         // Declare a global array to keep track of selected meals
         // const selectedMeals = [];
         // Load meals when the page loads
-        function loadMeals() {
-            // Get the selected category
-            const category = document.getElementById("categoryDropdown").value;
-            // Fetch meals from the server
-            const url = `/category/${category}`;
-            // Fetch meals from the server
-            fetch(url)
-                // Convert the response to JSON
-                .then(response => response.json())
-                // Display meals on the page
-                .then(data => {
-                    // Get the container for displaying meals
-                    const mealsContainer = document.getElementById("mealsContainer");
-                    // Clear existing meals
-                    mealsContainer.innerHTML = "";
-                    // Display meals on the page
-                    data.forEach(meal => {
-                        // Create a div for each meal
-                        const mealDiv = document.createElement('div');
-                        // Add a class to the meal div
-                        mealDiv.innerHTML = `
-                    <img src="${meal.photo_URL}" alt="${meal.name}">
-                    <p>${meal.name}</p>
-                    <button onclick="addToCart('${meal.name}')">Add to Cart</button>
-                `;
-                        // Add the meal div to the container
-                        mealsContainer.appendChild(mealDiv);
-                    });
-                });
-        }
+        // Load meals when the page loads
+function loadMeals() {
+    // Get the selected category
+    const category = document.getElementById("categoryDropdown").value;
+    // Fetch meals from the server based on the selected category
+    const url = `/category/${category}`;
+
+    // Fetch meals from the server
+    fetch(url)
+        // Convert the response to JSON
+        .then(response => response.json())
+        // Display meals on the page
+        .then(data => {
+            // Get the container for displaying meals
+            const mealsContainer = document.getElementById("mealsContainer");
+            // Clear existing meals
+            mealsContainer.innerHTML = "";
+
+            // Display meals on the page, organizing them into rows
+            for (let i = 0; i < data.length; i += 3) {
+                // Create a div for each row
+                const mealsRow = document.createElement('div');
+                mealsRow.classList.add('grid-container');
+
+                // Display up to 3 meals in the current row
+                for (let j = 0; j < 3 && i + j < data.length; j++) {
+                    // Create a div for each meal
+                    const mealDiv = document.createElement('div');
+                    mealDiv.classList.add('meals-grid-item');
+
+                    // Add a class to the meal div
+                    mealDiv.innerHTML = `
+                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}">
+                        <p>${data[i + j].name}</p>
+                        <button onclick="addToCart('${data[i + j].name}')">Add to Cart</button>
+                    `;
+
+                    // Add the meal div to the current row
+                    mealsRow.appendChild(mealDiv);
+                }
+
+                // Add the row to the container
+                mealsContainer.appendChild(mealsRow);
+            }
+        });
+}
+
         // // Add a meal to the cart
         // function addToCart(mealName) {
         //     // Add the meal to the array

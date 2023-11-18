@@ -566,6 +566,7 @@ footer {
 
 
 /*meals in the browsemenu for all meals*/
+
 .grid-container {
   display: flex;
   flex-wrap: wrap;
@@ -649,3 +650,37 @@ img {
 }
 
 /*end of thank you page styles */
+
+
+/*start of test browse menu*/
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px; 
+}
+
+.meals-grid-item {
+  width: 450px;
+  text-align: center; 
+  margin: 20px; 
+}
+
+.meals-grid-item img {
+  width: 450px;
+  height: 450px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+}
+.meals-grid-item p {
+  margin: 10px 0;
+}
+
+.meals-grid-item button {
+  background-color: #4CAF50; 
+  color: white; 
+  padding: 8px 16px; 
+  border: none;
+  cursor: pointer;
+}
