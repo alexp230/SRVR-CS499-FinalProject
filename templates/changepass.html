@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
     <title>SRVR Change Password</title>
-        <style>
+    <style>
         /* our menu, how it works, about us */
         .center-section {
-        display: inline-block;
-        text-align: center;
-        margin-left: -9rem;
+            display: inline-block;
+            text-align: center;
+            margin-left: -9rem;
         }
     </style>
 </head>
+
 <body>
     <!--navbar-->
     <header>
@@ -37,17 +39,17 @@
             <input type="text" name="lname" required placeholder="Last name">
             <input type="email" name="email" required placeholder="Email">
             <input type="text" name="address" required placeholder="Address"> -->
-            <input type="password" name="curpassword" required placeholder="Enter your current password">
+            <input type="password" name="oldpassword" required placeholder="Enter your current password">
             <input type="password" name="newpassword" required placeholder="Enter your new password">
-            <input type="password" name="confirm_newpassword" required placeholder="Confirm your new password">
+            <input type="password" name="confirmpassword" required placeholder="Confirm your new password">
             <input type="submit" value="Submit Changes" class="form-btn">
             <!-- <p>Back to <a href="tempusrhome.html">Home</a></p> -->
         </form>
         {% if msg %}
-        <div class="message">
+        <div class="message" style="color: red">
             {{ msg }}
         </div>
-    {% endif %}
+        {% endif %}
     </div>
     <!-- <style>
         .form-container{
@@ -55,4 +57,5 @@
         }
     </style> -->
 </body>
+
 </html>
