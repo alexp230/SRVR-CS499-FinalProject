@@ -321,7 +321,7 @@ def updateInfo(fname):
                 elif not msg:
                     msg = "No changes were made."
                 
-                return redirect(url_for("usrhome", fname = session["fname"]))
+                return redirect(url_for("usrhome", fname = fname))
         else:
             msg = "Incorrect password. Please try again."
     return render_template("usrsettings.html", user=user, msg=msg)
