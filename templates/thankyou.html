@@ -25,7 +25,7 @@
             <nav class="navbar">
                 <a href="{{ url_for ('browsemenu') }}">Our Menu</a>
                 <a href="howitworks.html">How it Works</a>
-                <a href="aboutus.html">About Us</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
             </nav>
         </div>
 
@@ -33,9 +33,33 @@
     <!--end navbar-->
     <section class="thankyou-section">
         <div class="thankyou-container">
+        {%if 'Subscription' in msg%}
+            <h1>Thank you for updating your subscription!</h1>
+            <p>{{msg}}</p>
+            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+        {% endif %}
+        {%if 'Card' in msg%}
+            <h1>Thank you for updating your payment!</h1>
+            <p>{{msg}}</p>
+            <a type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</a>
+        {% endif %}
+        {%if 'created' in msg%}
             <h1>Thank you for signing up!</h1>
-            <p>Click the button below to login to your account!</p>
+            <p>{{msg}}</p>
             <button type="button" href="{{ url_for ('login') }}" class="thankyou-btn">Login</button>
+        {% endif %}
+        {%if 'updated' in msg%}
+            <h1>Thank you for updating your information!</h1>
+            <p>{{msg}}</p>
+            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+        {% endif %}
+        {%if 'password' in msg%}
+            <h1>Thank you for updating your password!</h1>
+            <p>{{msg}}</p>
+            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+        {% endif %}
+
+
         </div>
 </body>
 </html>

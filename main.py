@@ -637,6 +637,9 @@ def pastOrders(fname):
 
     return render_template("pastorders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
 
+@app.route('/aboutus')
+def aboutus():
+    return render_template("aboutus.html") 
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
