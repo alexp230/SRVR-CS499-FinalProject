@@ -34,10 +34,10 @@
         <!-- <form action="/updateInfo/{{user.fname}}" method="post"> -->
         <form action="/updateInfo/{{user.fname}}" method="post" enctype="multipart/form-data">
             <h3>Change the fields that you would like to modify</h3>
-            <input type="text" name="fname" required placeholder="First name">
-            <input type="text" name="lname" required placeholder="Last name">
-            <input type="email" name="email" required placeholder="Email">
-            <input type="text" name="address" required placeholder="Address">
+            <input type="text" name="fname" required placeholder="First name" value="{{ user.fname }}">
+            <input type="text" name="lname" required placeholder="Last name" value="{{ user.lname }}">
+            <input type="email" name="email" required placeholder="Email" value="{{ user.email }}">
+            <input type="text" name="address" required placeholder="Address" value="{{ user.address }}">
             <!-- <input type="password" name="password" required placeholder="Enter your password"> -->
             <!-- <input type="password" name="confirm_password" required placeholder="Confirm your password"> -->
             <h5>Enter your current password to confirm changes</h5>
@@ -46,7 +46,7 @@
             <!-- <p>Back to <a href="tempusrhome.html">Home</a></p> -->
         </form>
         {% if msg %}
-            <div class="message">
+            <div class="message" style="color: red">
                 {{ msg }}
             </div>
         {% endif %}

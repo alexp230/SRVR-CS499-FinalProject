@@ -307,19 +307,21 @@ def updateInfo(fname):
                 if email and email != user.email:
                     updateEmail(user.email, email)
                     msg = "Email updated successfully."
-                if address and address != user.address:
+                elif address and address != user.address:
                     updateAddress(user.email, address)
                     msg = "Address updated successfully."
-                if fname and fname != user.fname:
+                elif fname and fname != user.fname:
                     user.fname = fname
                     db.session.commit()
                     msg = "First name updated successfully."
-                if lname and lname != user.lname:
+                elif lname and lname != user.lname:
                     user.lname = lname
                     db.session.commit()
                     msg = "Last name updated successfully."
-                if not msg:
+                elif not msg:
                     msg = "No changes were made."
+                
+                return redirect(url_for("usrhome", fname = session["fname"]))
         else:
             msg = "Incorrect password. Please try again."
     return render_template("usrsettings.html", user=user, msg=msg)
@@ -341,7 +343,7 @@ def changepass(fname):
                         updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
                         msg = "Password updated successfully."
                     else:
-                        msg = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
+                        msg = "Password must contain at least one capital letter, one lowercase letter, and a number."
                 else:
                     msg = "New passwords do not match."
             else:
