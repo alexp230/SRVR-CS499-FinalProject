@@ -585,8 +585,30 @@ def addNewCard():
         subtype = request.form.get("SubPlan")
         cardNum = request.form.get("CardNum")
         cardHolder = request.form.get("CardName")
-        expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
+        expire_month = int(request.form.get("ExpiryMonth"))
+        expire_year = int(request.form.get("ExpiryYear"))
+        expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
+
+        fname = session["fname"]
+        if ((len(cardNum) != 16) or (not cardNum.isdigit())):
+            error = "Invalid card number!"
+            return render_template("paymentform.html", fname=fname, error=error)
+        
+        if ((expire_year == None) or (expire_month == None)):
+            error = "Enter valid expiration date!"
+            return render_template("paymentform.html", fname=fname, error=error)
+
+        today = datetime.today()
+        expire_date = datetime(expire_year, expire_month, 1)
+        if today > expire_date:
+            error = "Card is expired!"
+            return render_template("paymentform.html", fname=fname, error=error)
+        
+        if ((len(cvv) != 3 or (not cvv.isdigit()))):
+            error = "Invalid CVV number!"
+            return render_template("paymentform.html", fname=fname, error=error)
+        
         # print statements for debugging
         print("Delivery date is valid")
         print(f"Delivery date: {delivery_date}")

@@ -56,7 +56,7 @@
             <div class="flexBox">
                 <div class="inputBox">
                     <span>expiration mm</span>
-                    <select name="ExpiryMonth" id="" class="month-input">
+                    <select name="ExpiryMonth" id="" class="month-input" value="ExpiryMonth">
                         <option value="month" selected disabled>month</option>
                         <option value="01">01</option>
                         <option value="02">02</option>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="inputBox">
                     <span>expiration yy</span>
-                    <select name="ExpiryYear" id="" class="year-input">
+                    <select name="ExpiryYear" id="" class="year-input" value="ExpiryYear">
                         <option value="year" selected disabled>year</option>
                         <option value="2023">2023</option>
                         <option value="2024">2024</option>
@@ -94,6 +94,11 @@
             </div>
             <input type="submit" href="{{url_for ('login')}}" value="submit" class="submit-btn">
         </form>
+        {% if error %}
+        <div class="error" style="color: red">
+            {{ error }}
+        </div>
+        {% endif %}
     </div>
 </body>0
 
