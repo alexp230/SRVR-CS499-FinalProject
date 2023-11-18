@@ -94,7 +94,7 @@
                         const mealDiv = document.createElement('div');
                         // Add a class to the meal div
                         mealDiv.innerHTML = `
-                    <img src="${meal.photo_URL}" alt="${meal.name}">
+                    <img src="${meal.photo_URL}" alt="${meal.name}" onclick="addToCart('${meal.name}')">
                     <p>${meal.name}</p>
                     <button onclick="addToCart('${meal.name}')">Add to Cart</button>
                 `;
