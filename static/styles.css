@@ -658,3 +658,40 @@ footer {
 }
 
 /*end of browse menu*/
+
+
+/*start of howitworks.html*/
+
+.faq-item {
+  margin-bottom: 10px;
+}
+
+/* Hide the answers initially */
+.faq-answer {
+  display: none;
+}
+
+/* Style for the clickable question */
+.faq-question {
+  cursor: pointer;
+  font-weight: bold;
+  color: #3366cc; 
+  user-select: none; 
+}
+
+/* Style for the arrow icon */
+.faq-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0;
+  border-color: #3366cc transparent transparent transparent;
+  margin-right: 5px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Rotate arrow when answer is visible */
+.faq-item.active .faq-arrow {
+  transform: rotate(-180deg);
+}
