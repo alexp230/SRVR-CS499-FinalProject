@@ -336,20 +336,28 @@ def changepass(fname):
         oldpassword = request.form.get("oldpassword")
         newpassword = request.form.get("newpassword")
         confirmpassword = request.form.get("confirmpassword")
-        if oldpassword and newpassword and confirmpassword:
-            if hashlib.md5(oldpassword.encode()).digest() == user.password:
-                if newpassword == confirmpassword:
-                    if passwordValidation(newpassword):
-                        updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
-                        msg = "Password updated successfully."
-                    else:
-                        msg = "Password must contain at least one capital letter, one lowercase letter, and a number."
-                else:
-                    msg = "New passwords do not match."
-            else:
-                msg = "Incorrect password. Please try again."
+
+        if not (oldpassword and newpassword and confirmpassword):
+            msg = "Please fill out all fields!"
+        
+        elif (hashlib.md5(newpassword.encode()).digest() == user.password):
+            msg = "New password matches old password!"
+
+        elif (hashlib.md5(oldpassword.encode()).digest() != user.password):
+            msg = "Incorrect password. Please try again!"
+
+        elif (newpassword != confirmpassword):
+            msg = "New passwords do not match!"
+
+        elif not passwordValidation(newpassword):
+            msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"     
+
         else:
-            msg = "Please fill out all fields."
+            updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
+            msg = "Password updated successfully!"
+            return redirect(url_for("usrhome", fname = session["fname"]))
+            
+                
     return render_template("changepass.html", user=user, msg=msg)
 
 
