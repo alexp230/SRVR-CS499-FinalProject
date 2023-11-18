@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,44 +9,45 @@
     <!-- Link to CSS page -->
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
+
 <body>
 
-<!-- Navbar -->
-<header>
-    <div class="left-section">
-        <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
-    </div>
+    <!-- Navbar -->
+    <header>
+        <div class="left-section">
+            <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
 
-    <div class="center-section">
-        <nav class="navbar">
-            <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
-            <a href="howitworks.html">How it Works</a>
-            <a href="aboutus.html">About Us</a>
-        </nav>
-    </div>
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+                <a href="howitworks.html">How it Works</a>
+                <a href="aboutus.html">About Us</a>
+            </nav>
+        </div>
 
-    <div class="right-section">
-        <nav class="navbar">
-            <a href="{{ url_for ('cart') }}">Cart</a>
-            <a href="account.html">Account</a>
-        </nav>
-    </div>
-</header>
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('cart') }}">Cart</a>
+                <a href="account.html">Account</a>
+            </nav>
+        </div>
+    </header>
 
-<h1 style="text-align: center; margin-top: 25px">Explore Our Meals</h1>
+    <h1 style="text-align: center; margin-top: 25px">Explore Our Meals</h1>
 
-<!-- Navbar for meal selection -->
-<div class="meal-selection">
-    <nav class="meal-navbar">
-        <select id="categoryDropdown" onchange="loadMeals()">
-            {% set categories = [] %}
-            {% for meal in all_meals %}
+    <!-- Navbar for meal selection -->
+    <div class="meal-selection">
+        <nav class="meal-navbar">
+            <select id="categoryDropdown" onchange="loadMeals()">
+                {% set categories = [] %}
+                {% for meal in all_meals %}
                 {% if meal.category not in categories %}
-                    <option value="{{ meal.category }}">{{ meal.category }}</option>
-                    {% set _ = categories.append(meal.category) %}
+                <option value="{{meal.category}}">{{ meal.category|replace('_', ' ') }}</option>
+                {% set _ = categories.append(meal.category) %}
                 {% endif %}
-            {% endfor %}
-            <!-- {% for meal in all_meals%}
+                {% endfor %}
+                <!-- {% for meal in all_meals%}
             <option value="{{meal.category}}">{{meal.category}}</option>
             {% endfor %}
             <option value="Seafood">Seafood</option>
@@ -54,87 +56,88 @@
             <option value="Sandwich">Sandwich</option>
             <option value="Chicken">Chicken</option>
             <option value="Desserts">Desserts</option> -->
-        </select>
-    </nav>
-</div>
+            </select>
+        </nav>
+    </div>
 
-<!-- Section for displaying meals -->
-<div class="all-meals-contents">
-    <div class="grid-container">
-        <div class="meals-grid-item">
-            <div id="mealsContainer"></div>
+    <!-- Section for displaying meals -->
+    <div class="all-meals-contents">
+        <div class="grid-container">
+            <div class="meals-grid-item">
+                <div id="mealsContainer"></div>
+            </div>
         </div>
     </div>
-</div>
-<script>
-    // Declare a global array to keep track of selected meals
-    // const selectedMeals = [];
-    // Load meals when the page loads
-    function loadMeals() {
-        // Get the selected category
-        const category = document.getElementById("categoryDropdown").value;
-        // Fetch meals from the server
-        const url = `/category/${category}`;
-        // Fetch meals from the server
-        fetch(url)
-        // Convert the response to JSON
-            .then(response => response.json())
-            // Display meals on the page
-            .then(data => {
-                // Get the container for displaying meals
-                const mealsContainer = document.getElementById("mealsContainer");
-                // Clear existing meals
-                mealsContainer.innerHTML = "";
+    <script>
+        // Declare a global array to keep track of selected meals
+        // const selectedMeals = [];
+        // Load meals when the page loads
+        function loadMeals() {
+            // Get the selected category
+            const category = document.getElementById("categoryDropdown").value;
+            // Fetch meals from the server
+            const url = `/category/${category}`;
+            // Fetch meals from the server
+            fetch(url)
+                // Convert the response to JSON
+                .then(response => response.json())
                 // Display meals on the page
-                data.forEach(meal => {
-                    // Create a div for each meal
-                    const mealDiv = document.createElement('div');
-                    // Add a class to the meal div
-                    mealDiv.innerHTML = `
+                .then(data => {
+                    // Get the container for displaying meals
+                    const mealsContainer = document.getElementById("mealsContainer");
+                    // Clear existing meals
+                    mealsContainer.innerHTML = "";
+                    // Display meals on the page
+                    data.forEach(meal => {
+                        // Create a div for each meal
+                        const mealDiv = document.createElement('div');
+                        // Add a class to the meal div
+                        mealDiv.innerHTML = `
                     <img src="${meal.photo_URL}" alt="${meal.name}">
                     <p>${meal.name}</p>
                     <button onclick="addToCart('${meal.name}')">Add to Cart</button>
                 `;
-                // Add the meal div to the container
-                    mealsContainer.appendChild(mealDiv);
+                        // Add the meal div to the container
+                        mealsContainer.appendChild(mealDiv);
+                    });
                 });
-            });
-    }
-    // // Add a meal to the cart
-    // function addToCart(mealName) {
-    //     // Add the meal to the array
-    //     if (selectedMeals.length < 7 && !selectedMeals.includes(mealName)) {
-    //         selectedMeals.push(mealName);
-    //         alert(`${mealName} added to the cart!`);
-    //     } else {
-    //         alert(`You can only add up to 7 unique meals to the cart.`);
-    //     }
-
-    //     // You can update the UI or perform additional actions here
-    // }
-    // // Load meals when the page loads
-    function addToCart(mealName) {
-    fetch('/add_to_cart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ mealName: mealName }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(`${mealName} added to the cart!`);
-        } else {
-            alert(`You can only add up to 7 unique meals to the cart.`);
         }
-    })
-    .catch(error => console.error('Error:', error));
-}
+        // // Add a meal to the cart
+        // function addToCart(mealName) {
+        //     // Add the meal to the array
+        //     if (selectedMeals.length < 7 && !selectedMeals.includes(mealName)) {
+        //         selectedMeals.push(mealName);
+        //         alert(`${mealName} added to the cart!`);
+        //     } else {
+        //         alert(`You can only add up to 7 unique meals to the cart.`);
+        //     }
 
-    window.onload = loadMeals;
-</script>
+        //     // You can update the UI or perform additional actions here
+        // }
+        // // Load meals when the page loads
+        function addToCart(mealName) {
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mealName: mealName }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`${mealName} added to the cart!`);
+                    } else {
+                        alert(`You can only add up to 7 unique meals to the cart.`);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        window.onload = loadMeals;
+    </script>
 
 
 </body>
+
 </html>
