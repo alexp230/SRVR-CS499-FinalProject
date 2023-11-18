@@ -34,12 +34,12 @@
     <div class="form-container">
         <form action="/add" method="post">
             <h3>Signup Now</h3>
-            <input type="text" name="fname" required placeholder="Enter your first name">
-            <input type="text" name="lname" required placeholder="Enter your last name">
-            <input type="email" name="email" required placeholder="Enter your email">
-            <input type="text" name="address" required placeholder="Enter your address">
-            <input type="password" name="password" required placeholder="Enter your password">
-            <input type="password" name="confirm_password" required placeholder="Confirm your password">
+            <input type="text" name="fname" required placeholder="Enter your first name" value="{{ fName }}">
+            <input type="text" name="lname" required placeholder="Enter your last name" value="{{ lName }}">
+            <input type="email" name="email" required placeholder="Enter your email" value="{{ email }}">
+            <input type="text" name="address" required placeholder="Enter your address" value="{{ address }}">
+            <input type="password" name="password" required placeholder="Enter your password" value="{{ password }}">
+            <input type="password" name="confirm_password" required placeholder="Confirm your password" value="{{ confirmpassword}}">
             <input type="submit" value="Signup Now" class="form-btn">
             <p>already have an account? <a href="{{url_for('login')}}">login now</a></p>
         </form>

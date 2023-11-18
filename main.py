@@ -368,15 +368,18 @@ def add():
     emailCheck = User.query.filter_by(email=email).first()
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
-        return render_template ('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
+        return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
+
     
     if not passwordValidation(password):
-        error = "Password must contain at least one capital letter, one lowercase letter, and end with a number."
-        return render_template('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
+        error = "Password must contain at least one capital letter, one lowercase letter, and a number."
+        return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
+
     
     if password != confirmpassword:
         error = "Passwords do not match."
-        return render_template('signupform.html', error=error, password=password, confirmpassword=confirmpassword)
+        return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
+
 
     newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
 
