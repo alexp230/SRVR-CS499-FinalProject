@@ -36,27 +36,27 @@
         {%if 'Subscription' in msg%}
             <h1>Thank you for updating your subscription!</h1>
             <p>{{msg}}</p>
-            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
         {% endif %}
         {%if 'Card' in msg%}
             <h1>Thank you for updating your payment!</h1>
             <p>{{msg}}</p>
-            <a type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</a>
+            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</a>
         {% endif %}
         {%if 'created' in msg%}
             <h1>Thank you for signing up!</h1>
             <p>{{msg}}</p>
-            <button type="button" href="{{ url_for ('login') }}" class="thankyou-btn">Login</button>
+            <a href="{{ url_for ('login') }}" class="thankyou-btn">Login</button>
         {% endif %}
         {%if 'updated' in msg%}
             <h1>Thank you for updating your information!</h1>
             <p>{{msg}}</p>
-            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
         {% endif %}
         {%if 'password' in msg%}
             <h1>Thank you for updating your password!</h1>
             <p>{{msg}}</p>
-            <button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
+            <a button type="button" href="{{ url_for ('browsemenu') }}" class="thankyou-btn">Home</button>
         {% endif %}
 
 
