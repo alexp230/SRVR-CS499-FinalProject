@@ -463,9 +463,11 @@ def cart():
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     meal_name = request.json.get('mealName')
-    selected_meals = session.get('selected_meals', []) 
+    selected_meals = session.get('selected_meals', [])
+    box_capacity = 7 
 
-    if len(selected_meals) < 7 and meal_name not in selected_meals:
+    # if len(selected_meals) < 7 and meal_name not in selected_meals:
+    if (len(selected_meals) < box_capacity):
         selected_meals.append(meal_name)
         session['selected_meals'] = selected_meals
         return jsonify({'success': True})
