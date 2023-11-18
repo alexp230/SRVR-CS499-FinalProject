@@ -629,7 +629,7 @@ img {
   text-transform: capitalize;
 }
 
-.thankyou-container button{
+.thankyou-container a{
   background: var(--green);
   color: var(--gray);
   text-transform: capitalize;
@@ -639,12 +639,13 @@ img {
   padding: 10px 20px;
   border: none;
   width: 50%;
+  margin: 0 auto;
+  display: block;
 }
 
-.thankyou-container button:hover{
+.thankyou-container a:hover{
   background: var(--red);
   color: #fff;
-  width: 50%;
 }
 
 /*end of thank you page styles */
