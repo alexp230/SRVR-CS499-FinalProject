@@ -34,7 +34,7 @@
         </div>
     </header>
 
-    <h1 style="text-align: center; margin-top: 25px">Explore Our Meals</h1>
+    <h1 style="text-align: center; margin-top: 125px">Explore Our Meals</h1>
 
     <!-- Navbar for meal selection -->
     <div class="meal-selection">
@@ -105,7 +105,7 @@ function loadMeals() {
 
                     // Add a class to the meal div
                     mealDiv.innerHTML = `
-                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}">
+                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}" onclick="openPDF('${data[i + j].photo_URL}')">
                         <p>${data[i + j].name}</p>
                         <button onclick="addToCart('${data[i + j].name}')">Add to Cart</button>
                     `;
@@ -119,6 +119,15 @@ function loadMeals() {
             }
         });
 }
+
+    function openPDF(pdfURL) 
+    {
+        let modifiedString = pdfURL.replace(new RegExp("Pictures", "g"), "Instructions");
+        
+        let pdf_url = modifiedString.slice(0, -3) + "pdf";
+        // Open a new window or tab with the PDF file
+        window.open(pdf_url, '_blank');
+    }
 
         // // Add a meal to the cart
         // function addToCart(mealName) {
@@ -164,6 +173,106 @@ function loadMeals() {
 
         window.onload = loadMeals;
     </script>
+
+    <!--bottom homepage section where "why srvr" and how it works is located-->
+<section class="home-bottom" id="home-bottom">
+
+    <!--why srvr section-->
+    <div class="why-srvr">Why SRVR?</div>
+    <div class="why-srvr-images">
+        <div class="why-srvr-item">
+            <img src="../static/images/food-icon.png" alt="food icon" class="food-icon">
+            <p style="font-weight: bold;">Nutritional Excellence</p>
+            <p style="margin-top: 10px;">Savor your favorite flavors while maintaining a balanced diet</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/time.png" alt="food icon" class="time">
+            <p style="font-weight: bold;">Time-Saving Simplicity</p>
+            <p style="margin-top: 10px;">Home-cooked meals without lengthy preparation and cooking times</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/culinary.png" alt="food icon" class="culinary-freedom">
+            <p style="font-weight: bold;">Culinary Freedom</p>
+            <p style="margin-top: 10px;">Diverse recipes and ingredients that cater to your unique tastes</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/food-wellness.png" alt="food icon" class="food-wellness">
+            <p style="font-weight: bold;">Wellness Without Compromise</p>
+            <p style="margin-top: 10px;">Delicious, healthy meals that fit seamlessly into your busy lifestyle</p>
+        </div>
+    </div>
+
+    <!--how it works section-->
+    <div class="how-it-works">How It Works</div>
+
+
+    <div class="container">
+        <div class="left-column">
+            <ul class="how-it-works-list">
+                <li>
+                    <strong style="font-size: 25px">Order and Customize:</strong>
+                    <p class="ordered-list-description">
+                        Select and tailor your meals to suit your dietary preferences and nutritional needs
+                    </p>
+                </li>
+                <li>
+                    <strong style="font-size: 25px">Fast and Convenient Delivery:</strong>
+                    <p class="ordered-list-description">
+                        The SRVR team carefully packages and delivers your freshly prepared meals are delivered right to your doorstep
+                    </p>
+                </li>
+                <li>
+                    <strong style="font-size: 25px">Enjoy Fresh, Healthy Meals:</strong>
+                    <p class="ordered-list-description">
+                        Unpack and cook your SRVR meals and savor the delicious flavors without compromising on nutrition.
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="right-column">
+            <img src="../static/images/grocery.png" alt="grocery" class="grocery-icon">
+        </div>
+    </div>
+
+</section>
+
+</body>
+
+<footer>
+    <div class="footer-container">
+        <!-- Help/Contact us -->
+        <div class="footer-row">
+            <h3>Contact and Support:</h3>
+            <p><a href="howitworks.html">How it Works</a></p>
+            <p><a href="mailto:contact@srvr.com">contact@srvr.com</a></p>
+            <p>(205)123-4567</p>
+        </div>
+        <div class="footer-row">
+            <h3>Accepted Payment:</h3>
+            <p>Visa</p>
+            <p>Mastercard</p>
+            <p>Discover</p>
+        </div>
+        <div class="footer-row">
+            <h3>Company:</h3>
+            <p><a href="main.html">Home</a></p>
+            <p><a href="ourmenu.html">Our Menu</a></p>
+            <p><a href="aboutus.html">About Us</a></p>
+        </div>
+    </div>
+    <div class="social-media">
+        <a href="https://www.facebook.com/"><img src="../static/images/facebook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com"><img src="../static/images/instagram.png" alt="Instagram"></a>
+        <a href="https://www.pinterest.com"><img src="../static/images/pinterest.png" alt="Pinterest"></a>
+        <a href="https://www.twitter.com"><img src="../static/images/twitter.png" alt="Twitter"></a>
+        <a href="https://www.youtube.com"><img src="../static/images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <p style="text-align: center; margin-top: 10px;">© SRVR, LLC 2023</p>
+</footer>
+
+
+
 
 
 </body>

@@ -532,67 +532,8 @@ footer {
 /* end of aboutus.html styles */
 
 
-/* meal selection navbar */
-.meal-selection {
-  position: sticky;
-  margin-top: 20px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem 9%;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow: hidden;
-}
-
-.meal-navbar {
-  white-space: nowrap;
-  overflow: hidden;
-  overflow-x: scroll;
-  -webkit-overflow-scrolling: touch;
-}
-
-.meal-navbar a {
-  display: inline-block; /* Ensures items are on the same line */
-  margin-left: 10px;
-  color: black;
-  text-align: center;
-}
-/* changes color when you hover */
-.meal-navbar a:hover{
-  color: var(--green);
-}
 
 
-/*meals in the browsemenu for all meals*/
-
-.grid-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-
-.meals-grid-item {
-  flex: 0 0 calc(33.33% - 10px); /* Set the width of each item to one-third with some spacing */
-  text-align: center;
-  margin: 40px 10px 60px 0; /* Adjust the margin for spacing (top, right, bottom, left) */
-  box-sizing: border-box; /* Include padding and border in the width calculation */
-}
-
-
-img {
-  width: 350px; /* Set a fixed width for the images */
-  height: 250px; /* Set a fixed height for the images */
-  object-fit: cover; /* Maintain aspect ratio and cover the entire space */
-  border-radius: 5%;
-}
-
-.meals-grid-item img:hover {
-  filter: grayscale(10%);
-  transform: scale(1.2);
-}
 
 /*start of thank you page styles */
 
@@ -652,9 +593,9 @@ img {
 /*end of thank you page styles */
 
 
-/*start of test browse menu*/
+/*start of browse menu*/
 
-
+/*meals 3 in a row*/
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
@@ -683,4 +624,74 @@ img {
   padding: 8px 16px; 
   border: none;
   cursor: pointer;
+}
+
+.meal-navbar {
+  align-items: right;
+
+}
+
+/*fixing the nav bar*/
+.meal-selection {
+  text-align: center;
+  margin-top: 20px; 
+}
+
+.meal-navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; 
+}
+
+.meal-selection select {
+  font-size: 20px; 
+  padding: 10px; 
+  width: 300px; 
+  margin-right: 50px;
+}
+
+#mealCounterDisplay {
+  font-size: 20px;
+  margin-left: 10px; 
+  
+}
+
+/*end of browse menu*/
+
+
+/*start of howitworks.html*/
+
+.faq-item {
+  margin-bottom: 10px;
+}
+
+/* Hide the answers initially */
+.faq-answer {
+  display: none;
+}
+
+/* Style for the clickable question */
+.faq-question {
+  cursor: pointer;
+  font-weight: bold;
+  color: #3366cc; 
+  user-select: none; 
+}
+
+/* Style for the arrow icon */
+.faq-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0;
+  border-color: #3366cc transparent transparent transparent;
+  margin-right: 5px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Rotate arrow when answer is visible */
+.faq-item.active .faq-arrow {
+  transform: rotate(-180deg);
 }

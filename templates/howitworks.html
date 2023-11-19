@@ -2,20 +2,125 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SRVR howitworks</title>
+    <title>SRVR How It Works</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    
 </head>
 <body>
     <section class="howitworks">
         <div class="howitworksmain">
             <div class="howitworks-text">
                 <h1>How It Works</h1>
-                <p>"At SRVR, we've designed a simple and convenient process to revolutionize the way you cook and eat at home. 
-                    With our meal kit delivery service, you can enjoy delicious and nutritious meals in just a few easy steps."</p>
-                <h5>Signup for SRVR</h5>
-                <p></p>
+                <p>"At SRVR, we've designed a simple and convenient process to revolutionize the way you cook and eat at home. With our meal kit delivery service, you can enjoy delicious and nutritious meals in just a few easy steps."</p>
+                
+                <!-- Frequently Asked Questions -->
+                <h2>Frequently Asked Questions</h2>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> What type of meals do we offer?
+                    </div>
+                    <div class="faq-answer">
+                        We offer a diverse range of meals to suit various preferences and dietary requirements. Our menu includes global cuisines 
+                        including Asian, Italian, and Mexican dishes. We also have a variety of options for different dietary preferences, such 
+                        as vegetarian and vegan meals.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> Is a subscription required?
+                    </div>
+                    <div class="faq-answer">
+                        Yes, we offer a subscription-based service to make meal planning even more convenient for our customers. 
+                        You can choose a plan that suits your needs, and you can easily skip or cancel anytime.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> Can I customize dietary preferences?
+                    </div>
+                    <div class="faq-answer">
+                        We offer a wide range of meal plans for your specific dietary preferences and allergies.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> Where do we deliver?
+                    </div>
+                    <div class="faq-answer">
+                        For now, we only ship within the US.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> How is food packaged?
+                    </div>
+                    <div class="faq-answer">
+                        We package our ingredients to ensure freshness. The meal kits include pre portioned 
+                        ingredients, using insulated packaging with ice packs to keep everything fresh.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> What if I am not home for delivery?
+                    </div>
+                    <div class="faq-answer">
+                        Our packages will keep your ingredients safe even if you are not home when the package arrives.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> What if I am not home for delivery?
+                    </div>
+                    <div class="faq-answer">
+                        Our packages will keep your ingredients safe even if you are not home when the package arrives.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> How can I contact Customer Support?
+                    </div>
+                    <div class="faq-answer">
+                        You can contact customer support team through support@srvr.com
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> Which payment methods do we accept?
+                    </div>
+                    <div class="faq-answer">
+                        We currently accept Disover, Mastercard, and Visa.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleAnswer(this)">
+                    <div class="faq-question">
+                        <span class="faq-arrow"></span> How can I cancel or modify my subscription?
+                    </div>
+                    <div class="faq-answer">
+                        You can easily manage your subscription through your account on our website.
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
+    // Function to toggle the visibility of the answer
+    <script>
+        function toggleAnswer(faqItem) {
+            faqItem.classList.toggle('active');
+            var answer = faqItem.querySelector('.faq-answer');
+            answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 
 </body>
 </html>
