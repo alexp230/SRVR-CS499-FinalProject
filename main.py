@@ -440,11 +440,11 @@ def submitlogin():
             if user[4] == password:
                 Sign_IN = True
                 session["logged_in"] = True
+                session["user_id"] = user[0]
                 session["fname"] = user[1]
                 session["lname"] = user[2]
                 session["email"] = user[3]
                 session["address"] = user[5]
-                session["user_id"] = user[0]
                 msg = "Login Successful"
 
                 return redirect(url_for("usrhome", fname = session["fname"]))
