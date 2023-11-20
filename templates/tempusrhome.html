@@ -2,33 +2,37 @@
 {% extends "menu.html" %}
 {% block header %}{% endblock %}
 {% block content %}
-    <div class="message">
-        {{ msg }}
-    </div>
-    <p>Temporary user home page for testing</p>
-    <form action="/paymentmethod/{{email}}" method="post">
-        <button type="submit"> Update Payment Method </button>
-    </form>
-    <form action="/usrsettings/{{fname}}" method="post">
-        <button type="submit"> Update User Info </button>
-    </form> 
-    <form action="/changepass/{{fname}}" method="post">
-        <button type="submit"> Change Password </button>
-    </form>
-    <form action="/pastorders/{{fname}}">
-        <button type="submit"> Past Orders </button>
-    </form>
+<div class="message">
+    {{ msg }}
+</div>
+<p>Temporary user home page for testing</p>
+<form action="/paymentmethod" method="post">
+    <button type="submit"> Update Payment Method </button>
+</form>
+<form action="/usrsettings" method="post">
+    <button type="submit"> Update User Info </button>
+</form>
+<form action="/changepass" method="post">
+    <button type="submit"> Change Password </button>
+</form>
+<form action="/pastorders">
+    <button type="submit"> Past Orders </button>
+</form>
 
-    
-    <style type="text/css">
-        .message, p, form{
-            text-align: center;
-            margin: auto;
-            width: 30%;
-            padding: 10px;
-        }button{
-            padding: 0.5%;
-            width: 100%;
-        }
-    </style>
+
+<style type="text/css">
+    .message,
+    p,
+    form {
+        text-align: center;
+        margin: auto;
+        width: 30%;
+        padding: 10px;
+    }
+
+    button {
+        padding: 0.5%;
+        width: 100%;
+    }
+</style>
 {% endblock %}

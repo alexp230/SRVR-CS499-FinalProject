@@ -251,17 +251,18 @@ def login():
     return render_template("loginform.html")
 
 # Function is used to display the tempusrhome.html only
-@app.route('/usrhome/<string:email>', methods = ["GET", "POST"])
-def usrhome(email):
-    user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-    return render_template("tempusrhome.html", email=user[3], user=user)
+@app.route('/usrhome/<string:fname>', methods = ["GET", "POST"])
+def usrhome(fname):
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", fname)
+    # user = User.query.filter_by(fname=fname).first()
+    return render_template("tempusrhome.html", fname=session["fname"], user=user)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # FOR SOME ODD REASON I CANT ADD FNAME TO THE URL FOR THIS FUNCTION WITHOUT IT BREAKING
-@app.route('/paymentmethod/<string:email>', methods = ["GET", "POST"])
-def paymentmethod(email):
-    user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-    return render_template("paymentform.html", email=user[3], user=user)
+@app.route('/paymentmethod', methods = ["GET", "POST"])
+def paymentmethod():
+    user = srvrdb.select_specific_data(cursor, "userTable", "firstname", session["fname"])
+    return render_template("paymentform.html", user=user)
 
 # Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
 @app.route('/usrsettings/<string:fname>', methods = ["GET", "POST"])
@@ -420,24 +421,24 @@ def submitlogin():
         if not user:
             msg = "Account does not exist. Please try again."
             return render_template("loginform.html", msg = msg)
-
         
         if user[srvrdb.USERTABLE_PASSWORD] == password:
             Sign_IN = True
             session["logged_in"] = True
-            update_user_info("email", user, srvrdb.USERTABLE_EMAIL, None)
-            update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, None)
-            update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, None)
-            update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, None)
-            update_user_info("user_id", user, srvrdb.USERTABLE_USER_ID, None)
-            # session["email"] = user[srvrdb.USERTABLE_EMAIL]
-            # session["fname"] = user[srvrdb.USERTABLE_FIRSTNAME]
-            # session["lname"] = user[srvrdb.USERTABLE_LASTNAME]
-            # session["address"] = user[srvrdb.USERTABLE_ADDRESS]
-            # session["user_id"] = user[srvrdb.USERTABLE_USER_ID]
+            # update_user_info("email", user, srvrdb.USERTABLE_EMAIL, None)
+            # update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, None)
+            # update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, None)
+            # update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, None)
+            # update_user_info("user_id", user, srvrdb.USERTABLE_USER_ID, None)
+            session["email"] = user[srvrdb.USERTABLE_EMAIL]
+            session["fname"] = user[srvrdb.USERTABLE_FIRSTNAME]
+            session["lname"] = user[srvrdb.USERTABLE_LASTNAME]
+            session["address"] = user[srvrdb.USERTABLE_ADDRESS]
+            session["user_id"] = user[srvrdb.USERTABLE_USER_ID]
             msg = "Login Successful"
 
             return redirect(url_for("usrhome", fname = session["fname"]))
+        
         else:
             msg = "Account does not exist. Please try again."
 
@@ -608,24 +609,24 @@ def addNewCard():
         expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
 
-        email = session["email"]
+        fname = session["fname"]
         if ((len(cardNum) != 16) or (not cardNum.isdigit())):
             error = "Invalid card number!"
-            return render_template("paymentform.html", email=email, error=error)
+            return render_template("paymentform.html", fname=fname, error=error)
         
         if ((expire_year == None) or (expire_month == None)):
             error = "Enter valid expiration date!"
-            return render_template("paymentform.html", email=email, error=error)
+            return render_template("paymentform.html", fname=fname, error=error)
 
         today = datetime.today()
         expire_date = datetime(expire_year, expire_month, 1)
         if today > expire_date:
             error = "Card is expired!"
-            return render_template("paymentform.html", email=email, error=error)
+            return render_template("paymentform.html", fname=fname, error=error)
         
         if ((len(cvv) != 3 or (not cvv.isdigit()))):
             error = "Invalid CVV number!"
-            return render_template("paymentform.html", email=email, error=error)
+            return render_template("paymentform.html", fname=fname, error=error)
         
         # print statements for debugging
         print("Delivery date is valid")
@@ -644,30 +645,6 @@ def addNewCard():
     # return render_template("thankyou.html", msg=msg)
 
     return redirect(url_for("usrhome", fname = session["fname"]))
-
-
-
-    # subtype = request.form.get("household-size")
-    # cardnum = request.form.get("CardNum")
-    # cardname = request.form.get("CardName")
-    # expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
-    # cvv = request.form.get("CVV")
-
-    # usremail = session["email"]
-
-    # usr = User.query.filter_by(email=usremail).first()
-    # unique_Card_ID = random.randint(usr.U_id, usr.U_id+1000000)
-    # # By the very small chance that the random number generated is already in the database, add another random amount to it
-    # for card in Payment_Method.query.all():
-    #     if card.P_id == unique_Card_ID:
-    #         unique_Card_ID += random.randint(1,10)
-    
-    # newcard = Payment_Method(P_id=unique_Card_ID ,card_number=cardnum, U_id=usr.U_id, card_holder_name=cardname, card_exp_date=expiry, card_CCV=cvv, subscriptionType=subtype)
-    # db.session.add(newcard)
-    # db.session.commit()
-    # msg = "Card Saved Successfully"
-
-    return render_template("thankyou.html")
 
 # WIP
 # This function allows past order data of a user to be retrieved
