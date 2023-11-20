@@ -1,4 +1,10 @@
 import pymysql
+# from main import db, app, User, Meal, Payment_Methods, Subscription, Box
+import os
+import csv
+
+
+csv_file_path = os.path.join(os.path.dirname(__file__), 'CSV_File', 'meal_data.csv')
 
 # Database connection parameters. Connects to srvr_db in Amazon RDS. (DO NOT TOUCH!!!)
 def connect_to_database():
@@ -29,19 +35,16 @@ def create_tables(cursor):
         address TEXT NOT NULL
     )
     '''
-    # create_mealTable_query = '''
-    # CREATE TABLE IF NOT EXISTS mealTable (
-    #     meal_id INT AUTO_INCREMENT PRIMARY KEY,
-    #     user_id INT,
-    #     name TEXT NOT NULL,
-    #     category TEXT NOT NULL,
-    #     photo_URL TEXT NOT NULL,
-    #     instructions TEXT NOT NULL,
-    #     allergens TEXT NOT NULL, 
-        # FOREIGN KEY (user_id) 
-        # REFERENCES userTable(user_id)
-    # )
-    # '''
+    create_mealTable_query = '''
+    CREATE TABLE IF NOT EXISTS mealTable (
+        meal_id INT AUTO_INCREMENT PRIMARY KEY,
+        name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        photo_URL TEXT NOT NULL,
+        instructions TEXT NOT NULL,
+        allergens TEXT NOT NULL 
+    )
+    '''
 
     # create_boxTable_query = '''
     # CREATE TABLE IF NOT EXISTS boxTable (
@@ -95,7 +98,7 @@ def create_tables(cursor):
     # '''
 
     cursor.execute(create_userTable_query)
-    # cursor.execute(create_mealTable_query)
+    cursor.execute(create_mealTable_query)
     # cursor.execute(create_boxTable_query)
     cursor.execute(create_pymntTable_query)
     # cursor.execute(create_pastOrdersTable_query)
@@ -181,6 +184,99 @@ def delete_data(cursor, table_name, match_column_name, match_val):
     delete_query = "DELETE FROM "+table_name+" WHERE "+match_column_name+"=%s"
     cursor.execute(delete_query, (match_val,))
 
+def add_meal_to_database(csv_file_path):
+    # Connect to the database
+    conn = connect_to_database()
+
+    try:
+        # Create a cursor
+        cursor = conn.cursor()
+
+        with open(csv_file_path, newline='', encoding='utf-8-sig') as csvfile:
+            reader = csv.DictReader(csvfile)
+            # Used to add meals to the database
+            for row in reader:
+                # Check if the meal already exists by name
+                select_query = "SELECT * FROM mealTable WHERE name = %s"
+                cursor.execute(select_query, (row['Name'],))
+                existing_meal = cursor.fetchone()
+
+                if existing_meal:
+                    continue
+                else:
+                    name = row['Name']
+                    category = row['Category']
+                    # Insert the meal into the database
+                    insert_query = "INSERT INTO mealTable (name, category, photo_URL, instructions, allergens) VALUES (%s, %s, %s, %s, %s)"
+                    cursor.execute(insert_query, (name, category, 'NULL', 'NULL', 'NULL'))
+                    conn.commit()
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+
+def print_all_rows():
+    # Connect to the database
+    conn = connect_to_database()
+
+    try:
+        # Create a cursor
+        cursor = conn.cursor()
+
+        # Query to select all rows from the table
+        select_query = "SELECT * FROM mealTable"
+
+        # Execute the query
+        cursor.execute(select_query)
+
+        # Fetch all rows
+        rows = cursor.fetchall()
+
+        # Print all rows
+        for row in rows:
+            print(row)
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+def update_pdf_jpg_files():
+    # Connect to the database
+    conn = connect_to_database()
+
+    try:
+        # Create a cursor
+        cursor = conn.cursor()
+
+        # Fetch meal files information
+        meal_files = {}
+        script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+        junk_files = [".DS_Store", "images", "js", "styles.css"]
+
+        for category in os.listdir(script_dir):
+            if category in junk_files:
+                continue
+
+            pdf_folder_path = os.path.join(script_dir, category, 'Instructions')
+            for file in os.listdir(pdf_folder_path):
+                if file.endswith(".pdf"):
+                    meal_files[(file.replace(".pdf", ""))] = category
+        for meal in meal_files:
+            meal_name = meal   
+            photo_URL = "/static/" + meal_files[meal_name] + "/Pictures/" + meal_name + ".jpg"   
+            instructions = "/static/" + meal_files[meal_name] + "/Instructions/" + meal_name + ".pdf" 
+            update_data3(cursor, "mealTable", "photo_URL", photo_URL, "instructions", instructions, "allergens", "NULL", "name", meal)
+        # Update meals in the database based on files found in directories
+        
+        # Commit the changes to the database
+        conn.commit()
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+
 def main():
     conn = connect_to_database()
     try:
@@ -196,7 +292,9 @@ def main():
         # Create table if not exists
         create_tables(cursor)
         print("Tables created.\n")
-        
+        add_meal_to_database(csv_file_path)
+        update_pdf_jpg_files()
+        print_all_rows()
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"
@@ -214,38 +312,37 @@ def main():
         # conn.commit()
 
         # Select all data from userTable
-        rows = select_data(cursor, "userTable")
-        # rows = select_specific_data(cursor, "userTable", "email", "jpatt@uab.edu")
-        print("Data in userTable:")
-        for row in rows:
-            print(row)
-
-        # # Select all data from pymntTable
-        # rows = select_data(cursor, "pymntTable")
-        # print("Data in pymntTable:")
+        # rows = select_data(cursor, "userTable")
+        # rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
+        # print("Data in userTable:")
         # for row in rows:
         #     print(row)
 
-        # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
-        # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")
-        # update_data2(cursor, "userTable", "firstname", "James", "lastname", "Smith", "email", "jpatt@uab.edu")
+        # # # Select all data from pymntTable
+        # # rows = select_data(cursor, "pymntTable")
+        # # print("Data in pymntTable:")
+        # # for row in rows:
+        # #     print(row)
+
+        # # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
+        # # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")
+        # # update_data2(cursor, "userTable", "firstname", "James", "lastname", "Smith", "email", "jpatt@uab.edu")
         # update_data3(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "email", "jpatt@uab.edu")
-        # update_data4(cursor, "userTable", "firstname", "James", "lastname", "Smith", "address", "333 6th Ave N, Birmingham AL", "password", "newpassword", "email", "jpatt@uab.edu")
-        # update_data5(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "password", "newnewpass", "email", "jfrost@uab.edu", "email", "jpatt@uab.edu")
+        # # update_data4(cursor, "userTable", "firstname", "James", "lastname", "Smith", "address", "333 6th Ave N, Birmingham AL", "password", "newpassword", "email", "jpatt@uab.edu")
+        # # update_data5(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "password", "newnewpass", "email", "jfrost@uab.edu", "email", "jpatt@uab.edu")
         # conn.commit()
 
-        # # Select data after update
+        # # # Select data after update
         # updated_rows = select_data(cursor, "userTable")
         # print("\nData in userTable after update:")
         # for row in updated_rows:
         #     print(row)
 
-        # # Delete data
-        # delete_data(cursor, "userTable", "firstname", "Alex")
-        # delete_data(cursor, "userTable", "firstname", "Obie")
+        # # # Delete data
+        # delete_data(cursor, "userTable", "firstname", "Jack")
         # conn.commit()
 
-        # Select data after delete
+        # # Select data after delete
         # remaining_rows = select_data(cursor, "userTable")
         # print("\nData in userTable after delete:")
         # for row in remaining_rows:
