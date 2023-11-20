@@ -618,6 +618,8 @@ footer {
   margin: 10px 0;
 }
 
+
+
 .meals-grid-item button {
   background-color: #4CAF50; 
   color: white; 
@@ -657,6 +659,12 @@ footer {
   
 }
 
+.meals-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around; /* Adjust alignment as needed */
+  margin-top: 20px; /* Example margin */
+}
 /*end of browse menu*/
 
 

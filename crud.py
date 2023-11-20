@@ -157,7 +157,10 @@ with app.app_context():
 
         update_pdf_jpg_files()
 
-    update_database()
+    # update_database()
 
+    meal = Meal.query.filter_by(name="Chicken Parmesan").first()
+    meal.name = "Cajun_Baked_Catfish"
+    db.session.commit()
 
 

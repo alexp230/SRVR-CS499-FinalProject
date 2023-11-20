@@ -39,7 +39,8 @@
     <!-- Navbar for meal selection -->
     <div class="meal-selection">
         <nav class="meal-navbar">
-            <select id="categoryDropdown" onchange="loadMeals()">
+            <select id="categoryDropdown" onchange="filterMeals()" >
+                <option value="All">All</option>
                 {% set categories = [] %}
                 {% for meal in all_meals %}
                 {% if meal[2] not in categories %}
@@ -47,78 +48,59 @@
                 {% set _ = categories.append(meal[2]) %}
                 {% endif %}
                 {% endfor %}
-                <!-- {% for meal in all_meals%}
-            <option value="{{meal.category}}">{{meal.category}}</option>
-            {% endfor %}
-            <option value="Seafood">Seafood</option>
-            <option value="Italian">Italian</option>
-            <option value="BBQ">BBQ</option>
-            <option value="Sandwich">Sandwich</option>
-            <option value="Chicken">Chicken</option>
-            <option value="Desserts">Desserts</option> -->
+  
             </select>
-            <p id="mealCounterDisplay">Total Meals Added: <span id="mealCounter">0</span></p>
         </nav>
     </div>
 
-    <!-- Section for displaying meals -->
-    <div class="all-meals-contents">
-        <div class="grid-container">
-            <div class="meals-grid-item">
-                <div id="mealsContainer"></div>
+
+    <div id="mealsContainer" class="meals-container">
+        {% for meal in all_meals %}
+            <div class="meals-grid-item" data-category="{{ meal[2] }}">
+                <img src="{{ meal[3] }}" alt="{{ meal[1] }}" onclick="openPDF('{{ meal[3] }}')" class="meal-image">
+                <p>{{ meal[1]|replace('_', ' ') }}</p>
+                <button onclick="addToCart('{{ meal[1] }}')">Add to Cart</button>
             </div>
-        </div>
+        {% endfor %}
     </div>
+
+    <style>
+        .meal-image {
+            width: 100px; /* Adjust the width and height according to your image */
+            height: 100px;
+            border-radius: 0%; /* Initial square shape */
+            transition: border-radius 0.5s, transform 0.3s; /* Add a smooth transition effect */
+            cursor: pointer;
+            /* cursor: url('../static/images/fork.png'); */
+        }
+    
+        .meal-image:hover {
+            border: 2px solid red; /* Red border on hover */
+            border-radius: 50%; /* Change to a circular shape on hover */
+            transform: scale(1.1); /* Slightly increase the size on hover */
+            /* cursor: url('../static/images/fork.png'), auto; */
+        }
+    </style>
+
     <script>
-        // Declare a global array to keep track of selected meals
-        // const selectedMeals = [];
-        // Load meals when the page loads
-        // Load meals when the page loads
-function loadMeals() {
-    // Get the selected category
-    const category = document.getElementById("categoryDropdown").value;
-    // Fetch meals from the server based on the selected category
-    const url = `/category/${category}`;
 
-    // Fetch meals from the server
-    fetch(url)
-        // Convert the response to JSON
-        .then(response => response.json())
-        // Display meals on the page
-        .then(data => {
-            // Get the container for displaying meals
-            const mealsContainer = document.getElementById("mealsContainer");
-            // Clear existing meals
-            mealsContainer.innerHTML = "";
+    function filterMeals() {
+            // Get the selected category from the dropdown
+            var selectedCategory = document.getElementById("categoryDropdown").value;
 
-            // Display meals on the page, organizing them into rows
-            for (let i = 0; i < data.length; i += 3) {
-                // Create a div for each row
-                const mealsRow = document.createElement('div');
-                mealsRow.classList.add('grid-container');
+            // Get all meal items
+            var mealItems = document.querySelectorAll('.meals-grid-item');
 
-                // Display up to 3 meals in the current row
-                for (let j = 0; j < 3 && i + j < data.length; j++) {
-                    // Create a div for each meal
-                    const mealDiv = document.createElement('div');
-                    mealDiv.classList.add('meals-grid-item');
-
-                    // Add a class to the meal div
-                    mealDiv.innerHTML = `
-                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}" onclick="openPDF('${data[i + j].photo_URL}')">
-                        <p>${data[i + j].name}</p>
-                        <button onclick="addToCart('${data[i + j][1]}')">Add to Cart</button>
-                    `;
-
-                    // Add the meal div to the current row
-                    mealsRow.appendChild(mealDiv);
+            // Loop through all meal items and hide/show based on category
+            mealItems.forEach(function (item) {
+                var category = item.dataset.category;
+                if (category === selectedCategory || selectedCategory === "All") {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
                 }
-
-                // Add the row to the container
-                mealsContainer.appendChild(mealsRow);
-            }
-        });
-}
+            });
+        }
 
     function openPDF(pdfURL) 
     {
@@ -171,7 +153,7 @@ function loadMeals() {
                 .catch(error => console.error('Error:', error));
         }
 
-        window.onload = loadMeals;
+        window.onload = filterMeals;
     </script>
 
     <!--bottom homepage section where "why srvr" and how it works is located-->
@@ -270,10 +252,6 @@ function loadMeals() {
 
     <p style="text-align: center; margin-top: 10px;">© SRVR, LLC 2023</p>
 </footer>
-
-
-
-
 
 </body>
 
