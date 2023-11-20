@@ -394,13 +394,10 @@ def add():
     confirmpassword = request.form.get("confirm_password")
 
     # Using MD5 to hash the password to be more secure.
-    hash = hashlib.md5(password.encode()) 
+    hash = hashlib.md5(password.encode())
 
-    email_check = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-    # emailCheck = User.query.filter_by(email=email).first()
-    # emailCheck = SELECT * FROM User WHERE email = 'example@email.com' LIMIT 1;
-    if email_check: # If email already exists in database
-
+    emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+    if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
@@ -415,13 +412,8 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    # newUser = User(fname=fName, lname=lName, email=email, password=hash.digest(), address=address)
-
-    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
+    srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
     conn.commit()
-
-    # db.session.add(newUser)
-    # db.session.commit()
 
     return redirect('thankyou')
 
@@ -439,11 +431,12 @@ def submitlogin():
         email = request.form["email"]
         password = hashlib.md5(request.form["password"].encode())
 
-        user = User.query.filter_by(email=email).first()
+        # user = User.query.filter_by(email=email).first()
+        user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
         print(user)
         if user:
             print("Is user")
-            if user.password == password.digest():
+            if user[3] == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email

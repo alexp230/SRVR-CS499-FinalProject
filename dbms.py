@@ -130,7 +130,7 @@ def insert_data(cursor, data, table_name):
         print("Please check your data to make sure it has the correct table name")
 
     insert_query = "INSERT INTO "+table_name+" "+schema+" VALUES "+valueformat+""
-    cursor.executemany(insert_query, data)
+    cursor.execute(insert_query, data)
 
 # Select all data from specified table by table_name.
 def select_data(cursor, table_name):
@@ -214,8 +214,8 @@ def main():
         # conn.commit()
 
         # Select all data from userTable
-        # rows = select_data(cursor, "userTable")
-        rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
+        rows = select_data(cursor, "userTable")
+        # rows = select_specific_data(cursor, "userTable", "email", "jpatt@uab.edu")
         print("Data in userTable:")
         for row in rows:
             print(row)
@@ -235,20 +235,21 @@ def main():
         # conn.commit()
 
         # # Select data after update
-        updated_rows = select_data(cursor, "userTable")
-        print("\nData in userTable after update:")
-        for row in updated_rows:
-            print(row)
+        # updated_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after update:")
+        # for row in updated_rows:
+        #     print(row)
 
         # # Delete data
-        delete_data(cursor, "userTable", "firstname", "Jack")
-        conn.commit()
+        # delete_data(cursor, "userTable", "firstname", "Alex")
+        # delete_data(cursor, "userTable", "firstname", "Obie")
+        # conn.commit()
 
         # Select data after delete
-        remaining_rows = select_data(cursor, "userTable")
-        print("\nData in userTable after delete:")
-        for row in remaining_rows:
-            print(row)
+        # remaining_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after delete:")
+        # for row in remaining_rows:
+        #     print(row)
 
     finally:
         # Close cursor and connection
