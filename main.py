@@ -379,7 +379,7 @@ def add():
     confirmpassword = request.form.get("confirm_password")
 
     # Using MD5 to hash the password to be more secure.
-    hash = hashlib.md5(password.encode())
+    hash = hashlib.md5(password.encode()) 
 
     emailCheck = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
     if emailCheck: # If email already exists in database
@@ -398,7 +398,7 @@ def add():
     srvrdb.insert_data(cursor, (fName, lName, email, password, address), srvrdb.USER_TABLE)
     # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), srvrdb.USER_TABLE)
     conn.commit()
-
+    
     return redirect('thankyou')
 
 
@@ -463,10 +463,11 @@ def home():
 def browsemenu(fname=None):
     if session.get("logged_in") == True:
         fname = session["fname"]
-        all_meals = Meal.query.all()
+        # all_meals = Meal.query.all()
+        all_meals = srvrdb.fetch_all_rows("mealTable")
         return render_template("browsemenu.html", all_meals=all_meals,fname=fname)
     else:
-        all_meals = Meal.query.all()
+        all_meals = srvrdb.fetch_all_rows("mealTable")
         return render_template("browsemenu.html", all_meals=all_meals)
 
 @app.route('/category/<string:category>')
