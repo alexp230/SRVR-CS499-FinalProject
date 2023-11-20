@@ -84,20 +84,9 @@ def updateAddress(email, address):
     """
     This function takes an email and address as input and updates the address for the user with the matching email.
     """
-<<<<<<< Updated upstream
     user = srvrdb.update_data1(cursor, "userTable", "address", address, "email", email)
     conn.commit()
 
-    # user = User.query.filter_by(email=email).first()
-    # user.address = address
-    # db.session.commit()
-=======
-    # user = SELECT * FROM User WHERE email = email LIMIT 1
-    
-    user = User.query.filter_by(email=email).first()
-    user.address = address
-    db.session.commit()
->>>>>>> Stashed changes
 
 def updateEmail(email, newEmail):
     """
@@ -420,7 +409,8 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
+    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
+    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
     conn.commit()
 
     return redirect('thankyou')
@@ -437,22 +427,24 @@ def submitlogin():
     if(request.method == "POST"):
         print("request.method == POST")
         email = request.form["email"]
-        password = hashlib.md5(request.form["password"].encode())
+        password = request.form["password"]
+        # password = hashlib.md5(request.form["password"].encode())
 
         # user = User.query.filter_by(email=email).first()
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-        print(user[0][4])
-        print(password.digest())
+        print(user)
+        print(user[4])
+        print(password)
         if user:
             print("Is user")
-            if user[0][4] == password.digest():
+            if user[4] == password:
                 Sign_IN = True
                 session["logged_in"] = True
-                session["email"] = email
-                session["fname"] = user.fname
-                session["lname"] = user.lname
-                session["address"] = user.address
-                session["user_id"] = user.user_id
+                session["fname"] = user[1]
+                session["lname"] = user[2]
+                session["email"] = user[3]
+                session["address"] = user[5]
+                session["user_id"] = user[0]
                 msg = "Login Successful"
 
                 return redirect(url_for("usrhome", fname = session["fname"]))

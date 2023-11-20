@@ -144,7 +144,7 @@ def select_data(cursor, table_name):
 def select_specific_data(cursor, table_name, match_column_name, match_val):
     select_query = f"SELECT * FROM {table_name} WHERE "+match_column_name+"=%s LIMIT 1"
     cursor.execute(select_query, (match_val))
-    return cursor.fetchall()
+    return cursor.fetchone()
 
 # Updates column(s) in a specified table by table_name. update_data1() modifies 1 column only, update_data5() updates 5 columns (max amount for our purposes) etc...
 # mod_column_name is the name of the column as it shows in database (ie. to change firstname from John to Jane; mod_column_name = "firstname").
@@ -338,15 +338,15 @@ def main():
         # for row in updated_rows:
         #     print(row)
 
-        # # # Delete data
-        # delete_data(cursor, "userTable", "firstname", "Jack")
-        # conn.commit()
+        # Delete data
+        delete_data(cursor, "userTable", "firstname", "Josh")
+        conn.commit()
 
-        # # Select data after delete
-        # remaining_rows = select_data(cursor, "userTable")
-        # print("\nData in userTable after delete:")
-        # for row in remaining_rows:
-        #     print(row)
+        # Select data after delete
+        remaining_rows = select_data(cursor, "userTable")
+        print("\nData in userTable after delete:")
+        for row in remaining_rows:
+            print(row)
 
     finally:
         # Close cursor and connection
