@@ -3,7 +3,6 @@ import pymysql
 import os
 import csv
 
-
 csv_file_path = os.path.join(os.path.dirname(__file__), 'CSV_File', 'meal_data.csv')
 
 # Constants for userTable
