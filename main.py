@@ -84,12 +84,20 @@ def updateAddress(email, address):
     """
     This function takes an email and address as input and updates the address for the user with the matching email.
     """
+<<<<<<< Updated upstream
     user = srvrdb.update_data1(cursor, "userTable", "address", address, "email", email)
     conn.commit()
 
     # user = User.query.filter_by(email=email).first()
     # user.address = address
     # db.session.commit()
+=======
+    # user = SELECT * FROM User WHERE email = email LIMIT 1
+    
+    user = User.query.filter_by(email=email).first()
+    user.address = address
+    db.session.commit()
+>>>>>>> Stashed changes
 
 def updateEmail(email, newEmail):
     """
