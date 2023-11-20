@@ -321,6 +321,10 @@ def updateInfo(fname):
             return render_template("usrsettings.html", user=user, msg=msg)
             
         if email and email != user["email"]:
+            emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+            if emailCheck: # If email already exists in database
+                msg = "The email you entered is already taken."
+                return render_template("usrsettings.html", user=user, msg=msg)
             user["email"] = email
             # updateEmail(user.email, email)
             msg = "Email updated successfully."
@@ -401,17 +405,15 @@ def add():
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
-    
     if not passwordValidation(password):
         error = "Password must contain at least one capital letter, one lowercase letter, and a number."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
-
     
     if password != confirmpassword:
         error = "Passwords do not match."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
-
+    print(hash.digest())
     srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
     conn.commit()
 
@@ -433,24 +435,26 @@ def submitlogin():
 
         # user = User.query.filter_by(email=email).first()
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-        print(user)
-        if user:
-            print("Is user")
-            if user[3] == password.digest():
-                Sign_IN = True
-                session["logged_in"] = True
-                session["email"] = email
-                session["fname"] = user.fname
-                session["lname"] = user.lname
-                session["address"] = user.address
-                session["user_id"] = user.user_id
-                msg = "Login Successful"
 
-                return redirect(url_for("usrhome", fname = session["fname"]))
-            else:
-                msg = "Email or Password is invalid. Please try again."
-        else:
+        print(user)
+        if not user:
             msg = "Account does not exist. Please try again."
+            return render_template("loginform.html", msg = msg)
+
+        
+        if user[srvrdb.USERTABLE_PASSWORD] == password.digest():
+            Sign_IN = True
+            session["logged_in"] = True
+            session["email"] = email
+            session["fname"] = user.fname
+            session["lname"] = user.lname
+            session["address"] = user.address
+            session["user_id"] = user.user_id
+            msg = "Login Successful"
+
+            return redirect(url_for("usrhome", fname = session["fname"]))
+        else:
+            msg = "Email or Password is invalid. Please try again."
 
     return render_template("loginform.html", msg = msg)
 
@@ -656,29 +660,6 @@ def addNewCard():
 
     return redirect(url_for("usrhome", fname = session["fname"]))
 
-
-
-    # subtype = request.form.get("household-size")
-    # cardnum = request.form.get("CardNum")
-    # cardname = request.form.get("CardName")
-    # expiry = str(request.form.get("ExpiryMonth")) + "/" + str(request.form.get("ExpiryYear"))
-    # cvv = request.form.get("CVV")
-
-    # usremail = session["email"]
-
-    # usr = User.query.filter_by(email=usremail).first()
-    # unique_Card_ID = random.randint(usr.U_id, usr.U_id+1000000)
-    # # By the very small chance that the random number generated is already in the database, add another random amount to it
-    # for card in Payment_Method.query.all():
-    #     if card.P_id == unique_Card_ID:
-    #         unique_Card_ID += random.randint(1,10)
-    
-    # newcard = Payment_Method(P_id=unique_Card_ID ,card_number=cardnum, U_id=usr.U_id, card_holder_name=cardname, card_exp_date=expiry, card_CCV=cvv, subscriptionType=subtype)
-    # db.session.add(newcard)
-    # db.session.commit()
-    # msg = "Card Saved Successfully"
-
-    return render_template("thankyou.html")
 
 # WIP
 # This function allows past order data of a user to be retrieved
