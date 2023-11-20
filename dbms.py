@@ -130,7 +130,7 @@ def insert_data(cursor, data, table_name):
         print("Please check your data to make sure it has the correct table name")
 
     insert_query = "INSERT INTO "+table_name+" "+schema+" VALUES "+valueformat+""
-    cursor.executemany(insert_query, data)
+    cursor.execute(insert_query, data)
 
 # Select all data from specified table by table_name.
 def select_data(cursor, table_name):
@@ -214,8 +214,8 @@ def main():
         # conn.commit()
 
         # Select all data from userTable
-        # rows = select_data(cursor, "userTable")
-        rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
+        rows = select_data(cursor, "userTable")
+        # rows = select_specific_data(cursor, "userTable", "email", "jpatt@uab.edu")
         print("Data in userTable:")
         for row in rows:
             print(row)
@@ -229,26 +229,26 @@ def main():
         # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
         # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")
         # update_data2(cursor, "userTable", "firstname", "James", "lastname", "Smith", "email", "jpatt@uab.edu")
-        update_data3(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "email", "jpatt@uab.edu")
+        # update_data3(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "email", "jpatt@uab.edu")
         # update_data4(cursor, "userTable", "firstname", "James", "lastname", "Smith", "address", "333 6th Ave N, Birmingham AL", "password", "newpassword", "email", "jpatt@uab.edu")
         # update_data5(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "password", "newnewpass", "email", "jfrost@uab.edu", "email", "jpatt@uab.edu")
-        conn.commit()
+        # conn.commit()
 
         # # Select data after update
-        updated_rows = select_data(cursor, "userTable")
-        print("\nData in userTable after update:")
-        for row in updated_rows:
-            print(row)
+        # updated_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after update:")
+        # for row in updated_rows:
+        #     print(row)
 
         # # Delete data
-        delete_data(cursor, "userTable", "firstname", "Jack")
-        conn.commit()
+        # delete_data(cursor, "userTable", "firstname", "Jack")
+        # conn.commit()
 
         # Select data after delete
-        remaining_rows = select_data(cursor, "userTable")
-        print("\nData in userTable after delete:")
-        for row in remaining_rows:
-            print(row)
+        # remaining_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after delete:")
+        # for row in remaining_rows:
+        #     print(row)
 
     finally:
         # Close cursor and connection

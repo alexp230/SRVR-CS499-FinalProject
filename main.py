@@ -26,7 +26,7 @@ app.config['SECRET_KEY'] = 'oursecretkey'
 db = SQLAlchemy(app)
 Migrate(app,db)
 
-conn = srvrdb.connect_to_databse()
+conn = srvrdb.connect_to_database()
 cursor = conn.cursor()
 
 # Initialize a global variable to keep track of the user's login status
@@ -73,7 +73,6 @@ def updatePassword(email, password):
     """
     This function takes an email and password as input and updates the password for the user with the matching email.
     """
-    usr = srvrdb.select_specific_data(cursor, "userTable", "email", email=email)
     user = User.query.filter_by(email=email).first()
     user.password = password
     db.session.commit()
@@ -380,6 +379,7 @@ def add():
     hash = hashlib.md5(password.encode()) 
 
     # emailCheck = User.query.filter_by(email=email).first()
+    # emailCheck = srvrdb.select_specific_data(cursor, "userTable", )
     # emailCheck = SELECT * FROM User WHERE email = 'example@email.com' LIMIT 1;
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
@@ -396,10 +396,12 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
+    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
+    conn.commit()
+    # newUser = User(fname=fName, lname=lName,  email=email, password=hash.digest(), address=address)
 
-    db.session.add(newUser)
-    db.session.commit()
+    # db.session.add(newUser)
+    # db.session.commit()
     return redirect('thankyou')
 
 
