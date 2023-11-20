@@ -277,6 +277,30 @@ def update_pdf_jpg_files():
         cursor.close()
         conn.close()
 
+def fetch_all_rows(table_name):
+    # Connect to the database
+    conn = connect_to_database()
+
+    try:
+        # Create a cursor
+        cursor = conn.cursor()
+
+        # Query to select all rows from the specified table
+        select_query = f"SELECT * FROM {table_name}"
+
+        # Execute the query
+        cursor.execute(select_query)
+
+        # Fetch all rows
+        rows = cursor.fetchall()
+
+        return rows  # Return the rows fetched from the table as a list of tuples
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+
 def main():
     conn = connect_to_database()
     try:
@@ -294,7 +318,21 @@ def main():
         print("Tables created.\n")
         add_meal_to_database(csv_file_path)
         update_pdf_jpg_files()
-        print_all_rows()
+        # print_all_rows()
+        result = fetch_all_rows("mealTable")
+
+        print("ID: [0][0]")
+        print(result[0][0])
+        print("\nName: [0][1]")
+        print(result[0][1])
+        print("\nCategory: [0][2]")
+        print(result[0][2])
+        print("\nPicture: [0][3]")
+        print(result[0][3])
+        print("\nInstructions: [0][4]")
+        print(result[0][4])
+        print("\nAllergens: [0][5]")
+        print(result[0][5])
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"

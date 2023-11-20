@@ -42,9 +42,9 @@
             <select id="categoryDropdown" onchange="loadMeals()">
                 {% set categories = [] %}
                 {% for meal in all_meals %}
-                {% if meal.category not in categories %}
-                <option value="{{meal.category}}">{{ meal.category|replace('_', ' ') }}</option>
-                {% set _ = categories.append(meal.category) %}
+                {% if meal[2] not in categories %}
+                <option value="{{meal[2] }}">{{ meal[2]|replace('_', ' ') }}</option>
+                {% set _ = categories.append(meal[2]) %}
                 {% endif %}
                 {% endfor %}
                 <!-- {% for meal in all_meals%}
@@ -107,7 +107,7 @@ function loadMeals() {
                     mealDiv.innerHTML = `
                         <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}" onclick="openPDF('${data[i + j].photo_URL}')">
                         <p>${data[i + j].name}</p>
-                        <button onclick="addToCart('${data[i + j].name}')">Add to Cart</button>
+                        <button onclick="addToCart('${data[i + j][1]}')">Add to Cart</button>
                     `;
 
                     // Add the meal div to the current row
