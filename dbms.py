@@ -241,7 +241,8 @@ def main():
         #     print(row)
 
         # # Delete data
-        # delete_data(cursor, "userTable", "firstname", "Jack")
+        # delete_data(cursor, "userTable", "firstname", "Alex")
+        # delete_data(cursor, "userTable", "firstname", "Obie")
         # conn.commit()
 
         # Select data after delete
