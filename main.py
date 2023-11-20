@@ -311,6 +311,10 @@ def updateInfo(fname):
             return render_template("usrsettings.html", user=user, msg=msg)
             
         if email and email != user["email"]:
+            emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+            if emailCheck: # If email already exists in database
+                msg = "The email you entered is already taken."
+                return render_template("usrsettings.html", user=user, msg=msg)
             user["email"] = email
             # updateEmail(user.email, email)
             msg = "Email updated successfully."
@@ -391,11 +395,9 @@ def add():
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
-    
     if not passwordValidation(password):
         error = "Password must contain at least one capital letter, one lowercase letter, and a number."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
-
     
     if password != confirmpassword:
         error = "Passwords do not match."
@@ -648,7 +650,7 @@ def addNewCard():
     #     msg = "Card Saved Successfully"
     # return render_template("thankyou.html", msg=msg)
 
-    return redirect(url_for("usrhome", email = session["email"]))
+    return redirect(url_for("usrhome", fname = session["fname"]))
 
 
 
