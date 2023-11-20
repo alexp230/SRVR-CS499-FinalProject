@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Menus</title>
+    <!-- Link to CSS page -->
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="left-section">
+            <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+                <a href="howitworks.html">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('cart') }}">Cart</a>
+                <a href="account.html">Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <h1 style="text-align: center; margin-top: 125px">Explore Our Meals</h1>
+
+    <!-- Navbar for meal selection -->
+    <div class="meal-selection">
+        <nav class="meal-navbar">
+            <select id="categoryDropdown" onchange="loadMeals()">
+                {% set categories = [] %}
+                {% for meal in all_meals %}
+                {% if meal.category not in categories %}
+                <option value="{{meal.category}}">{{ meal.category|replace('_', ' ') }}</option>
+                {% set _ = categories.append(meal.category) %}
+                {% endif %}
+                {% endfor %}
+                <!-- {% for meal in all_meals%}
+            <option value="{{meal.category}}">{{meal.category}}</option>
+            {% endfor %}
+            <option value="Seafood">Seafood</option>
+            <option value="Italian">Italian</option>
+            <option value="BBQ">BBQ</option>
+            <option value="Sandwich">Sandwich</option>
+            <option value="Chicken">Chicken</option>
+            <option value="Desserts">Desserts</option> -->
+            </select>
+            <p id="mealCounterDisplay">Total Meals Added: <span id="mealCounter">0</span></p>
+        </nav>
+    </div>
+
+    <!-- Section for displaying meals -->
+    <div class="all-meals-contents">
+        <div class="grid-container">
+            <div class="meals-grid-item">
+                <div id="mealsContainer"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Declare a global array to keep track of selected meals
+        // const selectedMeals = [];
+        // Load meals when the page loads
+        // Load meals when the page loads
+function loadMeals() {
+    // Get the selected category
+    const category = document.getElementById("categoryDropdown").value;
+    // Fetch meals from the server based on the selected category
+    const url = `/category/${category}`;
+
+    // Fetch meals from the server
+    fetch(url)
+        // Convert the response to JSON
+        .then(response => response.json())
+        // Display meals on the page
+        .then(data => {
+            // Get the container for displaying meals
+            const mealsContainer = document.getElementById("mealsContainer");
+            // Clear existing meals
+            mealsContainer.innerHTML = "";
+
+            // Display meals on the page, organizing them into rows
+            for (let i = 0; i < data.length; i += 3) {
+                // Create a div for each row
+                const mealsRow = document.createElement('div');
+                mealsRow.classList.add('grid-container');
+
+                // Display up to 3 meals in the current row
+                for (let j = 0; j < 3 && i + j < data.length; j++) {
+                    // Create a div for each meal
+                    const mealDiv = document.createElement('div');
+                    mealDiv.classList.add('meals-grid-item');
+
+                    // Add a class to the meal div
+                    mealDiv.innerHTML = `
+                        <img src="${data[i + j].photo_URL}" alt="${data[i + j].name}" onclick="openPDF('${data[i + j].photo_URL}')">
+                        <p>${data[i + j].name}</p>
+                        <button onclick="addToCart('${data[i + j].name}')">Add to Cart</button>
+                    `;
+
+                    // Add the meal div to the current row
+                    mealsRow.appendChild(mealDiv);
+                }
+
+                // Add the row to the container
+                mealsContainer.appendChild(mealsRow);
+            }
+        });
+}
+
+    function openPDF(pdfURL) 
+    {
+        let modifiedString = pdfURL.replace(new RegExp("Pictures", "g"), "Instructions");
+        
+        let pdf_url = modifiedString.slice(0, -3) + "pdf";
+        // Open a new window or tab with the PDF file
+        window.open(pdf_url, '_blank');
+    }
+
+        // // Add a meal to the cart
+        // function addToCart(mealName) {
+        //     // Add the meal to the array
+        //     if (selectedMeals.length < 7 && !selectedMeals.includes(mealName)) {
+        //         selectedMeals.push(mealName);
+        //         alert(`${mealName} added to the cart!`);
+        //     } else {
+        //         alert(`You can only add up to 7 unique meals to the cart.`);
+        //     }
+
+        //     // You can update the UI or perform additional actions here
+        // }
+        // // Load meals when the page loads
+        let mealCounter = 0;
+        function updateMealCounterDisplay() 
+        {
+            const mealCounterDisplay = document.getElementById("mealCounter");
+            if (mealCounterDisplay) {
+                mealCounterDisplay.textContent = mealCounter;}
+        }
+        
+        function addToCart(mealName) {
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mealName: mealName }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`${mealName} added to the cart!`);
+                        mealCounter++;
+                        updateMealCounterDisplay();
+                    } else {
+                        alert(`You can only add up to 7 unique meals to the cart.`);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        window.onload = loadMeals;
+    </script>
+
+    <!--bottom homepage section where "why srvr" and how it works is located-->
+<section class="home-bottom" id="home-bottom">
+
+    <!--why srvr section-->
+    <div class="why-srvr">Why SRVR?</div>
+    <div class="why-srvr-images">
+        <div class="why-srvr-item">
+            <img src="../static/images/food-icon.png" alt="food icon" class="food-icon">
+            <p style="font-weight: bold;">Nutritional Excellence</p>
+            <p style="margin-top: 10px;">Savor your favorite flavors while maintaining a balanced diet</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/time.png" alt="food icon" class="time">
+            <p style="font-weight: bold;">Time-Saving Simplicity</p>
+            <p style="margin-top: 10px;">Home-cooked meals without lengthy preparation and cooking times</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/culinary.png" alt="food icon" class="culinary-freedom">
+            <p style="font-weight: bold;">Culinary Freedom</p>
+            <p style="margin-top: 10px;">Diverse recipes and ingredients that cater to your unique tastes</p>
+        </div>
+        <div class="why-srvr-item">
+            <img src="../static/images/food-wellness.png" alt="food icon" class="food-wellness">
+            <p style="font-weight: bold;">Wellness Without Compromise</p>
+            <p style="margin-top: 10px;">Delicious, healthy meals that fit seamlessly into your busy lifestyle</p>
+        </div>
+    </div>
+
+    <!--how it works section-->
+    <div class="how-it-works">How It Works</div>
+
+
+    <div class="container">
+        <div class="left-column">
+            <ul class="how-it-works-list">
+                <li>
+                    <strong style="font-size: 25px">Order and Customize:</strong>
+                    <p class="ordered-list-description">
+                        Select and tailor your meals to suit your dietary preferences and nutritional needs
+                    </p>
+                </li>
+                <li>
+                    <strong style="font-size: 25px">Fast and Convenient Delivery:</strong>
+                    <p class="ordered-list-description">
+                        The SRVR team carefully packages and delivers your freshly prepared meals are delivered right to your doorstep
+                    </p>
+                </li>
+                <li>
+                    <strong style="font-size: 25px">Enjoy Fresh, Healthy Meals:</strong>
+                    <p class="ordered-list-description">
+                        Unpack and cook your SRVR meals and savor the delicious flavors without compromising on nutrition.
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="right-column">
+            <img src="../static/images/grocery.png" alt="grocery" class="grocery-icon">
+        </div>
+    </div>
+
+</section>
+
+</body>
+
+<footer>
+    <div class="footer-container">
+        <!-- Help/Contact us -->
+        <div class="footer-row">
+            <h3>Contact and Support:</h3>
+            <p><a href="howitworks.html">How it Works</a></p>
+            <p><a href="mailto:contact@srvr.com">contact@srvr.com</a></p>
+            <p>(205)123-4567</p>
+        </div>
+        <div class="footer-row">
+            <h3>Accepted Payment:</h3>
+            <p>Visa</p>
+            <p>Mastercard</p>
+            <p>Discover</p>
+        </div>
+        <div class="footer-row">
+            <h3>Company:</h3>
+            <p><a href="main.html">Home</a></p>
+            <p><a href="ourmenu.html">Our Menu</a></p>
+            <p><a href="aboutus.html">About Us</a></p>
+        </div>
+    </div>
+    <div class="social-media">
+        <a href="https://www.facebook.com/"><img src="../static/images/facebook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com"><img src="../static/images/instagram.png" alt="Instagram"></a>
+        <a href="https://www.pinterest.com"><img src="../static/images/pinterest.png" alt="Pinterest"></a>
+        <a href="https://www.twitter.com"><img src="../static/images/twitter.png" alt="Twitter"></a>
+        <a href="https://www.youtube.com"><img src="../static/images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <p style="text-align: center; margin-top: 10px;">© SRVR, LLC 2023</p>
+</footer>
+
+
+</body>
+
+</html>
