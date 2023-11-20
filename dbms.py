@@ -138,6 +138,11 @@ def select_data(cursor, table_name):
     cursor.execute(select_query)
     return cursor.fetchall()
 
+def select_specific_data(cursor, table_name, match_column_name, match_val):
+    select_query = f"SELECT * FROM {table_name} WHERE "+match_column_name+"=%s LIMIT 1"
+    cursor.execute(select_query, (match_val))
+    return cursor.fetchall()
+
 # Updates column(s) in a specified table by table_name. update_data1() modifies 1 column only, update_data5() updates 5 columns (max amount for our purposes) etc...
 # mod_column_name is the name of the column as it shows in database (ie. to change firstname from John to Jane; mod_column_name = "firstname").
 # mod_val is the value you are updating the existing value to (ie. to change firstname from John to Jane; mod_val = "Jane").
@@ -189,8 +194,8 @@ def main():
         # print("Tables deleted.\n")
 
         # Create table if not exists
-        # create_tables(cursor)
-        # print("Tables created.\n")
+        create_tables(cursor)
+        print("Tables created.\n")
         
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
@@ -208,11 +213,12 @@ def main():
         # insert_data(cursor, pymnt_data_to_insert, "pymntTable")
         # conn.commit()
 
-        # # Select all data from userTable
+        # Select all data from userTable
         # rows = select_data(cursor, "userTable")
-        # print("Data in userTable:")
-        # for row in rows:
-        #     print(row)
+        rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
+        print("Data in userTable:")
+        for row in rows:
+            print(row)
 
         # # Select all data from pymntTable
         # rows = select_data(cursor, "pymntTable")
@@ -223,26 +229,26 @@ def main():
         # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
         # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")
         # update_data2(cursor, "userTable", "firstname", "James", "lastname", "Smith", "email", "jpatt@uab.edu")
-        # update_data3(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "email", "jpatt@uab.edu")
+        update_data3(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "email", "jpatt@uab.edu")
         # update_data4(cursor, "userTable", "firstname", "James", "lastname", "Smith", "address", "333 6th Ave N, Birmingham AL", "password", "newpassword", "email", "jpatt@uab.edu")
         # update_data5(cursor, "userTable", "firstname", "Jack", "lastname", "Frost", "address", "111 2nd Ave N, Birmingham AL", "password", "newnewpass", "email", "jfrost@uab.edu", "email", "jpatt@uab.edu")
-        # conn.commit()
+        conn.commit()
 
         # # Select data after update
-        # updated_rows = select_data(cursor, "userTable")
-        # print("\nData in userTable after update:")
-        # for row in updated_rows:
-        #     print(row)
+        updated_rows = select_data(cursor, "userTable")
+        print("\nData in userTable after update:")
+        for row in updated_rows:
+            print(row)
 
         # # Delete data
-        # delete_data(cursor, "userTable", "firstname", "Josh")
-        # conn.commit()
+        delete_data(cursor, "userTable", "firstname", "Jack")
+        conn.commit()
 
-        # # Select data after delete
-        # remaining_rows = select_data(cursor, "userTable")
-        # print("\nData in userTable after delete:")
-        # for row in remaining_rows:
-        #     print(row)
+        # Select data after delete
+        remaining_rows = select_data(cursor, "userTable")
+        print("\nData in userTable after delete:")
+        for row in remaining_rows:
+            print(row)
 
     finally:
         # Close cursor and connection

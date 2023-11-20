@@ -14,6 +14,7 @@ import random
 import datetime
 import calendar
 from datetime import datetime, timedelta
+import dbms as srvrdb
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
 app = Flask (__name__)
@@ -24,6 +25,9 @@ app.config['SECRET_KEY'] = 'oursecretkey'
 
 db = SQLAlchemy(app)
 Migrate(app,db)
+
+conn = srvrdb.connect_to_databse()
+cursor = conn.cursor()
 
 # Initialize a global variable to keep track of the user's login status
 Sign_IN = False
@@ -69,6 +73,7 @@ def updatePassword(email, password):
     """
     This function takes an email and password as input and updates the password for the user with the matching email.
     """
+    usr = srvrdb.select_specific_data(cur, "userTable", "email", email=email)
     user = User.query.filter_by(email=email).first()
     user.password = password
     db.session.commit()
@@ -77,6 +82,8 @@ def updateAddress(email, address):
     """
     This function takes an email and address as input and updates the address for the user with the matching email.
     """
+    user = SELECT * FROM User WHERE email = email LIMIT 1
+    
     user = User.query.filter_by(email=email).first()
     user.address = address
     db.session.commit()
@@ -195,7 +202,6 @@ class Payment_Methods(db.Model):
 
     def get_card_exp_date(self):
         return self.card_exp_date
-
 
 class PastOrders(db.Model):
     __tablename__ = "past_orders"
@@ -375,7 +381,8 @@ def add():
     # Using MD5 to hash the password to be more secure.
     hash = hashlib.md5(password.encode()) 
 
-    emailCheck = User.query.filter_by(email=email).first()
+    # emailCheck = User.query.filter_by(email=email).first()
+    # emailCheck = SELECT * FROM User WHERE email = 'example@email.com' LIMIT 1;
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
