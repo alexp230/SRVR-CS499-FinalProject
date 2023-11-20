@@ -73,7 +73,7 @@ def updatePassword(email, password):
     """
     This function takes an email and password as input and updates the password for the user with the matching email.
     """
-    usr = srvrdb.select_specific_data(cur, "userTable", "email", email=email)
+    usr = srvrdb.select_specific_data(cursor, "userTable", "email", email=email)
     user = User.query.filter_by(email=email).first()
     user.password = password
     db.session.commit()
@@ -82,8 +82,6 @@ def updateAddress(email, address):
     """
     This function takes an email and address as input and updates the address for the user with the matching email.
     """
-    user = SELECT * FROM User WHERE email = email LIMIT 1
-    
     user = User.query.filter_by(email=email).first()
     user.address = address
     db.session.commit()
