@@ -415,10 +415,11 @@ def submitlogin():
 
         # user = User.query.filter_by(email=email).first()
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-        print(user)
+        print(user[0][4])
+        print(password.digest())
         if user:
             print("Is user")
-            if user[3] == password.digest():
+            if user[0][4] == password.digest():
                 Sign_IN = True
                 session["logged_in"] = True
                 session["email"] = email
