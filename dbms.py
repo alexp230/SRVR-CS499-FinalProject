@@ -7,6 +7,7 @@ import csv
 csv_file_path = os.path.join(os.path.dirname(__file__), 'CSV_File', 'meal_data.csv')
 
 # Constants for userTable
+USER_TABLE = "userTable"
 USERTABLE_USER_ID = 0
 USERTABLE_FIRSTNAME = 1
 USERTABLE_LASTNAME = 2
@@ -15,6 +16,7 @@ USERTABLE_PASSWORD = 4
 USERTABLE_ADDRESS = 5
 
 # Constants for mealTable (uncomment and customize as needed)
+MEAL_TABLE = "mealTable"
 MEALTABLE_MEAL_ID = 0
 MEALTABLE_USER_ID = 1
 MEALTABLE_NAME = 2
@@ -24,11 +26,13 @@ MEALTABLE_INSTRUCTIONS = 5
 MEALTABLE_ALLERGENS = 6
 
 # Constants for boxTable (uncomment and customize as needed)
+BOX_TABLE = "boxTable"
 BOXTABLE_BOX_ID = 0
 BOXTABLE_USER_ID = 1
 BOXTABLE_ORDERED_MEALS = 2
 
 # Constants for pymntTable
+PAYMENT_TABLE = "pymntTable"
 PYMNTTABLE_CARD_ID = 0
 PYMNTTABLE_USER_ID = 1
 PYMNTTABLE_CARD_NUMBER = 2
@@ -37,6 +41,7 @@ PYMNTTABLE_CARD_EXP_DATE = 4
 PYMNTTABLE_CARD_CCV = 5
 
 # Constants for pastOrdersTable
+PASTORDER_TABLE = "pastOrdersTable"
 PASTORDERSTABLE_TRANSACTION_ID = 0
 PASTORDERSTABLE_USER_ID = 1
 PASTORDERSTABLE_BOX_ID = 2
@@ -47,6 +52,7 @@ PASTORDERSTABLE_ORDER_DATE = 6
 PASTORDERSTABLE_ORDER_TIME = 7
 
 # Constants for subscriptionTable
+SUBSCRIPTION_TABLE = "subscriptionTable"
 SUBSCRIPTIONTABLE_SUB_ID = 0
 SUBSCRIPTIONTABLE_USER_ID = 1
 SUBSCRIPTIONTABLE_DELIVERY_DAY = 2
@@ -338,10 +344,13 @@ def main():
 
         # Create table if not exists
         create_tables(cursor)
-        print("Tables created.\n")
-        add_meal_to_database(csv_file_path)
-        update_pdf_jpg_files()
-        print_all_rows()
+
+        # print("Tables created.\n")
+        # add_meal_to_database(csv_file_path)
+        # update_pdf_jpg_files()
+        # print_all_rows()
+
+        
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"
@@ -359,11 +368,11 @@ def main():
         # conn.commit()
 
         # Select all data from userTable
-        # rows = select_data(cursor, "userTable")
+        rows = select_data(cursor, "userTable")
         # rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
-        # print("Data in userTable:")
-        # for row in rows:
-        #     print(row)
+        print("Data in userTable:")
+        for row in rows:
+            print(row)
 
         # # # Select all data from pymntTable
         # # rows = select_data(cursor, "pymntTable")
@@ -386,14 +395,14 @@ def main():
         #     print(row)
 
         # Delete data
-        delete_data(cursor, "userTable", "firstname", "Josh")
-        conn.commit()
+        # delete_data(cursor, "userTable", "firstname", "Josh")
+        # conn.commit()
 
-        # Select data after delete
-        remaining_rows = select_data(cursor, "userTable")
-        print("\nData in userTable after delete:")
-        for row in remaining_rows:
-            print(row)
+        # # Select data after delete
+        # remaining_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after delete:")
+        # for row in remaining_rows:
+        #     print(row)
 
     finally:
         # Close cursor and connection

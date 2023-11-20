@@ -68,36 +68,15 @@ def passwordValidation(PWD):
     else:
         return False
 
-# Need to encrypt password
-def updatePassword(email, password):
-    """
-    This function takes an email and password as input and updates the password for the user with the matching email.
-    """
-    user = srvrdb.update_data1(cursor, "userTable", "password", password, "email", email)
-    conn.commit()
+def update_user_info(session_param: str, row_to_modify, column: int, new_value):
+    if (session_param):
+        session[session_param] = row_to_modify[column] #417
 
-    # user = User.query.filter_by(email=email).first()
-    # user.password = password
-    # db.session.commit()
-
-def updateAddress(email, address):
-    """
-    This function takes an email and address as input and updates the address for the user with the matching email.
-    """
-    user = srvrdb.update_data1(cursor, "userTable", "address", address, "email", email)
-    conn.commit()
+    if (new_value):
+        row_to_modify[column] = new_value #301
+        conn.commit()
 
 
-def updateEmail(email, newEmail):
-    """
-    This function takes an email and newEmail as input and updates the email for the user with the matching email.
-    """
-    user = srvrdb.update_data1(cursor, "userTable", "email", newEmail, "email", email)
-    conn.commit()
-
-    # user = User.query.filter_by(email=email).first()
-    # user.email = newEmail
-    # db.session.commit()
 
 def registrationForm(FlaskForm):
     name = StringField(validators = [DataRequired()])
@@ -279,7 +258,8 @@ def login():
 # Function is used to display the tempusrhome.html only
 @app.route('/usrhome/<string:fname>', methods = ["GET", "POST"])
 def usrhome(fname):
-    user = User.query.filter_by(fname=fname).first()
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", fname)
+    # user = User.query.filter_by(fname=fname).first()
     return render_template("tempusrhome.html", fname=fname, user=user)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
@@ -287,21 +267,22 @@ def usrhome(fname):
 @app.route('/paymentmethod/<string:fname>', methods = ["GET", "POST"])
 def paymentmethod(fname):
     email = session["email"]
-    user = User.query.filter_by(email=email).first()
+    # user = User.query.filter_by(email=email).first()
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
     
     return render_template("paymentform.html", fname=fname, user=user)
 
 # Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
 @app.route('/usrsettings/<string:fname>', methods = ["GET", "POST"])
 def usrsettings(fname):
-    user = User.query.filter_by(fname=fname).first()
+    # user = User.query.filter_by(fname=fname).first()
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", fname)
     return render_template("usrsettings.html", user=user)
 
 # Function works, but needs to be routed to the correct page
 @app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
 def updateInfo(fname):
-    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])    
-
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", session["email"])
     # user = User.query.filter_by(email=session["email"]).first()
 
     msg=None
@@ -312,33 +293,36 @@ def updateInfo(fname):
         address = request.form.get("address")
         password = request.form.get("password")
            
-        passwordEncode = hashlib.md5(request.form["password"].encode())
-        if not (passwordEncode.digest() == user.password and passwordValidation(password)):
+        # passwordEncode = hashlib.md5(request.form["password"].encode())
+        # if not (passwordEncode.digest() == user.password and passwordValidation(password)):
+        #     msg = "Incorrect password. Please try again."
+        #     return render_template("usrsettings.html", user=user, msg=msg)
+
+        if not ((password == user[srvrdb.USERTABLE_PASSWORD]) and passwordValidation(password)):
             msg = "Incorrect password. Please try again."
             return render_template("usrsettings.html", user=user, msg=msg)
-            
-        if email and email != user["email"]:
-            emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-            if emailCheck: # If email already exists in database
-                msg = "The email you entered is already taken."
-                return render_template("usrsettings.html", user=user, msg=msg)
-            user["email"] = email
-            # updateEmail(user.email, email)
+        
+        emailCheck = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
+        if emailCheck: # If email already exists in database
+            msg = "The email you entered is already taken."
+            return render_template("usrsettings.html", user=user, msg=msg)
+
+
+        if email and email != user[srvrdb.USERTABLE_EMAIL]:
+            update_user_info("email", user, srvrdb.USERTABLE_EMAIL, email)
             msg = "Email updated successfully."
-        if address and address != user["address"]:
-            user["address"] = address
-            # updateAddress(user.email, address)
+
+        if address and address != user[srvrdb.USERTABLE_ADDRESS]:
+            update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, address)
             msg = "Address updated successfully."
-        if fname and fname != user["fname"]:
-            user["fname"] = fname
-            # db.session.commit()
+
+        if fname and fname != user[srvrdb.USERTABLE_FIRSTNAME]:
+            update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, fname)
             msg = "First name updated successfully."
-        if lname and lname != user["lname"]:
-            user["lname"] = lname
-            # db.session.commit()
+
+        if lname and lname != user[srvrdb.USERTABLE_LASTNAME]:
+            update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, lname)
             msg = "Last name updated successfully."
-        if not msg:
-            msg = "No changes were made."
         
         conn.commit()
         return redirect(url_for("usrhome", fname = fname))
@@ -348,7 +332,7 @@ def updateInfo(fname):
 # Currently, the function is not working properly. It is not updating the password in the database.
 @app.route('/changepass/<string:fname>', methods = ["GET", "POST"])
 def changepass(fname):
-    user = srvrdb.select_specific_data(cursor, "userTable", "fname", session["fname"])    
+    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", session["fname"])    
 
     # user = User.query.filter_by(email=session["email"]).first()
 
@@ -361,10 +345,16 @@ def changepass(fname):
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
         
-        elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
+        # elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
+        #     msg = "New password matches old password!"
+
+        # elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
+        #     msg = "Incorrect password. Please try again!"
+
+        elif (newpassword == user[srvrdb.USERTABLE_PASSWORD]):
             msg = "New password matches old password!"
 
-        elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
+        elif (oldpassword != user[srvrdb.USERTABLE_PASSWORD]):
             msg = "Incorrect password. Please try again!"
 
         elif (newpassword != confirmpassword):
@@ -374,8 +364,10 @@ def changepass(fname):
             msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"     
 
         else:
-            user["password"] = hashlib.md5(newpassword.encode()).digest()
+            # user["password"] = hashlib.md5(newpassword.encode()).digest()
             # updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
+
+            user[srvrdb.USERTABLE_PASSWORD] = newpassword
             msg = "Password updated successfully!"
             return redirect(url_for("usrhome", fname = session["fname"]))
             
@@ -397,7 +389,7 @@ def add():
     # Using MD5 to hash the password to be more secure.
     hash = hashlib.md5(password.encode())
 
-    emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+    emailCheck = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
@@ -411,8 +403,8 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
-    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
+    srvrdb.insert_data(cursor, (fName, lName, email, password, address), srvrdb.USER_TABLE)
+    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), srvrdb.USER_TABLE)
     conn.commit()
 
     return redirect('thankyou')
@@ -433,36 +425,25 @@ def submitlogin():
         # password = hashlib.md5(request.form["password"].encode())
 
         # user = User.query.filter_by(email=email).first()
-        user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-        print(user)
-        print(user[4])
-        print(password)
-        if user:
-            print("Is user")
-            if user[4] == password:
-                Sign_IN = True
-                session["logged_in"] = True
-                session["user_id"] = user[0]
-                session["fname"] = user[1]
-                session["lname"] = user[2]
-                session["email"] = user[3]
-                session["address"] = user[5]
-                msg = "Login Successful"
-
-        print(user)
+        user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
         if not user:
             msg = "Account does not exist. Please try again."
             return render_template("loginform.html", msg = msg)
 
         
-        if user[srvrdb.USERTABLE_PASSWORD] == password.digest():
+        if user[srvrdb.USERTABLE_PASSWORD] == password:
             Sign_IN = True
             session["logged_in"] = True
-            session["email"] = email
-            session["fname"] = user.fname
-            session["lname"] = user.lname
-            session["address"] = user.address
-            session["user_id"] = user.user_id
+            update_user_info("email", user, srvrdb.USERTABLE_EMAIL, None)
+            update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, None)
+            update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, None)
+            update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, None)
+            update_user_info("user_id", user, srvrdb.USERTABLE_USER_ID, None)
+            # session["email"] = user[srvrdb.USERTABLE_EMAIL]
+            # session["fname"] = user[srvrdb.USERTABLE_FIRSTNAME]
+            # session["lname"] = user[srvrdb.USERTABLE_LASTNAME]
+            # session["address"] = user[srvrdb.USERTABLE_ADDRESS]
+            # session["user_id"] = user[srvrdb.USERTABLE_USER_ID]
             msg = "Login Successful"
 
             return redirect(url_for("usrhome", fname = session["fname"]))
