@@ -670,9 +670,7 @@ footer {
 
 /*start of howitworks.html*/
 
-.faq {
-  text-align: center;
-}
+
 
 .faq-item {
   margin-bottom: 20px;
@@ -683,14 +681,19 @@ footer {
 /* Hide the answers initially */
 .faq-answer {
   display: none;
+  margin: 20px 0; 
+  font-size: 20px;
+  text-transform: none;
 }
 
 /* Style for the clickable question */
 .faq-question {
   cursor: pointer;
   font-weight: bold;
-  color: #3366cc; 
+  color: var(--green); 
   user-select: none; 
+  margin: 20px 0; 
+  font-size: 20px;
   
 }
 
@@ -701,7 +704,7 @@ footer {
   height: 0;
   border-style: solid;
   border-width: 5px 5px 0;
-  border-color: #3366cc transparent transparent transparent;
+  border-color: var(--red) transparent transparent transparent;
   margin-right: 5px;
   transition: transform 0.3s ease-in-out;
 }
