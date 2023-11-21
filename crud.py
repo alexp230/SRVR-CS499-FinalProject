@@ -159,8 +159,7 @@ with app.app_context():
 
     # update_database()
 
-    meal = Meal.query.filter_by(name="Chicken Parmesan").first()
-    meal.name = "Cajun_Baked_Catfish"
+    delete_all_Meals()
     db.session.commit()
 
 

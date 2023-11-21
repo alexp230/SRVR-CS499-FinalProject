@@ -498,6 +498,9 @@ def get_meals_by_category(category):
 def cart():
     selected_meals = session.get('selected_meals', [])
     print(selected_meals) # For debugging purposes  
+    
+    selected_meals = [meal.replace("_", " ") for meal in selected_meals]
+
     return render_template('cart.html', selected_meals=selected_meals)
 
 @app.route('/add_to_cart', methods=['POST'])
@@ -506,8 +509,7 @@ def add_to_cart():
     selected_meals = session.get('selected_meals', [])
     box_capacity = 7 
 
-    # if len(selected_meals) < 7 and meal_name not in selected_meals:
-    if (len(selected_meals) < box_capacity):
+    if len(selected_meals) < box_capacity and meal_name not in selected_meals:
         selected_meals.append(meal_name)
         session['selected_meals'] = selected_meals
         return jsonify({'success': True})
@@ -580,6 +582,11 @@ def manageSubscription():
         print(f"Delivery date: {delivery_date}")
         print(f"Subscription type: {subtype}")
         print(f"Card number: {cardNum}")
+
+        selected_meals = session.get('selected_meals', [])
+        if len(selected_meals) != 7:
+            msg = "Please select 7 meals."
+            return render_template("subscribe.html", msg=msg)
         
         if delivery_date and subtype and cardNum:
             new_subscription = Subscription(user_id=session["user_id"], delivery_day=day, household_size=subtype)

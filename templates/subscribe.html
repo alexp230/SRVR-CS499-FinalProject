@@ -71,6 +71,11 @@
     {% endif %}
 
     <input type="submit" value="Subscribe">
+    {% if msg %}
+    <div class="message" style="color: red">
+        {{ msg }}
+    </div>
+    {% endif %}
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
