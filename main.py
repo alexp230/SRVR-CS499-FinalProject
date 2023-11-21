@@ -573,6 +573,9 @@ def manageSubscription():
         # if delivery_date > str(today_date):
         #     msg = "Please enter a valid delivery date."
         #     return render_template("paymentform.html", email=session["email"], msg=msg)
+        if delivery_date == '':
+            msg = "Please enter a valid delivery date."
+            return render_template("subscribe.html", email=session["email"], msg=msg)
         day_of_week = datetime.strptime(delivery_date, "%Y-%m-%d").weekday() # returns a number from 0-6
         day = numtoDayOfWeek(day_of_week) # returns the day of the week as a string
         subtype = request.form.get("household-size")
@@ -589,18 +592,22 @@ def manageSubscription():
             return render_template("subscribe.html", msg=msg)
         
         if delivery_date and subtype and cardNum:
-            new_subscription = Subscription(user_id=session["user_id"], delivery_day=day, household_size=subtype)
+            # new_subscription = Subscription(user_id=session["user_id"], delivery_day=day, household_size=subtype)
+            srvrdb.insert_data(cursor, (session["user_id"], day, subtype), "subscriptionTable")
+            conn.commit()
             # Add the subscription to the database
-            db.session.add(new_subscription)
-            db.session.commit()
+            # db.session.add(new_subscription)
+            # db.session.commit()
 
             selected_meals = session.get('selected_meals', [])
             selected_meals_str = ", ".join(selected_meals)
             # Create a new box record
-            new_box = Box(user_id=session["user_id"], ordered_meals=selected_meals_str)
+            # new_box = Box(user_id=session["user_id"], ordered_meals=selected_meals_str)
+            srvrdb.insert_data(cursor, (session["user_id"], selected_meals_str), "boxTable")
+            conn.commit()
             # Add the box to the database
-            db.session.add(new_box)
-            db.session.commit()
+            # db.session.add(new_box)
+            # db.session.commit()
 
             # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
             # new_box = srvrdb.insert_data(cursor, (session["user_id"], selected_meals_str), "boxTable")
@@ -609,17 +616,20 @@ def manageSubscription():
             current_time = datetime.now().time()
             order_datetime = datetime.combine(datetime.strptime(delivery_date, "%Y-%m-%d").date(), current_time)
             # Create a new past order record
-            new_past_order = PastOrders(
-                                user_id=session["user_id"], 
-                                box_id=new_box.box_id, payment_method=cardNum, 
-                                shipping_address=session["address"], 
-                                subscription_type=subtype, 
-                                order_date=str(delivery_date), 
-                                order_time=str(order_datetime)
-                                )
+            # new_past_order = PastOrders(
+            #                     user_id=session["user_id"], 
+            #                     box_id=new_box.box_id, payment_method=cardNum, 
+            #                     shipping_address=session["address"], 
+            #                     subscription_type=subtype, 
+            #                     order_date=str(delivery_date), 
+            #                     order_time=str(order_datetime)
+            #                     )
+            box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
+            srvrdb.insert_data(cursor, (session["user_id"], box[0], cardNum, session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")
+            conn.commit()
             # Add the past order to the database
-            db.session.add(new_past_order)
-            db.session.commit()
+            # db.session.add(new_past_order)
+            # db.session.commit()
 
             # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
             # srvrdb.insert_data(cursor, (session["user_id"], new_box[0], session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")

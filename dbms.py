@@ -127,7 +127,7 @@ def insert_data(cursor, data, table_name):
         schema = "(user_id, box_id, payment_method, shipping_address, subscription_type, order_date, order_time)"
         valueformat = "(%s, %s, %s, %s, %s, %s, %s)"
     elif table_name == "subscriptionTable":
-        schema = "(user_id, delivery_day, house_size)"
+        schema = "(user_id, delivery_day, household_size)"
         valueformat = "(%s, %s, %s)"
     else:
         print("Please check your data to make sure it has the correct table name")
@@ -331,7 +331,11 @@ def main():
         table_names = get_table_names()
         print("Table Names:")
         for table_name in table_names:
+            print()
             print(table_name)
+            rows = fetch_all_rows(table_name)
+            for row in rows:
+                print(row)
 
         # # Delete table if exists. (Testing Purposes)
         # # To delete a table with a key that is referenced by others as a foreign key, you must delete the table with the foreign key first, 

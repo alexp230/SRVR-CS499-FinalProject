@@ -29,7 +29,7 @@
         <div class="right-section">
             <nav class="navbar">
                 <a href="{{ url_for ('cart') }}">Cart</a>
-                <a href="{{ url_for ('account') }}">Account</a>
+                <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
             </nav>
         </div>
     </header>
