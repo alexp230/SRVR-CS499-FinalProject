@@ -32,7 +32,7 @@
     </header>
     <div class="form-container">
         <!-- <form action="/updateInfo/{{user.fname}}" method="post"> -->
-        <form action="/updateInfo/{{fname}}" method="post" enctype="multipart/form-data">
+        <form action="/updateInfo/{{email}}" method="post" enctype="multipart/form-data">
             <h3>Change the fields that you would like to modify</h3>
             <input type="text" name="fname" required placeholder="First name" value="{{ user.fname }}">
             <input type="text" name="lname" required placeholder="Last name" value="{{ user.lname }}">

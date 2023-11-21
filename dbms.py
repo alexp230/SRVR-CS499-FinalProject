@@ -5,58 +5,6 @@ import csv
 
 csv_file_path = os.path.join(os.path.dirname(__file__), 'CSV_File', 'meal_data.csv')
 
-# Constants for userTable
-USER_TABLE = "userTable"
-USERTABLE_USER_ID = 0
-USERTABLE_FIRSTNAME = 1
-USERTABLE_LASTNAME = 2
-USERTABLE_EMAIL = 3
-USERTABLE_PASSWORD = 4
-USERTABLE_ADDRESS = 5
-
-# Constants for mealTable (uncomment and customize as needed)
-MEAL_TABLE = "mealTable"
-MEALTABLE_MEAL_ID = 0
-MEALTABLE_USER_ID = 1
-MEALTABLE_NAME = 2
-MEALTABLE_CATEGORY = 3
-MEALTABLE_PHOTO_URL = 4
-MEALTABLE_INSTRUCTIONS = 5
-MEALTABLE_ALLERGENS = 6
-
-# Constants for boxTable (uncomment and customize as needed)
-BOX_TABLE = "boxTable"
-BOXTABLE_BOX_ID = 0
-BOXTABLE_USER_ID = 1
-BOXTABLE_ORDERED_MEALS = 2
-
-# Constants for pymntTable
-PAYMENT_TABLE = "pymntTable"
-PYMNTTABLE_CARD_ID = 0
-PYMNTTABLE_USER_ID = 1
-PYMNTTABLE_CARD_NUMBER = 2
-PYMNTTABLE_CARD_HOLDER_NAME = 3
-PYMNTTABLE_CARD_EXP_DATE = 4
-PYMNTTABLE_CARD_CCV = 5
-
-# Constants for pastOrdersTable
-PASTORDER_TABLE = "pastOrdersTable"
-PASTORDERSTABLE_TRANSACTION_ID = 0
-PASTORDERSTABLE_USER_ID = 1
-PASTORDERSTABLE_BOX_ID = 2
-PASTORDERSTABLE_PAYMENT_METHOD = 3
-PASTORDERSTABLE_SHIPPING_ADDRESS = 4
-PASTORDERSTABLE_SUBSCRIPTION_TYPE = 5
-PASTORDERSTABLE_ORDER_DATE = 6
-PASTORDERSTABLE_ORDER_TIME = 7
-
-# Constants for subscriptionTable
-SUBSCRIPTION_TABLE = "subscriptionTable"
-SUBSCRIPTIONTABLE_SUB_ID = 0
-SUBSCRIPTIONTABLE_USER_ID = 1
-SUBSCRIPTIONTABLE_DELIVERY_DAY = 2
-SUBSCRIPTIONTABLE_HOUSE_SIZE = 3
-
 
 # Database connection parameters. Connects to srvr_db in Amazon RDS. (DO NOT TOUCH!!!)
 def connect_to_database():
@@ -173,8 +121,8 @@ def insert_data(cursor, data, table_name):
         schema = "(ordered_meals)"
         valueformat = "(%s)"
     elif table_name == "pymntTable":
-        schema = "(card_number, card_holder_name, card_exp_date, card_CCV)"
-        valueformat = "(%s, %s, %s, %s)"
+        schema = "(user_id, card_number, card_holder_name, card_exp_date, card_CCV)"
+        valueformat = "(%s, %s, %s, %s, %s)"
     elif table_name == "pastOrdersTable":
         schema = "(payment_method, shipping_address, subscription_type, order_date, order_time)"
         valueformat = "(%s, %s, %s, %s, %s)"
@@ -365,26 +313,26 @@ def main():
         # delete_table(cursor, "userTable")
         # print("Tables deleted.\n")
 
-        # Create table if not exists
-        create_tables(cursor)
-        print("Tables created.\n")
-        add_meal_to_database(csv_file_path)
-        update_pdf_jpg_files()
-        # print_all_rows()
-        result = fetch_all_rows("mealTable")
+        # # Create table if not exists
+        # create_tables(cursor)
+        # print("Tables created.\n")
+        # add_meal_to_database(csv_file_path)
+        # update_pdf_jpg_files()
+        # # print_all_rows()
+        # result = fetch_all_rows("mealTable")
 
-        print("ID: [0][0]")
-        print(result[0][0])
-        print("\nName: [0][1]")
-        print(result[0][1])
-        print("\nCategory: [0][2]")
-        print(result[0][2])
-        print("\nPicture: [0][3]")
-        print(result[0][3])
-        print("\nInstructions: [0][4]")
-        print(result[0][4])
-        print("\nAllergens: [0][5]")
-        print(result[0][5])
+        # print("ID: [0][0]")
+        # print(result[0][0])
+        # print("\nName: [0][1]")
+        # print(result[0][1])
+        # print("\nCategory: [0][2]")
+        # print(result[0][2])
+        # print("\nPicture: [0][3]")
+        # print(result[0][3])
+        # print("\nInstructions: [0][4]")
+        # print(result[0][4])
+        # print("\nAllergens: [0][5]")
+        # print(result[0][5])
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"
@@ -408,11 +356,11 @@ def main():
         for row in rows:
             print(row)
 
-        # # # Select all data from pymntTable
-        # # rows = select_data(cursor, "pymntTable")
-        # # print("Data in pymntTable:")
-        # # for row in rows:
-        # #     print(row)
+        # # Select all data from pymntTable
+        # rows = select_data(cursor, "pymntTable")
+        # print("Data in pymntTable:")
+        # for row in rows:
+        #     print(row)
 
         # # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
         # # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")
@@ -428,12 +376,19 @@ def main():
         # for row in updated_rows:
         #     print(row)
 
-        # Delete data
-        # delete_data(cursor, "userTable", "firstname", "Josh")
+        # # Delete data
+        # delete_data(cursor, "pymntTable", "card_holder_name", "Obie Carnathan")
+        # delete_data(cursor, "pymntTable", "card_holder_name", "Alex Pruit")
         # conn.commit()
 
         # # Select data after delete
         # remaining_rows = select_data(cursor, "userTable")
+        # print("\nData in userTable after delete:")
+        # for row in remaining_rows:
+        #     print(row)
+
+        # # Select data after delete
+        # remaining_rows = select_data(cursor, "pymntTable")
         # print("\nData in userTable after delete:")
         # for row in remaining_rows:
         #     print(row)

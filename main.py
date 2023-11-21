@@ -68,13 +68,16 @@ def passwordValidation(PWD):
     else:
         return False
 
-def update_user_info(session_param: str, row_to_modify, column: int, new_value):
-    if (session_param):
-        session[session_param] = row_to_modify[column] #417
+def update_user_info(data):
+    srvrdb.update_data5(cursor, "userTable", "firstname")
 
-    if (new_value):
-        row_to_modify[column] = new_value #301
-        conn.commit()
+# def update_user_info(session_param: str, row_to_modify, column: int, new_value):
+#     if (session_param):
+#         session[session_param] = row_to_modify[column] #417
+
+#     if (new_value):
+#         row_to_modify[column] = new_value #301
+#         conn.commit()
 
 
 
@@ -240,48 +243,57 @@ def thankyou():
     return render_template("thankyou.html", msg = msg)
 
 # Function is used to display the signupform.html only, the uses add() to process the data.
+# Function works properly, do not touch. - Josh Patton
 @app.route('/signup', methods = ["GET", "POST"])
 def signup():
     msg = None
     return render_template("signupform.html", msg = msg)
 
 # Function is used to display the loginform.html only, the uses submitlogin() to process the data.
+# Function works properly, do not touch. - Josh Patton
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     return render_template("loginform.html")
 
-# Function is used to display the tempusrhome.html only
-@app.route('/usrhome/<string:fname>', methods = ["GET", "POST"])
-def usrhome(fname):
-    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", fname)
-    # user = User.query.filter_by(fname=fname).first()
-    return render_template("tempusrhome.html", fname=session["fname"], user=user)
+# Function is used to display the tempusrhome.html only, the uses changepass() to process the data.
+# Function works properly, do not touch. - Josh Patton
+@app.route('/usrhome/<string:email>', methods = ["GET", "POST"])
+def usrhome(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+    return render_template("tempusrhome.html", email=session["email"], user=user)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
-# FOR SOME ODD REASON I CANT ADD FNAME TO THE URL FOR THIS FUNCTION WITHOUT IT BREAKING
-@app.route('/paymentmethod', methods = ["GET", "POST"])
-def paymentmethod():
-    user = srvrdb.select_specific_data(cursor, "userTable", "firstname", session["fname"])
-    return render_template("paymentform.html", user=user)
+# Function works properly, do not touch. - Josh Patton
+@app.route('/paymentmethod/<string:email>', methods = ["GET", "POST"])
+def paymentmethod(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
+    return render_template("paymentform.html", email=user[3], user=user)
 
-# Function is used to display the tempusrsettings.html only, the uses TBD function to process the data.
-@app.route('/usrsettings/<string:fname>', methods = ["GET", "POST"])
-def usrsettings(fname):
-    # user = User.query.filter_by(fname=fname).first()
-    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", fname)
-    return render_template("usrsettings.html", user=user)
+# Function is used to display the tempusrsettings.html only, the uses updateInfo() to process the data.
+# Function works properly, do not touch. - Josh Patton
+@app.route('/usrsettings/<string:email>', methods = ["GET", "POST"])
+def usrsettings(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
+    return render_template("usrsettings.html", email=user[3], user=user)
 
-# Function works, but needs to be routed to the correct page
-@app.route('/updateInfo/<string:fname>', methods = ["GET", "POST"])
-def updateInfo(fname):
-    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", session["email"])
-    # user = User.query.filter_by(email=session["email"]).first()
+# Function is used to display the changepass.html only, the uses changepass() to process the data.
+# Function works properly, do not touch. - Josh Patton
+@app.route('/changepwd/<string:email>', methods = ["GET", "POST"])
+def changepwd(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
+    return render_template("changepass.html", email=session["email"], user=user)
+
+# Function used to process the input from usrsettings.html. Upon sucessful submission, redirects user to tempusrhome.html
+# Function works properly, do not touch. - Josh Patton
+@app.route('/updateInfo/<string:email>', methods = ["GET", "POST"])
+def updateInfo(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
 
     msg=None
     if request.method == "POST":
         fname = request.form.get("fname")
         lname = request.form.get("lname")
-        email = request.form.get("email")
+        input_email = request.form.get("email")
         address = request.form.get("address")
         password = request.form.get("password")
            
@@ -290,43 +302,25 @@ def updateInfo(fname):
         #     msg = "Incorrect password. Please try again."
         #     return render_template("usrsettings.html", user=user, msg=msg)
 
-        if not ((password == user[srvrdb.USERTABLE_PASSWORD]) and passwordValidation(password)):
+        if not ((password == user[4]) and passwordValidation(password)):
             msg = "Incorrect password. Please try again."
-            return render_template("usrsettings.html", user=user, msg=msg)
+            return render_template("usrsettings.html", email=user[3], user=user, msg=msg)
         
-        emailCheck = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
+        emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", input_email)
         if emailCheck: # If email already exists in database
             msg = "The email you entered is already taken."
-            return render_template("usrsettings.html", user=user, msg=msg)
+            return render_template("usrsettings.html", email=user[3], user=user, msg=msg)
 
-
-        if email and email != user[srvrdb.USERTABLE_EMAIL]:
-            update_user_info("email", user, srvrdb.USERTABLE_EMAIL, email)
-            msg = "Email updated successfully."
-
-        if address and address != user[srvrdb.USERTABLE_ADDRESS]:
-            update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, address)
-            msg = "Address updated successfully."
-
-        if fname and fname != user[srvrdb.USERTABLE_FIRSTNAME]:
-            update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, fname)
-            msg = "First name updated successfully."
-
-        if lname and lname != user[srvrdb.USERTABLE_LASTNAME]:
-            update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, lname)
-            msg = "Last name updated successfully."
-        
+        srvrdb.update_data4(cursor, "userTable", "firstname", fname, "lastname", lname, "email", input_email, "address", address, "email", email)
         conn.commit()
-        return redirect(url_for("usrhome", fname = fname))
+
+        return redirect(url_for("usrhome", email=user[3]))
               
-
-# Function is used to display the tempchangepass.html only, the uses TBD function to process the data.
-# Currently, the function is not working properly. It is not updating the password in the database.
-@app.route('/changepass/<string:fname>', methods = ["GET", "POST"])
-def changepass(fname):
-    user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "firstname", session["fname"])    
-
-    # user = User.query.filter_by(email=session["email"]).first()
+# Function is used to process data from changepass.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function is working properly. Still need to implement hashing for password. - Josh Patton
+@app.route('/changepass/<string:email>', methods = ["GET", "POST"])
+def changepass(email):
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])    
 
     msg=None
     if request.method == "POST":
@@ -337,38 +331,36 @@ def changepass(fname):
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
         
+        # # Leave here as a reminder to implement hashing for passwords.
         # elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
         #     msg = "New password matches old password!"
 
         # elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
         #     msg = "Incorrect password. Please try again!"
 
-        elif (newpassword == user[srvrdb.USERTABLE_PASSWORD]):
-            msg = "New password matches old password!"
+        elif (newpassword == user[4]):
+            msg = "New password is the same as the old password. Please try again!"
+            return render_template('changepass.html', email=user[3], msg=msg)
 
-        elif (oldpassword != user[srvrdb.USERTABLE_PASSWORD]):
-            msg = "Incorrect password. Please try again!"
-
+        elif (oldpassword != user[4]):
+            msg = "The current password you entered does not match your original password. Please try again!"
+            return render_template('changepass.html', email=user[3], msg=msg)
+        
         elif (newpassword != confirmpassword):
-            msg = "New passwords do not match!"
+            msg = "New passwords do not match! Please try again!"
+            return render_template('changepass.html', email=user[3], msg=msg)
 
         elif not passwordValidation(newpassword):
-            msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"     
+            msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"
+            return render_template('changepass.html', email=user[3], msg=msg)   
+    
+    srvrdb.update_data1(cursor, "userTable", "password", newpassword, "email", session["email"])
+    conn.commit()
 
-        else:
-            # user["password"] = hashlib.md5(newpassword.encode()).digest()
-            # updatePassword(user.email, hashlib.md5(newpassword.encode()).digest())
+    return redirect(url_for("usrhome", email=session["email"]))
 
-            user[srvrdb.USERTABLE_PASSWORD] = newpassword
-            msg = "Password updated successfully!"
-            return redirect(url_for("usrhome", fname = session["fname"]))
-            
-                
-    return render_template("changepass.html", user=user, msg=msg)
-
-
-# Use this function to contain all the code for the signupform.html attributes and logic
-# eg. Saving the users input and creating a record to hold their account in the database.
+# Function is used to process data from signupform.html. Upon sucessful submission redirects user to thankyou.html
+# Function works properly, do not touch. - Josh Patton
 @app.route("/add", methods = ["POST"])
 def add():
     fName = request.form.get("fname")
@@ -379,9 +371,9 @@ def add():
     confirmpassword = request.form.get("confirm_password")
 
     # Using MD5 to hash the password to be more secure.
-    hash = hashlib.md5(password.encode()) 
+    hash = hashlib.md5(password.encode())
 
-    emailCheck = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
+    emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
     if emailCheck: # If email already exists in database
         error = "The email you entered is already taken."
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
@@ -395,12 +387,11 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    srvrdb.insert_data(cursor, (fName, lName, email, password, address), srvrdb.USER_TABLE)
-    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), srvrdb.USER_TABLE)
+    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
+    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
     conn.commit()
-    
-    return redirect('thankyou')
 
+    return redirect('thankyou')
 
 # Function is used to grab the input from loginform.html and validate the users input to determine wether the account actually exists.
 # If account exists, redirect the user to the tempusrhome.html
@@ -417,28 +408,22 @@ def submitlogin():
         # password = hashlib.md5(request.form["password"].encode())
 
         # user = User.query.filter_by(email=email).first()
-        user = srvrdb.select_specific_data(cursor, srvrdb.USER_TABLE, "email", email)
-        if not user:
-            msg = "Account does not exist. Please try again."
-            return render_template("loginform.html", msg = msg)
-        
-        if user[srvrdb.USERTABLE_PASSWORD] == password:
-            Sign_IN = True
-            session["logged_in"] = True
-            # update_user_info("email", user, srvrdb.USERTABLE_EMAIL, None)
-            # update_user_info("fname", user, srvrdb.USERTABLE_FIRSTNAME, None)
-            # update_user_info("lname", user, srvrdb.USERTABLE_LASTNAME, None)
-            # update_user_info("address", user, srvrdb.USERTABLE_ADDRESS, None)
-            # update_user_info("user_id", user, srvrdb.USERTABLE_USER_ID, None)
-            session["email"] = user[srvrdb.USERTABLE_EMAIL]
-            session["fname"] = user[srvrdb.USERTABLE_FIRSTNAME]
-            session["lname"] = user[srvrdb.USERTABLE_LASTNAME]
-            session["address"] = user[srvrdb.USERTABLE_ADDRESS]
-            session["user_id"] = user[srvrdb.USERTABLE_USER_ID]
-            msg = "Login Successful"
+        user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
-            return redirect(url_for("usrhome", fname = session["fname"]))
-        
+        if user:
+            if user[4] == password:
+                Sign_IN = True
+                session["logged_in"] = True
+                session["user_id"] = user[0]
+                session["fname"] = user[1]
+                session["lname"] = user[2]
+                session["email"] = user[3]
+                session["address"] = user[5]
+                msg = "Login Successful"
+
+                return redirect(url_for("usrhome", email = email))
+            else:
+                msg = "Email or Password is invalid. Please try again."
         else:
             msg = "Account does not exist. Please try again."
 
@@ -595,11 +580,16 @@ def manageSubscription():
             # Add the subscription to the database
     return render_template("thankyou.html", msg=msg)
 
-# This function allows the user to change subscription type
-@app.route('/addNewCard', methods = ["GET", "POST"])
-def addNewCard():
-    # if session.get("logged_in") == True:
-    # Accessing the inputs from paymentmethod.html
+# Function is used to process data from paymentform.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function works properly, do not touch. - Josh Patton 
+@app.route('/addNewCard/<string:email>', methods = ["GET", "POST"])
+def addNewCard(email):
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"]) 
+
     if request.method == "POST":
         delivery_date = request.form.get("delivery-date")
         subtype = request.form.get("SubPlan")
@@ -610,42 +600,28 @@ def addNewCard():
         expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
 
-        fname = session["fname"]
         if ((len(cardNum) != 16) or (not cardNum.isdigit())):
             error = "Invalid card number!"
-            return render_template("paymentform.html", fname=fname, error=error)
+            return render_template("paymentform.html", email=user[3], error=error)
         
         if ((expire_year == None) or (expire_month == None)):
             error = "Enter valid expiration date!"
-            return render_template("paymentform.html", fname=fname, error=error)
+            return render_template("paymentform.html", email=user[3], error=error)
 
         today = datetime.today()
         expire_date = datetime(expire_year, expire_month, 1)
         if today > expire_date:
             error = "Card is expired!"
-            return render_template("paymentform.html", fname=fname, error=error)
+            return render_template("paymentform.html", email=user[3], error=error)
         
         if ((len(cvv) != 3 or (not cvv.isdigit()))):
             error = "Invalid CVV number!"
-            return render_template("paymentform.html", fname=fname, error=error)
-        
-        # print statements for debugging
-        print("Delivery date is valid")
-        print(f"Delivery date: {delivery_date}")
-        print(f"Subscription type: {subtype}")
-        print(f"Card number: {cardNum}")
-        print(f"Card holder: {cardHolder}")
-        print(f"Expiry date: {expiry}")
-        print(f"CVV: {cvv}")
+            return render_template("paymentform.html", email=user[3], error=error)
 
-        new_card = Payment_Methods(card_number=cardNum, user_id=session["user_id"], card_holder_name=cardHolder, card_exp_date=expiry, card_CCV=cvv)
-        # Add the subscription to the database
-        db.session.add(new_card)
-        db.session.commit()
-    #     msg = "Card Saved Successfully"
-    # return render_template("thankyou.html", msg=msg)
+        srvrdb.insert_data(cursor, (user[0], cardNum, cardHolder, expiry, cvv), "pymntTable")
+        conn.commit()
 
-    return redirect(url_for("usrhome", fname = session["fname"]))
+    return redirect(url_for("usrhome", email=user[3]))
 
 # WIP
 # This function allows past order data of a user to be retrieved
