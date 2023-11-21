@@ -287,6 +287,10 @@ def changepwd(email):
 # Function works properly, do not touch. - Josh Patton
 @app.route('/updateInfo/<string:email>', methods = ["GET", "POST"])
 def updateInfo(email):
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
     user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
 
     msg=None
@@ -327,6 +331,10 @@ def updateInfo(email):
 # Function is working properly. Still need to implement hashing for password. - Josh Patton
 @app.route('/changepass/<string:email>', methods = ["GET", "POST"])
 def changepass(email):
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
     user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])    
 
     msg=None
@@ -413,7 +421,6 @@ def submitlogin():
         password = request.form["password"]
         # password = hashlib.md5(request.form["password"].encode())
 
-        # user = User.query.filter_by(email=email).first()
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
         if user:
@@ -567,6 +574,10 @@ def manageSubscription():
             db.session.add(new_box)
             db.session.commit()
 
+            # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
+            # new_box = srvrdb.insert_data(cursor, (session["user_id"], selected_meals_str), "boxTable")
+            # conn.commit()
+
             current_time = datetime.now().time()
             order_datetime = datetime.combine(datetime.strptime(delivery_date, "%Y-%m-%d").date(), current_time)
             # Create a new past order record
@@ -581,6 +592,10 @@ def manageSubscription():
             # Add the past order to the database
             db.session.add(new_past_order)
             db.session.commit()
+
+            # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
+            # srvrdb.insert_data(cursor, (session["user_id"], new_box[0], session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")
+            # conn.commit()
 
             msg = f"Subscription updated successfully. Your reoccurring delivery is scheduled for every {day}."
             # Add the subscription to the database
@@ -605,6 +620,10 @@ def addNewCard(email):
         expire_year = int(request.form.get("ExpiryYear"))
         expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
+
+        if not (cardNum and cardHolder and expire_month and expire_year and cvv):
+            error = "Please fill out all fields!"
+            return render_template("paymentform.html", email=user[3], error=error)
 
         if ((len(cardNum) != 16) or (not cardNum.isdigit())):
             error = "Invalid card number!"
@@ -643,6 +662,14 @@ def pastOrders(fname):
 
     meals = Meal.query.all() # Get all meals
     boxes = Box.query.filter_by(user_id=user_id).all() # Get all boxes for the user
+
+    # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
+    # # Retreiving all past orders for specific user.
+    # srvrdb.select_specific_data_many(cursor, "pastOrdersTable", "email", session["email"])
+    # # Retreiving all meals.
+    # srvrdb.select_data(cursor, "mealTable")
+    # # Retreiving all boxes for specific user.
+    # srvrdb.select_specific_data_many(cursor, "boxTable", "email", session["email"])
 
     return render_template("pastorders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
 

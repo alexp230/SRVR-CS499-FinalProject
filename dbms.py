@@ -118,17 +118,17 @@ def insert_data(cursor, data, table_name):
         schema = "(name, category, photo_URL, instructions, allergens)"
         valueformat = "(%s, %s, %s, %s, %s)"
     elif table_name == "boxTable":
-        schema = "(ordered_meals)"
-        valueformat = "(%s)"
+        schema = "(user_id, ordered_meals)"
+        valueformat = "(%s, %s)"
     elif table_name == "pymntTable":
         schema = "(user_id, card_number, card_holder_name, card_exp_date, card_CCV)"
         valueformat = "(%s, %s, %s, %s, %s)"
     elif table_name == "pastOrdersTable":
-        schema = "(payment_method, shipping_address, subscription_type, order_date, order_time)"
-        valueformat = "(%s, %s, %s, %s, %s)"
+        schema = "(user_id, box_id, payment_method, shipping_address, subscription_type, order_date, order_time)"
+        valueformat = "(%s, %s, %s, %s, %s, %s, %s)"
     elif table_name == "subscriptionTable":
-        schema = "(delivery_day, house_size)"
-        valueformat = "(%s, %s)"
+        schema = "(user_id, delivery_day, house_size)"
+        valueformat = "(%s, %s, %s)"
     else:
         print("Please check your data to make sure it has the correct table name")
 
@@ -146,33 +146,33 @@ def select_specific_data(cursor, table_name, match_column_name, match_val):
     cursor.execute(select_query, (match_val))
     return cursor.fetchone()
 
+def select_specific_data_many(cursor, table_name, match_column_name, match_val):
+    select_query = f"SELECT * FROM {table_name} WHERE "+match_column_name+"=%s"
+    cursor.execute(select_query, (match_val))
+    return cursor.fetchall()
+
 # Updates column(s) in a specified table by table_name. update_data1() modifies 1 column only, update_data5() updates 5 columns (max amount for our purposes) etc...
 # mod_column_name is the name of the column as it shows in database (ie. to change firstname from John to Jane; mod_column_name = "firstname").
 # mod_val is the value you are updating the existing value to (ie. to change firstname from John to Jane; mod_val = "Jane").
 # match_column_name is the name of the column as it shows is database that is used to identify which record you want to look for (ie. to change firstname from John to Jane; match_column_name = "firstname").
 # match_val is the value existing value you wish to modify (ie. to change firstname from John to Jane; match_val = "John").
 def update_data1(cursor, table_name, mod_colum_name, mod_val, match_colum_name, match_val):
-    # Update one column of data
     update_query = "UPDATE "+table_name+" SET "+mod_colum_name+"=%s WHERE "+match_colum_name+"=%s"
     cursor.execute(update_query, (mod_val, match_val))
 
 def update_data2(cursor, table_name, mod_colum_name1, mod_val1, mod_colum_name2, mod_val2, match_colum_name, match_val):
-    # Update one column of data
     update_query = "UPDATE "+table_name+" SET "+mod_colum_name1+"=%s, "+mod_colum_name2+"=%s WHERE "+match_colum_name+"=%s"
     cursor.execute(update_query, (mod_val1, mod_val2, match_val))
 
 def update_data3(cursor, table_name, mod_colum_name1, mod_val1, mod_colum_name2, mod_val2, mod_colum_name3, mod_val3, match_colum_name, match_val):
-    # Update one column of data
     update_query = "UPDATE "+table_name+" SET "+mod_colum_name1+"=%s, "+mod_colum_name2+"=%s, "+mod_colum_name3+"=%s WHERE "+match_colum_name+"=%s"
     cursor.execute(update_query, (mod_val1, mod_val2, mod_val3, match_val))
 
 def update_data4(cursor, table_name, mod_colum_name1, mod_val1, mod_colum_name2, mod_val2, mod_colum_name3, mod_val3, mod_colum_name4, mod_val4, match_colum_name, match_val):
-    # Update one column of data
     update_query = "UPDATE "+table_name+" SET "+mod_colum_name1+"=%s, "+mod_colum_name2+"=%s, "+mod_colum_name3+"=%s, "+mod_colum_name4+"=%s WHERE "+match_colum_name+"=%s"
     cursor.execute(update_query, (mod_val1, mod_val2, mod_val3, mod_val4, match_val))
 
 def update_data5(cursor, table_name, mod_colum_name1, mod_val1, mod_colum_name2, mod_val2, mod_colum_name3, mod_val3, mod_colum_name4, mod_val4, mod_colum_name5, mod_val5, match_colum_name, match_val):
-    # Update one column of data
     update_query = "UPDATE "+table_name+" SET "+mod_colum_name1+"=%s, "+mod_colum_name2+"=%s, "+mod_colum_name3+"=%s, "+mod_colum_name4+"=%s, "+mod_colum_name5+"=%s WHERE "+match_colum_name+"=%s"
     cursor.execute(update_query, (mod_val1, mod_val2, mod_val3, mod_val4, mod_val5, match_val))
 
