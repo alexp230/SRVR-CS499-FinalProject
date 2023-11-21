@@ -2,7 +2,7 @@
 This file is used to create, read, update, and delete data from the database for testing purposes.
 It is not used in the final version of the project.
 """
-from main import db, app, User, Meal, Payment_Methods, Subscription, Box
+from main import db, app, User, Meal, Payment_Methods, Subscription, Box, PastOrders
 import os
 import csv
 
@@ -81,6 +81,11 @@ with app.app_context():
         for week in Subscription.query.all():
             db.session.delete(week)
             db.session.commit()
+    
+    def delete_all_Orders():
+        for order in PastOrders.query.all():
+            db.session.delete(order)
+            db.session.commit()
 
     def delete_all_Payment_Methods():
         for card in Payment_Methods.query.all():
@@ -95,6 +100,11 @@ with app.app_context():
     def delete_all_Meals():
         for meal in Meal.query.all():
             db.session.delete(meal)
+            db.session.commit()
+    
+    def delete_all_Users():
+        for user in User.query.all():
+            db.session.delete(user)
             db.session.commit()
 
     # Iterate through meals and update instructions and photo_URL if a matching PDF file is found
@@ -158,8 +168,12 @@ with app.app_context():
         update_pdf_jpg_files()
 
     # update_database()
-
+    delete_all_Subscriptions()
+    delete_all_Orders()
+    delete_all_Payment_Methods()
+    delete_all_Boxes()
     delete_all_Meals()
+    delete_all_Users()
     db.session.commit()
 
 

@@ -12,12 +12,12 @@
     <ul>
         {% for order in past_orders %}
             <li>
-                <strong>Transaction ID:</strong> {{ order.transaction_id }}<br>
-                <strong>Shipping Address:</strong> {{ order.shipping_address }}<br>
-                <strong>Date:</strong> {{ order.order_date }} <br>
+                <strong>Transaction ID:</strong> {{ order[0]}}<br>
+                <strong>Shipping Address:</strong> {{ order[4] }}<br>
+                <strong>Date:</strong> {{ order[6] }} <br>
                 {% for box in boxes %}
-                {% if order.box_id == box.box_id %}
-                <strong>Meals in box:</strong> {{ box.ordered_meals }}
+                {% if order[2] == box[0] %}
+                <strong>Meals in box:</strong> {{ box[2] }}
                 {% endif %}
                 {% endfor %}
             </li>

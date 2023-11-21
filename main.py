@@ -468,7 +468,8 @@ def home():
     if session.get("logged_in") == True:
         Sign_IN = True
         email = session["email"]
-        return render_template("main.html", user=User.query.filter_by(email=email).first(), Sign_IN=Sign_IN)
+        user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+        return render_template("main.html", user=user, Sign_IN=Sign_IN)
 
     return render_template("main.html")
 
@@ -477,7 +478,7 @@ def home():
 def browsemenu(fname=None):
     if session.get("logged_in") == True:
         fname = session["fname"]
-        # all_meals = Meal.query.all()
+        
         all_meals = srvrdb.fetch_all_rows("mealTable")
         return render_template("browsemenu.html", all_meals=all_meals,fname=fname)
     else:
@@ -487,7 +488,8 @@ def browsemenu(fname=None):
 # May not need this anymore. - Obie C
 @app.route('/category/<string:category>')
 def get_meals_by_category(category):
-    meals = Meal.query.filter_by(category=category).all()
+    
+    meals = srvrdb.select_specific_data_many(cursor, "mealTable", "category", category)
     
     meals_data = [{'name': meal.name.replace("_", " "), 'photo_URL': meal.photo_URL} for meal in meals]
 
@@ -525,10 +527,9 @@ def subscribe():
 
     # Get user information (email, ID, etc.) from the session
     user_email = session.get('email')
-    user = User.query.filter_by(email=user_email).first()
-    fname = user.fname
+    fname = session.get('fname')
     print(fname)
-    # cards = Payment_Methods.query.filter_by(user_id=user.user_id).all()
+   
     cards = srvrdb.select_specific_data_many(cursor, "pymntTable", "user_id", session["user_id"])
 
     # Create a new subscription record
@@ -565,8 +566,8 @@ def numtoDayOfWeek(number):
 # This function allows the user to change subscription type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
-    # if session.get("logged_in") == True:
-    # Accessing the inputs from paymentmethod.html
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
     msg = None
     if request.method == "POST":
         delivery_date = request.form.get("delivery-date")
@@ -627,13 +628,6 @@ def manageSubscription():
             box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
             srvrdb.insert_data(cursor, (session["user_id"], box[0], cardNum, session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")
             conn.commit()
-            # Add the past order to the database
-            # db.session.add(new_past_order)
-            # db.session.commit()
-
-            # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
-            # srvrdb.insert_data(cursor, (session["user_id"], new_box[0], session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")
-            # conn.commit()
 
             msg = f"Subscription updated successfully. Your reoccurring delivery is scheduled for every {day}."
             # Add the subscription to the database
@@ -688,28 +682,19 @@ def addNewCard(email):
 
 # WIP
 # This function allows past order data of a user to be retrieved
-@app.route('/pastorders/<string:fname>', methods = ["GET", "POST"])
-def pastOrders(fname):
+@app.route('/pastorders/<string:email>', methods = ["GET", "POST"])
+def pastOrders(email):
 
     if not session.get("logged_in"):
         return redirect(url_for("login"))
     
     user_id = session["user_id"]
 
-    past_orders = PastOrders.query.filter_by(user_id=user_id).all()
+    past_orders = srvrdb.select_specific_data_many(cursor, "pastOrdersTable", "user_id", user_id)
+    meals = srvrdb.fetch_all_rows("mealTable")# Get all meals
+    boxes = srvrdb.select_specific_data_many(cursor, "boxTable", "user_id", user_id)# Get all boxes for the user
 
-    meals = Meal.query.all() # Get all meals
-    boxes = Box.query.filter_by(user_id=user_id).all() # Get all boxes for the user
-
-    # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
-    # # Retreiving all past orders for specific user.
-    # srvrdb.select_specific_data_many(cursor, "pastOrdersTable", "email", session["email"])
-    # # Retreiving all meals.
-    # srvrdb.select_data(cursor, "mealTable")
-    # # Retreiving all boxes for specific user.
-    # srvrdb.select_specific_data_many(cursor, "boxTable", "email", session["email"])
-
-    return render_template("pastorders.html", past_orders=past_orders, fname=fname, meals=meals, boxes=boxes)
+    return render_template("pastorders.html", past_orders=past_orders, email=email, meals=meals, boxes=boxes)
 
 @app.route('/aboutus')
 def aboutus():
