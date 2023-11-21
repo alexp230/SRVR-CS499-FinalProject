@@ -36,7 +36,7 @@ body {
 
 /* what the header background will look like and positioning of items */
 header {
-  position: fixed;
+  
   top: 0;
   left: 0;
   right: 0;
@@ -670,8 +670,14 @@ footer {
 
 /*start of howitworks.html*/
 
+.howitworks {
+  text-align: center;
+}
+
 .faq-item {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+
 }
 
 /* Hide the answers initially */
@@ -685,6 +691,7 @@ footer {
   font-weight: bold;
   color: #3366cc; 
   user-select: none; 
+  
 }
 
 /* Style for the arrow icon */

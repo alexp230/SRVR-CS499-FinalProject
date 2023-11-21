@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>SRVR How It Works</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
     
 </head>
 <body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="left-section">
+            <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+                <a href="{{url_for('howitworks')}}">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('cart') }}">Cart</a>
+                <a href="account.html">Account</a>
+            </nav>
+        </div>
+    </header>
+
+
     <section class="howitworks">
         <div class="howitworksmain">
             <div class="howitworks-text">
-                <h1>How It Works</h1>
-                <p>"At SRVR, we've designed a simple and convenient process to revolutionize the way you cook and eat at home. With our meal kit delivery service, you can enjoy delicious and nutritious meals in just a few easy steps."</p>
-                
+
+                <h1 style="margin-top: 5px; margin-bottom: 45px;">How Can We Help You?</h1>
+            
                 <!-- Frequently Asked Questions -->
                 <h2>Frequently Asked Questions</h2>
 
@@ -76,15 +100,6 @@
 
                 <div class="faq-item" onclick="toggleAnswer(this)">
                     <div class="faq-question">
-                        <span class="faq-arrow"></span> What if I am not home for delivery?
-                    </div>
-                    <div class="faq-answer">
-                        Our packages will keep your ingredients safe even if you are not home when the package arrives.
-                    </div>
-                </div>
-
-                <div class="faq-item" onclick="toggleAnswer(this)">
-                    <div class="faq-question">
                         <span class="faq-arrow"></span> How can I contact Customer Support?
                     </div>
                     <div class="faq-answer">
@@ -113,7 +128,6 @@
         </div>
     </section>
 
-    // Function to toggle the visibility of the answer
     <script>
         function toggleAnswer(faqItem) {
             faqItem.classList.toggle('active');
