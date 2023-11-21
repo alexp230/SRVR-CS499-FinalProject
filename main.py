@@ -307,10 +307,17 @@ def updateInfo(email):
             return render_template("usrsettings.html", email=user[3], user=user, msg=msg)
         
         emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", input_email)
-        if emailCheck: # If email already exists in database
+        if emailCheck and not (user[3]): # If email already exists in database
             msg = "The email you entered is already taken."
             return render_template("usrsettings.html", email=user[3], user=user, msg=msg)
 
+        # Updating session variables to reflect the users changes.
+        session["fname"] = fname
+        session["lname"] = lname
+        session["email"] = input_email
+        session["address"] = address
+        
+        # Updating the users record in the database. 
         srvrdb.update_data4(cursor, "userTable", "firstname", fname, "lastname", lname, "email", input_email, "address", address, "email", email)
         conn.commit()
 
@@ -402,7 +409,6 @@ def submitlogin():
     session.clear()
     
     if(request.method == "POST"):
-        print("request.method == POST")
         email = request.form["email"]
         password = request.form["password"]
         # password = hashlib.md5(request.form["password"].encode())
