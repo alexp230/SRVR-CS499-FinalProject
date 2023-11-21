@@ -670,9 +670,7 @@ footer {
 
 /*start of howitworks.html*/
 
-.faq {
-  text-align: center;
-}
+
 
 .faq-item {
   margin-bottom: 20px;
@@ -689,7 +687,7 @@ footer {
 .faq-question {
   cursor: pointer;
   font-weight: bold;
-  color: #3366cc; 
+  color: var(--green); 
   user-select: none; 
   
 }
