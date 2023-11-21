@@ -718,9 +718,3 @@ p {
 strong {
   color: #4CAF50;
 }
-
-.pictures-right {
-  align-items: center; 
-  width: 10px;
-  height: auto;
-}
