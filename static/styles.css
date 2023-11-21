@@ -4,7 +4,7 @@
   --red:#ee231e;
   --tan: #f2d1ad;
   --gray: #35383d;
-  --green: #84bc17;
+  --green: #4CAF50;
 }
 
 * {
@@ -716,5 +716,11 @@ p {
 }
 
 strong {
-  color: var(--green)
+  color: #4CAF50;
+}
+
+.pictures-right {
+  align-items: center; 
+  width: 10px;
+  height: auto;
 }

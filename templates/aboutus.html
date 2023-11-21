@@ -7,6 +7,30 @@
     <title>SRVR About Us</title>
 </head>
 <body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="left-section">
+            <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+                <a href="{{url_for('howitworks')}}">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+        <div class="right-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('cart') }}">Cart</a>
+                <a href="account.html">Account</a>
+            </nav>
+        </div>
+    </header>
+
+
     <section class="about">
         <div class="aboutusmain">
             <img src="../static/images/aboutus.jpg" alt="image coming">
