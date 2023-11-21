@@ -34,6 +34,9 @@
     </header>
     <!--end navbar-->
     <div class="paycontainer">
+        {% if msg %}
+            <p>{{ msg }}</p>
+        {% endif %}
         <form action="/addNewCard/{{email}}" method="post" enctype="multipart/form-data">
             <div class="flexBox">
                 <!-- <div class="inputBox">

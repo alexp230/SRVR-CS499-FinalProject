@@ -443,12 +443,19 @@ def submitlogin():
                 msg = "Login Successful"
                 print("Subscription status: ")
                 print(session["subscription_status"])
+
+                payment = srvrdb.select_specific_data(cursor, "pymntTable", "user_id", user[0])
+                if not payment:
+                    # send use to payment method page
+                    msg = "Please add a payment method to continue login."
+                    
+                    return render_template("paymentform.html", email=email, msg=msg)
+
                 return redirect(url_for("usrhome", email = email))
             else:
                 msg = "Email or Password is invalid. Please try again."
         else:
             msg = "Account does not exist. Please try again."
-
     return render_template("loginform.html", msg = msg)
 
 # Use this function to contain all the code for the main.html attributes and logic
@@ -685,6 +692,10 @@ def pastOrders(fname):
 @app.route('/aboutus')
 def aboutus():
     return render_template("aboutus.html") 
+    
+@app.route('/howitworks')
+def howitworks():
+    return render_template("howitworks.html")
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
