@@ -484,6 +484,7 @@ def browsemenu(fname=None):
         all_meals = srvrdb.fetch_all_rows("mealTable")
         return render_template("browsemenu.html", all_meals=all_meals)
 
+# May not need this anymore. - Obie C
 @app.route('/category/<string:category>')
 def get_meals_by_category(category):
     meals = Meal.query.filter_by(category=category).all()
@@ -525,7 +526,8 @@ def subscribe():
     user = User.query.filter_by(email=user_email).first()
     fname = user.fname
     print(fname)
-    cards = Payment_Methods.query.filter_by(user_id=user.user_id).all()
+    # cards = Payment_Methods.query.filter_by(user_id=user.user_id).all()
+    cards = srvrdb.select_specific_data_many(cursor, "pymntTable", "user_id", session["user_id"])
 
     # Create a new subscription record
     # new_subscription = Subscription(user_id=user.U_id, delivery_day=delivery_day, household_size=household_size)
@@ -566,6 +568,9 @@ def manageSubscription():
     msg = None
     if request.method == "POST":
         delivery_date = request.form.get("delivery-date")
+        # if delivery_date > str(today_date):
+        #     msg = "Please enter a valid delivery date."
+        #     return render_template("paymentform.html", email=session["email"], msg=msg)
         day_of_week = datetime.strptime(delivery_date, "%Y-%m-%d").weekday() # returns a number from 0-6
         day = numtoDayOfWeek(day_of_week) # returns the day of the week as a string
         subtype = request.form.get("household-size")
@@ -692,7 +697,7 @@ def pastOrders(fname):
 @app.route('/aboutus')
 def aboutus():
     return render_template("aboutus.html") 
-    
+
 @app.route('/howitworks')
 def howitworks():
     return render_template("howitworks.html")

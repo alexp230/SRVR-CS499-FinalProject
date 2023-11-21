@@ -50,7 +50,8 @@
     <label for="size-4">4</label><br><br>
     <select id="card" name="card">
         {% for card in cards%}
-        <option value={{card}}> {{card}} </option>
+        {% set last_four_digits = card[2][-4:] %}
+        <option value="{{ last_four_digits }}">XXXX-XXXX-XXXX-{{ last_four_digits }}</option>
         {% endfor %}
         <!-- Add more options for other days -->
     </select>
