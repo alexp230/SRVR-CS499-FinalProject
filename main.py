@@ -52,6 +52,7 @@ def passwordValidation(PWD):
     - Contains at least one uppercase letter
     - Contains at least one lowercase letter
     - Ends with a number
+    - Is less than or equal to 15 characters long
     Otherwise, it returns False.
     """
     regexCapLetter = r'[A-Z]'
@@ -63,7 +64,7 @@ def passwordValidation(PWD):
         match = re.search(regexList[regex],PWD)
         if match:
             count+=1
-    if count == 3:
+    if count == 3 and len(PWD) <= 15:
         return True
     else:
         return False
@@ -432,8 +433,16 @@ def submitlogin():
                 session["lname"] = user[2]
                 session["email"] = user[3]
                 session["address"] = user[5]
+                # New session variable to keep track of the user's subscription status
+                session["subscription_status"] = False
+                subscriber = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user[0])
+                if subscriber:
+                    session["subscription_status"] = True
+                else:
+                    session["subscription_status"] = False
                 msg = "Login Successful"
-
+                print("Subscription status: ")
+                print(session["subscription_status"])
                 return redirect(url_for("usrhome", email = email))
             else:
                 msg = "Email or Password is invalid. Please try again."
