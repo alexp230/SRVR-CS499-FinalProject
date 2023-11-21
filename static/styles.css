@@ -670,7 +670,7 @@ footer {
 
 /*start of howitworks.html*/
 
-.howitworks {
+.faq {
   text-align: center;
 }
 
@@ -709,4 +709,12 @@ footer {
 /* Rotate arrow when answer is visible */
 .faq-item.active .faq-arrow {
   transform: rotate(-180deg);
+}
+
+p {
+  text-transform: none;
+}
+
+strong {
+  color: var(--green)
 }
