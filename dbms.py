@@ -46,15 +46,15 @@ def create_tables(cursor):
     )
     '''
 
-    # create_boxTable_query = '''
-    # CREATE TABLE IF NOT EXISTS boxTable (
-    #     box_id INT AUTO_INCREMENT PRIMARY KEY,
-    #     user_id INT,
-    #     ordered_meals TEXT NOT NULL,
-        # FOREIGN KEY (user_id) 
-        # REFERENCES userTable(user_id)
-    # )
-    # '''
+    create_boxTable_query = '''
+    CREATE TABLE IF NOT EXISTS boxTable (
+        box_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        ordered_meals TEXT NOT NULL,
+        FOREIGN KEY (user_id) 
+        REFERENCES userTable(user_id)
+    )
+    '''
 
     create_pymntTable_query = '''
     CREATE TABLE IF NOT EXISTS pymntTable (
@@ -69,40 +69,40 @@ def create_tables(cursor):
     )
     '''
     
-    # create_pastOrdersTable_query = '''
-    # CREATE TABLE IF NOT EXISTS pastOrdersTable (
-    #     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
-    #     user_id INT,
-    #     box_id INT,
-    #     payment_method TEXT NOT NULL,
-    #     shipping_address TEXT NOT NULL,
-    #     subscription_type TEXT NOT NULL,
-    #     order_date TEXT NOT NULL,
-    #     order_time TEXT NOT NULL,
-    #     FOREIGN KEY (user_id) 
-        # REFERENCES userTable(user_id)
-        # FOREIGN KEY (box_id) 
-        # REFERENCES boxTable(box_id)
-    # )
-    # '''
+    create_pastOrdersTable_query = '''
+    CREATE TABLE IF NOT EXISTS pastOrdersTable (
+        transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        box_id INT,
+        payment_method TEXT NOT NULL,
+        shipping_address TEXT NOT NULL,
+        subscription_type TEXT NOT NULL,
+        order_date TEXT NOT NULL,
+        order_time TEXT NOT NULL,
+        FOREIGN KEY (user_id) 
+        REFERENCES userTable(user_id),
+        FOREIGN KEY (box_id) 
+        REFERENCES boxTable(box_id)
+    )
+    '''
 
-    # create_subscriptionTable_query = '''
-    # CREATE TABLE IF NOT EXISTS subscriptionTable (
-    #     sub_id INT AUTO_INCREMENT PRIMARY KEY,
-    #     user_id INT,
-    #     delivery_day TEXT NOT NULL,
-    #     house_size TEXT NOT NULL,
-    #     FOREIGN KEY (user_id) 
-        # REFERENCES userTable(user_id)
-    # )
-    # '''
+    create_subscriptionTable_query = '''
+    CREATE TABLE IF NOT EXISTS subscriptionTable (
+        subscription_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        delivery_day TEXT NOT NULL,
+        household_size TEXT NOT NULL,
+        FOREIGN KEY (user_id) 
+        REFERENCES userTable(user_id)
+    )
+    '''
 
     cursor.execute(create_userTable_query)
     cursor.execute(create_mealTable_query)
-    # cursor.execute(create_boxTable_query)
+    cursor.execute(create_boxTable_query)
     cursor.execute(create_pymntTable_query)
-    # cursor.execute(create_pastOrdersTable_query)
-    # cursor.execute(create_subscriptionTable_query)
+    cursor.execute(create_pastOrdersTable_query)
+    cursor.execute(create_subscriptionTable_query)
 
 # Delete a specfied table by table_name 
 def delete_table(cursor, table_name):
@@ -301,11 +301,37 @@ def fetch_all_rows(table_name):
         cursor.close()
         conn.close()
 
+
+def get_table_names():
+    conn = connect_to_database()
+
+    try:
+        cursor = conn.cursor()
+        # Query to get all table names in the database
+        show_tables_query = "SHOW TABLES"
+        # Execute the query
+        cursor.execute(show_tables_query)
+        # Fetch all table names
+        tables = cursor.fetchall()
+        table_names = [table[0] for table in tables]  # Extract table names from the result
+        return table_names
+
+    finally:
+        cursor.close()
+        conn.close()
+
 def main():
     conn = connect_to_database()
     try:
         # Create a cursor
         cursor = conn.cursor()
+
+        # Call the function to get table names and print them
+        create_tables(cursor)
+        table_names = get_table_names()
+        print("Table Names:")
+        for table_name in table_names:
+            print(table_name)
 
         # # Delete table if exists. (Testing Purposes)
         # # To delete a table with a key that is referenced by others as a foreign key, you must delete the table with the foreign key first, 
@@ -349,12 +375,12 @@ def main():
         # insert_data(cursor, pymnt_data_to_insert, "pymntTable")
         # conn.commit()
 
-        # Select all data from userTable
-        rows = select_data(cursor, "userTable")
-        # rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
-        print("Data in userTable:")
-        for row in rows:
-            print(row)
+        # # Select all data from userTable
+        # rows = select_data(cursor, "userTable")
+        # # rows = select_specific_data(cursor, "userTable", "email", "alexp@uab.edu")
+        # print("Data in userTable:")
+        # for row in rows:
+        #     print(row)
 
         # # Select all data from pymntTable
         # rows = select_data(cursor, "pymntTable")
