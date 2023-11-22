@@ -369,6 +369,10 @@ footer {
     gap: 15px;
 }
 
+.paycontainer form .inputBox .card-holder-input{
+   text-transform: none;
+}
+
 .paycontainer form .flexBox .inputBox{
     flex:1 1 150px;
 }
