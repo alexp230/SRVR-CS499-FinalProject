@@ -629,6 +629,7 @@ def check_subscriptions():
 
 
 def check_SUBS(user):
+    # Initialize important variables
     user_id = user[0]
     user_fname = user[1]
     user_lname = user[2]
@@ -637,9 +638,8 @@ def check_SUBS(user):
     user_paymentMethod = srvrdb.select_specific_data(cursor, "pymntTable", "user_id", user_id)[2]
     user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
 
-    # Gets user subscription
+    # Gets user subscription and check if they have one
     active_subscription = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)
-
     if (not active_subscription):
         print ("user does not have subscription")
 
@@ -648,10 +648,12 @@ def check_SUBS(user):
     last_delivery_date_str = last_delivery[0][6]
     last_delivery_date = datetime.strptime(last_delivery_date_str, "%Y-%m-%d").date()
 
+    # Puts the for days days in a list
     delivery_date_list = []
     for i in range (1,5):
         delivery_date_list.append(str(last_delivery_date + timedelta(days=(7 * i))))
 
+   # Initialize important variable 
     max_amount_of_orders = 4
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
@@ -659,22 +661,29 @@ def check_SUBS(user):
     if (current_future_orders >= max_amount_of_orders):
         print("User needs no more boxes")
 
+    # Adds enough meals for four weeks into upcomingOrdersTable
     for i in range(current_future_orders, max_amount_of_orders):
+        # Gets seven random meals
         all_meals = get_random_meals()
-        random_meals_string = ""
 
+        # Builds a string of the seven meals
+        random_meals_string = ""
         for meals in all_meals:
             random_meals_string += (meals[1] + ", ")
         random_meals_string = random_meals_string[:-2]
 
+        # Creates a new box and inserts it to boxTable with the meals
         box_data = [user_id, random_meals_string]
         srvrdb.insert_data(cursor, box_data, "boxTable")
 
+        # Gets the newly created box id
         cursor.execute("SELECT LAST_INSERT_ID()")
         last_inserted_id = cursor.fetchone()[0]
         
+        # Creates a new upcoming box and adds to upcomingOrdersTable
         upcomingOrders_data = [user_id, last_inserted_id, user_paymentMethod, user_address, user_subscriptionType, delivery_date_list[i]]
         srvrdb.insert_data(cursor, upcomingOrders_data, "upcomingOrdersTable")
+
         conn.commit()
 
 
