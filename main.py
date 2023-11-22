@@ -417,7 +417,7 @@ def manageSubscription():
         selected_meals = session.get('selected_meals', [])
         if len(selected_meals) != 7 or cardNum == None or subtype == None:
             if cardNum == None:
-                msg = "You do not have a payment on file."
+                msg = "You do not have a payment type on file."
             elif subtype == None:
                 msg = "Please select a subscription type."
             else:
