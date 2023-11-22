@@ -301,13 +301,14 @@ def updateInfo(email):
         input_email = request.form.get("email")
         address = request.form.get("address")
         password = request.form.get("password")
+        pwdhash = hashlib.md5(request.form["password"].encode()).digest()
            
         # passwordEncode = hashlib.md5(request.form["password"].encode())
         # if not (passwordEncode.digest() == user.password and passwordValidation(password)):
         #     msg = "Incorrect password. Please try again."
         #     return render_template("usrsettings.html", user=user, msg=msg)
 
-        if not ((password == user[4]) and passwordValidation(password)):
+        if not ((str(pwdhash) == user[4]) and passwordValidation(password)):
             msg = "Incorrect password. Please try again."
             return render_template("usrsettings.html", email=user[3], user=user, msg=msg)
         
@@ -341,8 +342,11 @@ def changepass(email):
     msg=None
     if request.method == "POST":
         oldpassword = request.form.get("oldpassword")
+        curpwdhash = hashlib.md5(request.form["oldpassword"].encode()).digest()
         newpassword = request.form.get("newpassword")
+        newpwdhash = hashlib.md5(request.form["newpassword"].encode()).digest()
         confirmpassword = request.form.get("confirmpassword")
+        conpwdhash = hashlib.md5(request.form["confirmpassword"].encode()).digest()
 
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
@@ -354,23 +358,25 @@ def changepass(email):
         # elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
         #     msg = "Incorrect password. Please try again!"
 
-        elif (newpassword == user[4]):
+        elif (str(newpwdhash) == user[4]):
             msg = "New password is the same as the old password. Please try again!"
             return render_template('changepass.html', email=user[3], msg=msg)
 
-        elif (oldpassword != user[4]):
+        elif (str(curpwdhash) != user[4]):
             msg = "The current password you entered does not match your original password. Please try again!"
             return render_template('changepass.html', email=user[3], msg=msg)
         
-        elif (newpassword != confirmpassword):
+        elif (str(newpwdhash) != str(conpwdhash)):
             msg = "New passwords do not match! Please try again!"
             return render_template('changepass.html', email=user[3], msg=msg)
 
         elif not passwordValidation(newpassword):
             msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"
             return render_template('changepass.html', email=user[3], msg=msg)   
+        
+        # hash = hashlib.md5(request.form["newpassword"].encode()).digest()
     
-    srvrdb.update_data1(cursor, "userTable", "password", newpassword, "email", session["email"])
+    srvrdb.update_data1(cursor, "userTable", "password", str(newpwdhash), "email", session["email"])
     conn.commit()
 
     return redirect(url_for("usrhome", email=session["email"]))
@@ -387,7 +393,7 @@ def add():
     confirmpassword = request.form.get("confirm_password")
 
     # Using MD5 to hash the password to be more secure.
-    hash = hashlib.md5(password.encode())
+    hash = hashlib.md5(request.form["password"].encode()).digest()
 
     emailCheck = srvrdb.select_specific_data(cursor, "userTable", "email", email)
     if emailCheck: # If email already exists in database
@@ -403,8 +409,7 @@ def add():
         return render_template('signupform.html', error=error, fName=fName, lName=lName, email=email, address=address, password=password, confirmpassword=confirmpassword)
 
 
-    srvrdb.insert_data(cursor, (fName, lName, email, password, address), "userTable")
-    # srvrdb.insert_data(cursor, (fName, lName, email, hash.digest(), address), "userTable")
+    srvrdb.insert_data(cursor, (fName, lName, email, str(hash), address), "userTable")
     conn.commit()
 
     return redirect('thankyou')
@@ -419,13 +424,12 @@ def submitlogin():
     
     if(request.method == "POST"):
         email = request.form["email"]
-        password = request.form["password"]
-        # password = hashlib.md5(request.form["password"].encode())
+        hash = hashlib.md5(request.form["password"].encode()).digest()
 
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
         if user:
-            if user[4] == password:
+            if user[4] == str(hash):
                 Sign_IN = True
                 session["logged_in"] = True
                 session["user_id"] = user[0]
