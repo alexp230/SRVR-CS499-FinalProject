@@ -28,8 +28,16 @@
 
         <div class="right-section">
             <nav class="navbar">
+
+                {%if not_logged_in%}
+                <a href="{{ url_for ('login') }}">Login</a>
+
+                <a href="{{ url_for ('signup') }}">Sign Up</a>
+                {%else%}
                 <a href="{{ url_for ('cart') }}">Cart</a>
+                
                 <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
+                {%endif%}
             </nav>
         </div>
     </header>
@@ -59,7 +67,12 @@
             <div class="meals-grid-item" data-category="{{ meal[2] }}">
                 <img src="{{ meal[3] }}" alt="{{ meal[1] }}" onclick="openPDF('{{ meal[3] }}')" class="meal-image">
                 <p>{{ meal[1]|replace('_', ' ') }}</p>
+                {%if logged_in%}
                 <button onclick="addToCart('{{ meal[1] }}')">Add to Cart</button>
+                {%endif%}
+                {%if not_logged_in%}
+                <button onclick="alert('Please login to add to cart')">Add to Cart</button>
+                {%endif%}
             </div>
         {% endfor %}
     </div>

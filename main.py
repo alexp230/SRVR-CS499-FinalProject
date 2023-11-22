@@ -324,12 +324,14 @@ def home():
 def browsemenu(fname=None):
     if session.get("logged_in") == True:
         fname = session["fname"]
-        
+        logged_in = True
         all_meals = srvrdb.fetch_all_rows("mealTable")
-        return render_template("browsemenu.html", all_meals=all_meals,fname=fname)
+
+        return render_template("browsemenu.html", all_meals=all_meals,fname=fname,logged_in=logged_in)
     else:
         all_meals = srvrdb.fetch_all_rows("mealTable")
-        return render_template("browsemenu.html", all_meals=all_meals)
+        not_logged_in = True
+        return render_template("browsemenu.html", all_meals=all_meals,not_logged_in=not_logged_in)
 
 # May not need this anymore. - Obie C
 @app.route('/category/<string:category>')
