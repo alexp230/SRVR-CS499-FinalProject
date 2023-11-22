@@ -320,6 +320,23 @@ def get_table_names():
         cursor.close()
         conn.close()
 
+def get_most_recent_delivery(user_id):
+    conn = connect_to_database()
+
+    try:
+        cursor = conn.cursor()
+        # Query to get all table names in the database
+        show_tables_query = "SELECT * FROM pastOrdersTable WHERE user_id = %s ORDER BY transaction_id DESC LIMIT 1"
+        # Execute the query
+        cursor.execute(show_tables_query, (user_id,))
+        # Fetch all table names
+        rows = cursor.fetchall()
+        return rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
 def main():
     conn = connect_to_database()
     try:
