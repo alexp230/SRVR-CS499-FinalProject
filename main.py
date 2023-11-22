@@ -18,13 +18,13 @@ import dbms as srvrdb
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
 app = Flask (__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///'+os.path.join(basedir,'data.sqlite')
-app.config['SQLALCHEMY_TRAC_MODIFICATIONS']=False
+# app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///'+os.path.join(basedir,'data.sqlite')
+# app.config['SQLALCHEMY_TRAC_MODIFICATIONS']=False
 
 app.config['SECRET_KEY'] = 'oursecretkey'
 
-db = SQLAlchemy(app)
-Migrate(app,db)
+# db = SQLAlchemy(app)
+# Migrate(app,db)
 
 conn = srvrdb.connect_to_database()
 cursor = conn.cursor()
@@ -97,7 +97,18 @@ def login():
 @app.route('/usrhome/<string:email>', methods = ["GET", "POST"])
 def usrhome(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
-    return render_template("tempusrhome.html", email=session["email"], user=user)
+
+    user_id = srvrdb.select_specific_data(cursor, "userTable", "email", email)[0]   
+    upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+    query = """
+    SELECT boxTable.* FROM boxTable JOIN upcomingOrdersTable ON boxTable.box_id = upcomingOrdersTable.box_id WHERE upcomingOrdersTable.user_id = %s
+"""
+    # Execute the query
+    cursor.execute(query, (user_id,))
+    boxes = cursor.fetchall()
+    # boxes = srvrdb.select_specific_data_many(cursor, "boxTable", )
+    
+    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # Function works properly, do not touch. - Josh Patton
@@ -460,12 +471,12 @@ def addNewCard(email):
         subtype = request.form.get("SubPlan")
         cardNum = request.form.get("CardNum")
         cardHolder = request.form.get("CardName")
-        expire_month = int(request.form.get("ExpiryMonth"))
-        expire_year = int(request.form.get("ExpiryYear"))
-        expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
-
-        if not (cardNum and cardHolder and expire_month and expire_year and cvv):
+        expire_month = request.form.get("ExpiryMonth")
+        expire_year = request.form.get("ExpiryYear")
+        expiry = str(expire_month) + "/" + str(expire_year)
+        
+        if not (cardNum or cardHolder or expire_month or expire_year or cvv):
             error = "Please fill out all fields!"
             return render_template("paymentform.html", email=user[3], error=error)
 
@@ -477,6 +488,8 @@ def addNewCard(email):
             error = "Enter valid expiration date!"
             return render_template("paymentform.html", email=user[3], error=error)
 
+        expire_month = int(expire_month)
+        expire_year = int(expire_year)
         today = datetime.today()
         expire_date = datetime(expire_year, expire_month, 1)
         if today > expire_date:
@@ -628,7 +641,12 @@ def check_subscriptions():
 # print(len(get_random_meals()))
 
 
-def check_SUBS(user):
+def check_SUBS(user) -> list:
+    """
+    Gets a user and adds up to four boxes to their upcoming orders
+
+    RETURN: a list of the IDs of the boxes added
+    """
     # Initialize important variables
     user_id = user[0]
     user_fname = user[1]
@@ -660,7 +678,9 @@ def check_SUBS(user):
 
     if (current_future_orders >= max_amount_of_orders):
         print("User needs no more boxes")
+        return
 
+    allboxes = [] #Stores id of all the added boxes to upcomingOrders
     # Adds enough meals for four weeks into upcomingOrdersTable
     for i in range(current_future_orders, max_amount_of_orders):
         # Gets seven random meals
@@ -685,6 +705,11 @@ def check_SUBS(user):
         srvrdb.insert_data(cursor, upcomingOrders_data, "upcomingOrdersTable")
 
         conn.commit()
+        
+        allboxes.append(last_inserted_id)
+
+    return allboxes
+    
 
 
 check_SUBS(srvrdb.select_specific_data(cursor, "userTable", "firstname", "Obie"))
