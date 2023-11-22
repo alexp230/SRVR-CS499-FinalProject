@@ -520,5 +520,115 @@ def aboutus():
 def howitworks():
     return render_template("howitworks.html")
 
+def is_subscription_due(delivery_day, current_date):
+    # Implement logic to check if the subscription is due for renewal
+    # For instance, if the delivery_day matches the current day
+    # or if the current day is within a renewal window (e.g. 3 days before the delivery day)
+    # For demonstration purposes, we will assume that the subscription is due for renewal if the delivery day is in 3 days
+    # You would implement your own logic here based on your business requirements
+    # For example, you may want to check if the delivery day is today or within a 3 day window
+    # You may also want to check if the subscription status is active
+
+    return delivery_day.lower() == current_date.strftime("%A").lower()
+
+def renew_subscription(user_id, household_size):
+    # Simulate the subscription renewal process for the user
+    # Prepare a random selection of 7 meals for the next 4 weeks
+
+    # Define the number of weeks for meal preparation
+    weeks_for_preparation = 4
+
+    # Get the current date
+    current_date = datetime.now().date()
+
+    # Calculate the next delivery dates for the upcoming 4 weeks (Friday of each week)
+    next_delivery_dates = [
+        current_date + timedelta(days=(7 * i - current_date.weekday()) % 7)
+        for i in range(1, weeks_for_preparation + 1)
+    ]
+
+    # Prepare a random selection of 7 meals for each delivery date
+    for delivery_date in next_delivery_dates:
+        # Get or generate a random selection of 7 meals (for demonstration, using a list of meals)
+        # You would retrieve this from your mealTable in your database
+        meals_for_delivery = get_random_meals(household_size)
+        
+        # Here, meals_for_delivery will be a list of 7 meal items for each delivery date
+        # For demonstration purposes, let's print the delivery date and the selected meals
+        print(f"Delivery Date: {delivery_date.strftime('%A, %B %d, %Y')}")
+        print("Selected Meals:")
+        for meal in meals_for_delivery:
+            print(f"- {meal}")
+
+        # You would perform actual database updates here if needed
+        # For example, insert these meals into the boxTable for the user
+        # This would involve creating a new row in the boxTable for each delivery date
+        # with the selected meals for that date and the user_id
+        
+        # Example:
+        # srvrdb.insert_data(cursor, (user_id, ', '.join(meals_for_delivery)), "boxTable")
+        # conn.commit()
+
+def get_random_meals():
+    # Dummy list of meals for demonstration purposes
+    all_meals = srvrdb.fetch_all_rows("mealTable")
+    # For each delivery, randomly select 7 meals for the user
+    selected_meals = random.sample(all_meals, 7)
+    return selected_meals
+
+# Assume this route is triggered periodically to check subscriptions
+@app.route('/check_subscriptions')
+def check_subscriptions():
+    # Retrieve active subscribers from subscriptionTable
+    active_subscribers = srvrdb.fetch_all_rows("subscriptionTable")
+    
+    
+    # Get the current date
+    current_date = datetime.now().date()
+    next_delivery_dates = []
+    for subscriber in active_subscribers:
+        user_id = subscriber[1]  # Extract user_id from subscriptionTable
+        delivery_day = subscriber[2]  # Extract delivery day
+        household_size = subscriber[3]  # Extract household size
+        user = srvrdb.select_specific_data(cursor, "userTable", "user_id", user_id)
+        last_delivery = srvrdb.get_most_recent_delivery(user_id)
+        last_delivery_date_str = last_delivery[0][6]
+        print(f"Last delivery date: {last_delivery_date_str}")
+
+        last_delivery_date = datetime.strptime(last_delivery_date_str, "%Y-%m-%d").date()
+
+        delivery_date_list = [
+        last_delivery_date + timedelta(days=(7 * i))
+
+        for i in range(1, 5)
+        ]
+        next_delivery_dates.extend(delivery_date_list)
+        random_meals = get_random_meals()
+        selected_meals = [meal[1] for meal in random_meals]
+        selected_meals_str = ", ".join(selected_meals)
+        for day in next_delivery_dates:
+            srvrdb.insert_data(cursor, (user_id, selected_meals_str), "boxTable")
+            conn.commit()
+        boxes = srvrdb.select_specific_data_many(cursor, "boxTable", "user_id", user_id)
+
+        for i in range(0, len(next_delivery_dates)):
+            print(boxes[i][2] + "Will be delivered on" + next_delivery_dates[i])
+
+            # box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
+            
+
+
+    for day in next_delivery_dates:
+        print(f"Next delivery date: {day}")
+
+
+    
+
+            
+    return "Subscription check completed."
+
+check_subscriptions()
+print(len(get_random_meals()))
+
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
