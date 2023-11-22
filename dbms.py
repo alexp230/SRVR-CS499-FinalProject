@@ -340,7 +340,7 @@ def main():
         # # Delete table if exists. (Testing Purposes)
         # # To delete a table with a key that is referenced by others as a foreign key, you must delete the table with the foreign key first, 
         # # then delete the table that it references to.
-        # delete_table(cursor, "userTable")
+        # delete_table(cursor, "table_name")
         # print("Tables deleted.\n")
 
         # # Create table if not exists
@@ -351,18 +351,6 @@ def main():
         # # print_all_rows()
         # result = fetch_all_rows("mealTable")
 
-        # print("ID: [0][0]")
-        # print(result[0][0])
-        # print("\nName: [0][1]")
-        # print(result[0][1])
-        # print("\nCategory: [0][2]")
-        # print(result[0][2])
-        # print("\nPicture: [0][3]")
-        # print(result[0][3])
-        # print("\nInstructions: [0][4]")
-        # print(result[0][4])
-        # print("\nAllergens: [0][5]")
-        # print(result[0][5])
         # # Insert data into userTable(firstname, lastname, email, password, address)
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"
@@ -406,9 +394,11 @@ def main():
         # for row in updated_rows:
         #     print(row)
 
-        # # Delete data
-        # delete_data(cursor, "pymntTable", "card_holder_name", "Obie Carnathan")
-        # delete_data(cursor, "pymntTable", "card_holder_name", "Alex Pruit")
+        '''Delete data'''
+        # delete_data(cursor, "subscriptionTable", "delivery_day", "Thursday")
+        # delete_data(cursor, "pastOrdersTable", "user_id", 48)
+        # delete_data(cursor, "boxTable", "user_id", 48)
+        # delete_data(cursor, "userTable", "user_id", 48)
         # conn.commit()
 
         # # Select data after delete

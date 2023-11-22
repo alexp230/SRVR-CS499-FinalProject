@@ -43,7 +43,12 @@
             <li>{{ meal }} $5.99 per serving</li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('subscribe') }}">Proceed to Checkout</a>
+    {% if selected_meals | length == 7 %}
+        <a href="{{ url_for('subscribe') }}">Proceed to Checkout</a>
+    {% else %}
+    <p><br></p>
+        <p>You have selected {{ selected_meals | length }} meal(s). You need to select {{ 7 - selected_meals | length }} more meal(s) to proceed to checkout.</p>
+    {% endif %}
 {% else %}
     <p>Your cart is empty.</p>
 {% endif %}

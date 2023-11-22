@@ -72,170 +72,6 @@ def passwordValidation(PWD):
 def update_user_info(data):
     srvrdb.update_data5(cursor, "userTable", "firstname")
 
-# def update_user_info(session_param: str, row_to_modify, column: int, new_value):
-#     if (session_param):
-#         session[session_param] = row_to_modify[column] #417
-
-#     if (new_value):
-#         row_to_modify[column] = new_value #301
-#         conn.commit()
-
-
-
-def registrationForm(FlaskForm):
-    name = StringField(validators = [DataRequired()])
-    email = StringField(validators = [DataRequired()])
-    address = StringField(validators = [DataRequired()])
-    password = StringField(validators = [DataRequired()])
-    confirmpassword = StringField(validators = [DataRequired()])
-    submit = SubmitField('Register')
-
-class LoginForm(FlaskForm):
-    email = StringField(validators = [DataRequired()])
-    password = StringField(validators = [DataRequired()])
-    submit = SubmitField('Login')
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.Text, nullable=False)
-    lname = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False)
-    password = db.Column(db.Text, nullable=False)
-    address = db.Column(db.Text, nullable=False)
-
-    def __init__(self, fname, lname, email, password, address):
-        self.fname = fname
-        self.lname = lname
-        self.email = email
-        self.password = password
-        self.address = address
-
-    def __repr__(self):
-        return f"{self.user_id}. {self.fname} {self.lname} [({self.email}) - {self.password}] | {self.address}" 
-
-class Meal(db.Model):
-    __tablename__ = "meals"
-
-    meal_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    category = db.Column(db.String, nullable=False)
-    photo_URL = db.Column(db.String, nullable=True)
-    instructions = db.Column(db.String, nullable=True)
-    allergens = db.Column(db.String, nullable=True)
-
-    def __init__(self, name, category, photo_URL, instructions, allergens):
-        self.name = name
-        self.category = category
-        self.photo_URL = photo_URL
-        self.instructions = instructions
-        self.allergens = allergens
-
-    def new_name(self):
-        return self.name.replace('_', ' ')
-    
-    def __repr__(self):
-        return f"{self.meal_id}. \nCategory: {self.category}\nName:- {self.name}\nPhoto:- {self.photo_URL}\nInstructions:- {self.instructions}\n"
-
-class Box(db.Model): # This is the box that will be delivered to the user
-    # A box will contain 7 meals times the number of people in the household
-    __tablename__ = "boxes"
-
-    box_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    ordered_meals = db.Column(db.String)
-
-    def __init__(self, user_id, ordered_meals):
-        self.user_id = user_id
-        self.ordered_meals = ordered_meals
-
-    def __repr__(self):
-        return f"{self.box_id}. Ordered Meals: {self.ordered_meals}"
-    
-class Payment_Methods(db.Model):
-    __tablename__ = "payment_methods"
-
-    card_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    card_number = db.Column(db.String)
-    card_holder_name = db.Column(db.String, nullable=False)
-    card_exp_date = db.Column(db.String, nullable=False)
-    card_CCV = db.Column(db.String, nullable=False)
-    # subscriptionType = db.Column(db.String, nullable=False) 
-    # should have been an enum. I also think this should be in the subscription table.
-
-    def __init__(self, user_id, card_number, card_holder_name, card_exp_date, card_CCV):
-        self.user_id = user_id
-        self.card_number = card_number
-        self.card_holder_name = card_holder_name
-        self.card_exp_date = card_exp_date
-        self.card_CCV = card_CCV
-        # self.subscriptionType = subscriptionType
-
-    def __repr__(self):
-        hidden_card_number = '*' * (len(self.card_number) - 4) + self.card_number[-4:]
-        # return f"{self.P_id}. Payment_Method(card_number={self.card_number}, user_id={self.user_id}, " \
-        #        f"card_holder_name={self.card_holder_name}, card_exp_date={self.card_exp_date}, card_CCV={self.card_CCV}), "
-        return hidden_card_number
-
-    def get_card_number(self):
-        return self.card_number
-
-    def get_card_holder_name(self):
-        return self.card_holder_name
-
-    def get_card_exp_date(self):
-        return self.card_exp_date
-
-class PastOrders(db.Model):
-    __tablename__ = "past_orders"
-
-    transaction_id = db.Column(db.Integer, primary_key=True) # Transaction ID
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    box_id = db.Column(db.Integer, db.ForeignKey('boxes.user_id'), nullable=False) # Box ID
-    payment_method = db.Column(db.String, nullable=False)
-    shipping_address = db.Column(db.String, nullable=False)
-    subscription_type = db.Column(db.String, nullable=False)
-    order_date = db.Column(db.String, nullable=False)
-    order_time = db.Column(db.String, nullable=False)
-
-    def __init__(self, user_id, box_id, payment_method, shipping_address, subscription_type, order_date, order_time):
-        self.user_id = user_id
-        self.box_id = box_id
-        self.payment_method = payment_method
-        self.shipping_address = shipping_address
-        self.subscription_type = subscription_type
-        self.order_date = order_date
-        self.order_time = order_time
-
-    def __repr__(self):
-        return f"PastOrders(T_ID={self.transaction_id}, user_id={self.user_id}, box_id={self.box_id}" \
-               f"payment_method='{self.payment_method}', shipping_address='{self.shipping_address}', " \
-               f"subscription_type='{self.subscription_type}', Date={self._Date}, Time={self._Time})"
-
-class Subscription(db.Model):
-    __tablename__ = "subscriptions"
-
-    subscription_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    delivery_day = db.Column(db.String)  # Monday, Tuesday, etc.
-    household_size = db.Column(db.Integer)  # 2 or 4
-    # Other fields as needed...
-
-    def __init__(self, user_id, delivery_day, household_size):
-        self.user_id = user_id
-        self.delivery_day = delivery_day
-        self.household_size = household_size
-
-    def __repr__(self):
-        return f"Subscription(subscription_id={self.subscription_id}, user_id={self.user_id}, " \
-                f"delivery_day='{self.delivery_day}', household_size={self.household_size})"
-                   
-with app.app_context():
-    # Create the tables (if not already created)
-    db.create_all()
-
 # All this function needs to do is display a thankyou message / give conformation that 
 # the account was created, then redirect the user to the login page.
 @app.route('/thankyou', methods = ["GET", "POST"])
@@ -302,11 +138,6 @@ def updateInfo(email):
         address = request.form.get("address")
         password = request.form.get("password")
         pwdhash = hashlib.md5(request.form["password"].encode()).digest()
-           
-        # passwordEncode = hashlib.md5(request.form["password"].encode())
-        # if not (passwordEncode.digest() == user.password and passwordValidation(password)):
-        #     msg = "Incorrect password. Please try again."
-        #     return render_template("usrsettings.html", user=user, msg=msg)
 
         if not ((str(pwdhash) == user[4]) and passwordValidation(password)):
             msg = "Incorrect password. Please try again."
@@ -350,7 +181,7 @@ def changepass(email):
 
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
-        
+
         # # Leave here as a reminder to implement hashing for passwords.
         # elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
         #     msg = "New password matches old password!"
@@ -524,9 +355,6 @@ def add_to_cart():
 
 @app.route('/subscribe', methods=['GET','POST'])
 def subscribe():
-    # Parse and collect subscription information from the form
-    # delivery_day = request.form.get('delivery_day')
-    # household_size = request.form.get('household_size')
     selected_meals = session.get('selected_meals', [])  # Assuming meals are stored in the session
 
     # Get user information (email, ID, etc.) from the session
@@ -536,16 +364,6 @@ def subscribe():
    
     cards = srvrdb.select_specific_data_many(cursor, "pymntTable", "user_id", session["user_id"])
 
-    # Create a new subscription record
-    # new_subscription = Subscription(user_id=user.U_id, delivery_day=delivery_day, household_size=household_size)
-    # db.session.add(new_subscription)
-    # db.session.commit()
-
-    # Store selected meals for this subscription (you might need a new table or structure for this)
-    # ...
-
-    # return redirect(url_for('subscription_confirmation'))  # Redirect to a confirmation page
-    # return redirect(url_for('subscribe'))  # Redirect to a confirmation page
     return render_template("subscribe.html", selected_meals=selected_meals, cards=cards, fname=fname)
 
 def checkDeliveryDate(delivery_date):
@@ -570,17 +388,22 @@ def numtoDayOfWeek(number):
 # This function allows the user to change subscription type
 @app.route('/manageSubscription', methods = ["GET", "POST"])
 def manageSubscription():
+    cards = srvrdb.select_specific_data_many(cursor, "pymntTable", "user_id", session["user_id"])
     if not session.get("logged_in"):
         return redirect(url_for("login"))
     msg = None
     if request.method == "POST":
         delivery_date = request.form.get("delivery-date")
-        # if delivery_date > str(today_date):
-        #     msg = "Please enter a valid delivery date."
-        #     return render_template("paymentform.html", email=session["email"], msg=msg)
+
         if delivery_date == '':
             msg = "Please enter a valid delivery date."
-            return render_template("subscribe.html", email=session["email"], msg=msg)
+            return render_template("subscribe.html", selected_meals=session['selected_meals'], email=session["email"], msg=msg, cards=cards)
+        else:
+            given_date = datetime.strptime(delivery_date, "%Y-%m-%d")
+            seven_days_from_now = datetime.now() + timedelta(days=7)
+            if given_date > seven_days_from_now or given_date <= datetime.now():
+                msg = "Your delivery date must be within 7 days."
+                return render_template("subscribe.html", selected_meals=session['selected_meals'], email=session["email"], msg=msg, cards=cards)
         day_of_week = datetime.strptime(delivery_date, "%Y-%m-%d").weekday() # returns a number from 0-6
         day = numtoDayOfWeek(day_of_week) # returns the day of the week as a string
         subtype = request.form.get("household-size")
@@ -592,49 +415,34 @@ def manageSubscription():
         print(f"Card number: {cardNum}")
 
         selected_meals = session.get('selected_meals', [])
-        if len(selected_meals) != 7:
-            msg = "Please select 7 meals."
-            return render_template("subscribe.html", msg=msg)
+        if len(selected_meals) != 7 or cardNum == None or subtype == None:
+            if cardNum == None:
+                msg = "You do not have a payment on file."
+            elif subtype == None:
+                msg = "Please select a subscription type."
+            else:
+                msg = "Please select 7 meals."
+            return render_template("subscribe.html",selected_meals=selected_meals, msg=msg, cards=cards)
         
         if delivery_date and subtype and cardNum:
-            # new_subscription = Subscription(user_id=session["user_id"], delivery_day=day, household_size=subtype)
             srvrdb.insert_data(cursor, (session["user_id"], day, subtype), "subscriptionTable")
             conn.commit()
-            # Add the subscription to the database
-            # db.session.add(new_subscription)
-            # db.session.commit()
 
             selected_meals = session.get('selected_meals', [])
             selected_meals_str = ", ".join(selected_meals)
-            # Create a new box record
-            # new_box = Box(user_id=session["user_id"], ordered_meals=selected_meals_str)
+
             srvrdb.insert_data(cursor, (session["user_id"], selected_meals_str), "boxTable")
             conn.commit()
-            # Add the box to the database
-            # db.session.add(new_box)
-            # db.session.commit()
-
-            # # !!!-----  MySQL version of ^^ I believe ??? (haven't tested)  -----!!!
-            # new_box = srvrdb.insert_data(cursor, (session["user_id"], selected_meals_str), "boxTable")
-            # conn.commit()
 
             current_time = datetime.now().time()
             order_datetime = datetime.combine(datetime.strptime(delivery_date, "%Y-%m-%d").date(), current_time)
-            # Create a new past order record
-            # new_past_order = PastOrders(
-            #                     user_id=session["user_id"], 
-            #                     box_id=new_box.box_id, payment_method=cardNum, 
-            #                     shipping_address=session["address"], 
-            #                     subscription_type=subtype, 
-            #                     order_date=str(delivery_date), 
-            #                     order_time=str(order_datetime)
-            #                     )
+
             box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
             srvrdb.insert_data(cursor, (session["user_id"], box[0], cardNum, session["address"], subtype, str(delivery_date), str(order_datetime)), "pastOrdersTable")
             conn.commit()
 
             msg = f"Subscription updated successfully. Your reoccurring delivery is scheduled for every {day}."
-            # Add the subscription to the database
+
     return render_template("thankyou.html", msg=msg)
 
 # Function is used to process data from paymentform.html. Upon sucessful submission redirects user to tempusrhome.html
@@ -684,7 +492,6 @@ def addNewCard(email):
 
     return redirect(url_for("usrhome", email=user[3]))
 
-# WIP
 # This function allows past order data of a user to be retrieved
 @app.route('/pastorders/<string:email>', methods = ["GET", "POST"])
 def pastOrders(email):
