@@ -218,7 +218,7 @@ def changepass(email):
 def add():
     fName = request.form.get("fname")
     lName = request.form.get("lname")
-    email = request.form.get("email")
+    email = request.form.get("email").lower()
     address = request.form.get("address")
     password = request.form.get("password")
     confirmpassword = request.form.get("confirm_password")
@@ -254,7 +254,7 @@ def submitlogin():
     session.clear()
     
     if(request.method == "POST"):
-        email = request.form["email"]
+        email = request.form["email"].lower()
         hash = hashlib.md5(request.form["password"].encode()).digest()
 
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
@@ -568,8 +568,10 @@ def renew_subscription(user_id, household_size):
 
 def get_random_meals():
     # Dummy list of meals for demonstration purposes
-    all_meals = srvrdb.fetch_all_rows("mealTable")
+    all_meals = list(srvrdb.fetch_all_rows("mealTable"))
+    
     # For each delivery, randomly select 7 meals for the user
+    random.shuffle(all_meals)
     selected_meals = random.sample(all_meals, 7)
     return selected_meals
 
@@ -578,7 +580,7 @@ def get_random_meals():
 def check_subscriptions():
     # Retrieve active subscribers from subscriptionTable
     active_subscribers = srvrdb.fetch_all_rows("subscriptionTable")
-    
+
     
     # Get the current date
     current_date = datetime.now().date()
@@ -599,17 +601,20 @@ def check_subscriptions():
 
         for i in range(1, 5)
         ]
+
         next_delivery_dates.extend(delivery_date_list)
         random_meals = get_random_meals()
         selected_meals = [meal[1] for meal in random_meals]
         selected_meals_str = ", ".join(selected_meals)
-        for day in next_delivery_dates:
-            srvrdb.insert_data(cursor, (user_id, selected_meals_str), "boxTable")
-            conn.commit()
+
+        # for day in next_delivery_dates:
+        #     srvrdb.insert_data(cursor, (user_id, selected_meals_str), "boxTable")
+        #     conn.commit()
+
         boxes = srvrdb.select_specific_data_many(cursor, "boxTable", "user_id", user_id)
 
         for i in range(0, len(next_delivery_dates)):
-            print(boxes[i][2] + "Will be delivered on" + str(next_delivery_dates[i]))
+            print (f"{i+1}. {boxes[i][2]} \nWill be delivered on: {str(next_delivery_dates[i])}")
 
             # box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
             
@@ -617,15 +622,74 @@ def check_subscriptions():
 
     for day in next_delivery_dates:
         print(f"Next delivery date: {day}")
-
-
-    
-
-            
+       
+    print ("Subscription check completed.")
     return "Subscription check completed."
 
-check_subscriptions()
+#check_subscriptions()
 # print(len(get_random_meals()))
+
+
+def check_SUBS(user):
+    # Initialize important variables
+    user_id = user[0]
+    user_fname = user[1]
+    user_lname = user[2]
+    user_email = user[3]
+    user_address = user[5]
+    user_paymentMethod = srvrdb.select_specific_data(cursor, "pymntTable", "user_id", user_id)[2]
+    user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
+
+    # Gets user subscription and check if they have one
+    active_subscription = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)
+    if (not active_subscription):
+        print ("user does not have subscription")
+
+    # Gets the next four days for meals to be shipped
+    last_delivery = srvrdb.get_most_recent_delivery(user_id) #tuple
+    last_delivery_date_str = last_delivery[0][6]
+    last_delivery_date = datetime.strptime(last_delivery_date_str, "%Y-%m-%d").date()
+
+    # Puts the for days days in a list
+    delivery_date_list = []
+    for i in range (1,5):
+        delivery_date_list.append(str(last_delivery_date + timedelta(days=(7 * i))))
+
+   # Initialize important variable 
+    max_amount_of_orders = 4
+    all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+    current_future_orders = len(all_upcomingOrders)
+
+    if (current_future_orders >= max_amount_of_orders):
+        print("User needs no more boxes")
+
+    # Adds enough meals for four weeks into upcomingOrdersTable
+    for i in range(current_future_orders, max_amount_of_orders):
+        # Gets seven random meals
+        all_meals = get_random_meals()
+
+        # Builds a string of the seven meals
+        random_meals_string = ""
+        for meals in all_meals:
+            random_meals_string += (meals[1] + ", ")
+        random_meals_string = random_meals_string[:-2]
+
+        # Creates a new box and inserts it to boxTable with the meals
+        box_data = [user_id, random_meals_string]
+        srvrdb.insert_data(cursor, box_data, "boxTable")
+
+        # Gets the newly created box id
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        last_inserted_id = cursor.fetchone()[0]
+        
+        # Creates a new upcoming box and adds to upcomingOrdersTable
+        upcomingOrders_data = [user_id, last_inserted_id, user_paymentMethod, user_address, user_subscriptionType, delivery_date_list[i]]
+        srvrdb.insert_data(cursor, upcomingOrders_data, "upcomingOrdersTable")
+
+        conn.commit()
+
+
+check_SUBS(srvrdb.select_specific_data(cursor, "userTable", "firstname", "Obie"))
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host

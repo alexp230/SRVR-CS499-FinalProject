@@ -79,9 +79,7 @@ def create_tables(cursor):
         subscription_type TEXT NOT NULL,
         order_date TEXT NOT NULL,
         FOREIGN KEY (user_id) 
-        REFERENCES userTable(user_id),
-        FOREIGN KEY (box_id) 
-        REFERENCES boxTable(box_id)
+        REFERENCES userTable(user_id)
     )
     '''
     
@@ -146,11 +144,15 @@ def insert_data(cursor, data, table_name):
     elif table_name == "subscriptionTable":
         schema = "(user_id, delivery_day, household_size)"
         valueformat = "(%s, %s, %s)"
+    elif table_name == "upcomingOrdersTable":
+        schema = "(user_id, box_id, payment_method, shipping_address, subscription_type, order_date)"
+        valueformat = "(%s, %s, %s, %s, %s, %s)"
     else:
         print("Please check your data to make sure it has the correct table name")
 
     insert_query = "INSERT INTO "+table_name+" "+schema+" VALUES "+valueformat+""
     cursor.execute(insert_query, data)
+
 
 # Select all data from specified table by table_name.
 def select_data(cursor, table_name):
@@ -360,16 +362,37 @@ def main():
         # Create a cursor
         cursor = conn.cursor()
 
+        # delete_table(cursor, "upcomingOrdersTable")
+        # conn.commit()
+        # create_tables(cursor)
+        # schema = "(user_id, box_id, payment_method, shipping_address, subscription_type, order_date)"
+        # data = (58, "1111222233334444", "44th Street Avenue J", 2, "2023-11-24")
+        # insert_data(cursor, data, "upcomingOrdersTable")
+        # delete_data(cursor, "upcomingOrdersTable", "order_id", 3)
+        # conn.commit()
+
+        # counter = 0
+        # while ( (len(select_data(cursor, "upcomingOrdersTable"))) and counter < 100):
+        #     delete_data(cursor, "upcomingOrdersTable", "user_id", 58)
+        #     print(counter)
+        #     conn.commit()
+        #     counter += 1
+
+
         # Call the function to get table names and print them
         create_tables(cursor)
         table_names = get_table_names()
         print("Table Names:")
         for table_name in table_names:
+            if (table_name == "mealTable"):
+                continue
             print()
             print(table_name)
             rows = fetch_all_rows(table_name)
             for row in rows:
                 print(row)
+
+        
 
         # # Delete table if exists. (Testing Purposes)
         # # To delete a table with a key that is referenced by others as a foreign key, you must delete the table with the foreign key first, 
@@ -400,6 +423,7 @@ def main():
         #                         ('9999888877776666', 'Obie Carnathan', '4/28', '444')]
         # insert_data(cursor, pymnt_data_to_insert, "pymntTable")
         # conn.commit()
+        
 
         # # Select all data from userTable
         # rows = select_data(cursor, "userTable")
