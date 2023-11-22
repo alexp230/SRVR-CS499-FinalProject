@@ -417,7 +417,7 @@ def manageSubscription():
         selected_meals = session.get('selected_meals', [])
         if len(selected_meals) != 7 or cardNum == None or subtype == None:
             if cardNum == None:
-                msg = "You do not have a payment type on file."
+                msg = "You do not have a payment on file."
             elif subtype == None:
                 msg = "Please select a subscription type."
             else:
@@ -460,15 +460,12 @@ def addNewCard(email):
         subtype = request.form.get("SubPlan")
         cardNum = request.form.get("CardNum")
         cardHolder = request.form.get("CardName")
+        expire_month = int(request.form.get("ExpiryMonth"))
+        expire_year = int(request.form.get("ExpiryYear"))
+        expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
 
-
-        expire_month = request.form.get("ExpiryMonth")
-        expire_year = request.form.get("ExpiryYear")
-        expiry = str(expire_month) + "/" + str(expire_year)
-        
-
-        if not (cardNum or cardHolder or expire_month or expire_year or cvv):
+        if not (cardNum and cardHolder and expire_month and expire_year and cvv):
             error = "Please fill out all fields!"
             return render_template("paymentform.html", email=user[3], error=error)
 
@@ -480,8 +477,6 @@ def addNewCard(email):
             error = "Enter valid expiration date!"
             return render_template("paymentform.html", email=user[3], error=error)
 
-        expire_month = int(expire_month)
-        expire_year = int(expire_year)
         today = datetime.today()
         expire_date = datetime(expire_year, expire_month, 1)
         if today > expire_date:
@@ -585,7 +580,7 @@ def check_subscriptions():
     
     # Get the current date
     current_date = datetime.now().date()
-    next_delivery_dates = []
+    next_delivery_dates = [] # List to store the next delivery dates for each subscriber
     for subscriber in active_subscribers:
         user_id = subscriber[1]  # Extract user_id from subscriptionTable
         delivery_day = subscriber[2]  # Extract delivery day
@@ -612,7 +607,7 @@ def check_subscriptions():
         boxes = srvrdb.select_specific_data_many(cursor, "boxTable", "user_id", user_id)
 
         for i in range(0, len(next_delivery_dates)):
-            print(boxes[i][2] + "Will be delivered on" + next_delivery_dates[i])
+            print(boxes[i][2] + "Will be delivered on" + str(next_delivery_dates[i]))
 
             # box = srvrdb.select_specific_data(cursor, "boxTable", "user_id", session["user_id"])
             
@@ -628,7 +623,7 @@ def check_subscriptions():
     return "Subscription check completed."
 
 check_subscriptions()
-print(len(get_random_meals()))
+# print(len(get_random_meals()))
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host

@@ -68,6 +68,22 @@ def create_tables(cursor):
         REFERENCES userTable(user_id)
     )
     '''
+
+    create_upcomingOrdersTable_query = '''
+    CREATE TABLE IF NOT EXISTS upcomingOrdersTable (
+        order_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        box_id INT,
+        payment_method TEXT NOT NULL,
+        shipping_address TEXT NOT NULL,
+        subscription_type TEXT NOT NULL,
+        order_date TEXT NOT NULL,
+        FOREIGN KEY (user_id) 
+        REFERENCES userTable(user_id),
+        FOREIGN KEY (box_id) 
+        REFERENCES boxTable(box_id)
+    )
+    '''
     
     create_pastOrdersTable_query = '''
     CREATE TABLE IF NOT EXISTS pastOrdersTable (
@@ -103,6 +119,7 @@ def create_tables(cursor):
     cursor.execute(create_pymntTable_query)
     cursor.execute(create_pastOrdersTable_query)
     cursor.execute(create_subscriptionTable_query)
+    cursor.execute(create_upcomingOrdersTable_query)
 
 # Delete a specfied table by table_name 
 def delete_table(cursor, table_name):
