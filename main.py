@@ -460,12 +460,15 @@ def addNewCard(email):
         subtype = request.form.get("SubPlan")
         cardNum = request.form.get("CardNum")
         cardHolder = request.form.get("CardName")
-        expire_month = int(request.form.get("ExpiryMonth"))
-        expire_year = int(request.form.get("ExpiryYear"))
-        expiry = str(expire_month) + "/" + str(expire_year)
         cvv = request.form.get("CVV")
 
-        if not (cardNum and cardHolder and expire_month and expire_year and cvv):
+
+        expire_month = request.form.get("ExpiryMonth")
+        expire_year = request.form.get("ExpiryYear")
+        expiry = str(expire_month) + "/" + str(expire_year)
+        
+
+        if not (cardNum or cardHolder or expire_month or expire_year or cvv):
             error = "Please fill out all fields!"
             return render_template("paymentform.html", email=user[3], error=error)
 
@@ -477,6 +480,8 @@ def addNewCard(email):
             error = "Enter valid expiration date!"
             return render_template("paymentform.html", email=user[3], error=error)
 
+        expire_month = int(expire_month)
+        expire_year = int(expire_year)
         today = datetime.today()
         expire_date = datetime(expire_year, expire_month, 1)
         if today > expire_date:

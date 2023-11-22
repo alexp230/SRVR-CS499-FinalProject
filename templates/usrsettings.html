@@ -34,10 +34,10 @@
         <!-- <form action="/updateInfo/{{user.fname}}" method="post"> -->
         <form action="/updateInfo/{{email}}" method="post" enctype="multipart/form-data">
             <h3>Change the fields that you would like to modify</h3>
-            <input type="text" name="fname" required placeholder="First name" value="{{ user.fname }}">
-            <input type="text" name="lname" required placeholder="Last name" value="{{ user.lname }}">
-            <input type="email" name="email" required placeholder="Email" value="{{ user.email }}">
-            <input type="text" name="address" required placeholder="Address" value="{{ user.address }}">
+            <input type="text" name="fname" required placeholder="First name" value="{{ user[1] }}">
+            <input type="text" name="lname" required placeholder="Last name" value="{{ user[2] }}">
+            <input type="email" name="email" required placeholder="Email" value="{{ user[3] }}">
+            <input type="text" name="address" required placeholder="Address" value="{{ user[5] }}">
             <!-- <input type="password" name="password" required placeholder="Enter your password"> -->
             <!-- <input type="password" name="confirm_password" required placeholder="Confirm your password"> -->
             <h5>Enter your current password to confirm changes</h5>
