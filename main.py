@@ -202,13 +202,6 @@ def changepass(email):
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
 
-        # # Leave here as a reminder to implement hashing for passwords.
-        # elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
-        #     msg = "New password matches old password!"
-
-        # elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
-        #     msg = "Incorrect password. Please try again!"
-
         elif (str(newpwdhash) == user[4]):
             msg = "New password is the same as the old password. Please try again!"
             return render_template('changepass.html', email=user[3], msg=msg)
@@ -223,9 +216,7 @@ def changepass(email):
 
         elif not passwordValidation(newpassword):
             msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"
-            return render_template('changepass.html', email=user[3], msg=msg)   
-        
-        # hash = hashlib.md5(request.form["newpassword"].encode()).digest()
+            return render_template('changepass.html', email=user[3], msg=msg)  
     
     srvrdb.update_data1(cursor, "userTable", "password", str(newpwdhash), "email", session["email"])
     conn.commit()
