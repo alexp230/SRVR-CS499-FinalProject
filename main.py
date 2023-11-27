@@ -98,20 +98,21 @@ def login():
 def usrhome(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
-    all_box_ids = check_SUBS(user)
-
     user_id = user[0]   
     upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+
     query = """
     SELECT boxTable.* FROM boxTable JOIN upcomingOrdersTable ON boxTable.box_id = upcomingOrdersTable.box_id WHERE upcomingOrdersTable.user_id = %s
 """
+    all_meals = srvrdb.fetch_all_rows("mealTable")
+
     # Execute the query
     cursor.execute(query, (user_id,))
     boxes = cursor.fetchall()
+
     # boxes = srvrdb.select_specific_data_many(cursor, "boxTable", )
     
-    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_box_ids=all_box_ids)
-
+    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_meals=all_meals)
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # Function works properly, do not touch. - Josh Patton
 @app.route('/paymentmethod/<string:email>', methods = ["GET", "POST"])
@@ -667,7 +668,7 @@ def check_SUBS(user) -> list:
         print ("user does not have subscription")
         return
     
-    user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
+    user_subscriptionType = active_subscription[3]
 
     # Gets the next four days for meals to be shipped
     last_delivery = srvrdb.get_most_recent_delivery(user_id) #tuple

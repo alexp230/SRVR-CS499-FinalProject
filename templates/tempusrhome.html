@@ -31,11 +31,16 @@
             {% set meals = box[2].split(', ') %}
             
             {% for meal in row %}
-                <div class="meal-item">
-                    <img src="{{ image_url }}" alt="{{ meal.name }} {{row}}">
-                    <h2 style="text-align: center">Meal {{loop.index0 + 1 }}: {{ meals[loop.index0] }}</h2>
-                    <button type="button" onclick="modifyMeal('{{ meal.name }}')">Modify</button>
-                </div>
+                {% set mn = meals[loop.index0] %}
+                {% for meal_name in all_meals %}
+                {% if meal_name[1] == mn %}
+                    <div class="meal-item">
+                        <img src="{{ meal_name[3] }}" alt="{{ meals[loop.index0] }} {{row}}">
+                        <h2 style="text-align: center">Meal {{loop.index0 + 1 }}: {{ meals[loop.index0] }}</h2>
+                        <button type="button" onclick="modifyMeal('{{ meals[loop.index0] }}')">Modify</button>
+                    </div>
+                {% endif %}
+                {% endfor %}
             {% endfor %}
         </div>
     {% endfor %}
