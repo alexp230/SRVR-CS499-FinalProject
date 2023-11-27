@@ -98,20 +98,21 @@ def login():
 def usrhome(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
-    all_box_ids = check_SUBS(user)
-
     user_id = user[0]   
     upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+
     query = """
     SELECT boxTable.* FROM boxTable JOIN upcomingOrdersTable ON boxTable.box_id = upcomingOrdersTable.box_id WHERE upcomingOrdersTable.user_id = %s
 """
+    all_meals = srvrdb.fetch_all_rows("mealTable")
+
     # Execute the query
     cursor.execute(query, (user_id,))
     boxes = cursor.fetchall()
+
     # boxes = srvrdb.select_specific_data_many(cursor, "boxTable", )
     
-    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_box_ids=all_box_ids)
-
+    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_meals=all_meals)
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # Function works properly, do not touch. - Josh Patton
 @app.route('/paymentmethod/<string:email>', methods = ["GET", "POST"])
@@ -132,6 +133,12 @@ def usrsettings(email):
 def changepwd(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
     return render_template("changepass.html", email=session["email"], user=user)
+
+@app.route('/admin', methods = ["GET", "POST"])
+def admin():
+    users = srvrdb.select_data(cursor, "userTable")
+    orders = srvrdb.select_data(cursor, "pastOrdersTable")
+    return render_template("admin.html", users=users, orders=orders)
 
 # Function used to process the input from usrsettings.html. Upon sucessful submission, redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton
@@ -195,13 +202,6 @@ def changepass(email):
         if not (oldpassword and newpassword and confirmpassword):
             msg = "Please fill out all fields!"
 
-        # # Leave here as a reminder to implement hashing for passwords.
-        # elif (hashlib.md5(newpassword.encode()).digest() == user["password"]):
-        #     msg = "New password matches old password!"
-
-        # elif (hashlib.md5(oldpassword.encode()).digest() != user["password"]):
-        #     msg = "Incorrect password. Please try again!"
-
         elif (str(newpwdhash) == user[4]):
             msg = "New password is the same as the old password. Please try again!"
             return render_template('changepass.html', email=user[3], msg=msg)
@@ -216,9 +216,7 @@ def changepass(email):
 
         elif not passwordValidation(newpassword):
             msg = "Password must contain at least one capital letter, one lowercase letter, and a number!"
-            return render_template('changepass.html', email=user[3], msg=msg)   
-        
-        # hash = hashlib.md5(request.form["newpassword"].encode()).digest()
+            return render_template('changepass.html', email=user[3], msg=msg)  
     
     srvrdb.update_data1(cursor, "userTable", "password", str(newpwdhash), "email", session["email"])
     conn.commit()
@@ -271,6 +269,9 @@ def submitlogin():
         hash = hashlib.md5(request.form["password"].encode()).digest()
 
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+
+        if email == "admin@srvr.com":
+            return redirect(url_for("admin"))
 
         if user:
             if user[4] == str(hash):
@@ -681,7 +682,7 @@ def check_SUBS(user) -> list:
         print ("user does not have subscription")
         return
     
-    user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
+    user_subscriptionType = active_subscription[3]
 
     # Gets the next four days for meals to be shipped
     last_delivery = srvrdb.get_most_recent_delivery(user_id) #tuple

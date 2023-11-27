@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>SRVR Admin</title>
+    <style>
+        /* our menu, how it works, about us */
+        .center-section {
+            display: inline-block;
+            text-align: center;
+            margin-left: -9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!--navbar-->
+    <header>
+        <div class="left-section">
+            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="ourmenu.html">Our Menu</a>
+                <a href="howitworks.html">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+    </header>
+
+    <div class="table">
+        <h3>Users</h3>
+            <table border="1">
+                <thead>
+                    <td>First Name</td>
+                    <td>Last Name</td>
+                    <td>Email</td>
+                    <td>Password</td>
+                    <td>Address</td>
+                </thead>
+                {% for usr in users %}
+                <tr>
+                    <td>{{usr[1]}}</td>
+                    <td>{{usr[2]}}</td>
+                    <td>{{usr[3]}}</td>
+                    <td>{{usr[4]}}</td>
+                    <td>{{usr[5]}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <div class="table">
+        <h3>Past Orders</h3>
+            <table border="1">
+                <thead>
+                    <td>Payment Method</td>
+                    <td>Shipping Address</td>
+                    <td>Subscription Type</td>
+                    <td>Order Date</td>
+                    <td>Order Time</td>
+                </thead>
+                {% for order in orders %}
+                <tr>
+                    <td>{{order[3]}}</td>
+                    <td>{{order[4]}}</td>
+                    <td>{{order[5]}}</td>
+                    <td>{{order[6]}}</td>
+                    <td>{{order[7]}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <style>
+        h3{
+            padding-top: 3%;
+            text-align: center;
+            font-size: x-large;
+        }.table{
+            text-align: center;
+            margin: auto;
+            width: 80%;
+            padding-bottom: 3%;
+        }
+        .table table{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }.table thead tr {
+            background-color: #4CAF50;
+            color: #ffffff;
+            text-align: center;
+        }.table th, .table td {
+            padding: 12px 15px;
+        }.table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }.table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }.table tbody tr:last-of-type {
+            border-bottom: 2px solid #4CAF50;
+        }
+    </style>
+</body>
+</html>
