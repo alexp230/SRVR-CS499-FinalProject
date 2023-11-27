@@ -310,6 +310,7 @@ def submitlogin():
 # eg. hold any logic behind the html attributes if any are added.
 @app.route('/')
 def home():
+    session.clear()
     global Sign_IN
     # Sign_IN = False
 
