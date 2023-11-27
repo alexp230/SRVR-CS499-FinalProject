@@ -725,3 +725,44 @@ p {
 strong {
   color: #4CAF50;
 }
+
+/*end of howitworks.html*/
+
+/*start of usrhome.html*/
+
+.usrhome-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; 
+}
+
+.usrhome-btns button {
+  background-color: #4CAF50; 
+  color: white; 
+  padding: 8px 16px ; 
+  border: none;
+  cursor: pointer;
+  margin-top: 50px;
+  border-radius: 70px;
+}
+
+.usrhome-btns button:hover {
+  background-color: #3e8e41;
+}
+
+.upcoming-meals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; 
+}
+
+.usrhome-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around; /* Adjust alignment as needed */
+  margin-top: 20px; /* Example margin */
+}
+
+/*end of usrhome.html*/
