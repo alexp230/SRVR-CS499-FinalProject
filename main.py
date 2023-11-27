@@ -133,6 +133,12 @@ def changepwd(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", session["email"])
     return render_template("changepass.html", email=session["email"], user=user)
 
+@app.route('/admin', methods = ["GET", "POST"])
+def admin():
+    users = srvrdb.select_data(cursor, "userTable")
+    orders = srvrdb.select_data(cursor, "pastOrdersTable")
+    return render_template("admin.html", users=users, orders=orders)
+
 # Function used to process the input from usrsettings.html. Upon sucessful submission, redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton
 @app.route('/updateInfo/<string:email>', methods = ["GET", "POST"])
@@ -271,6 +277,9 @@ def submitlogin():
         hash = hashlib.md5(request.form["password"].encode()).digest()
 
         user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+
+        if email == "admin@srvr.com":
+            return redirect(url_for("admin"))
 
         if user:
             if user[4] == str(hash):
