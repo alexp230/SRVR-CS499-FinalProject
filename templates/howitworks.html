@@ -24,8 +24,15 @@
 
         <div class="right-section">
             <nav class="navbar">
+                {%if not_logged_in%}
+                <a href="{{ url_for ('login') }}">Login</a>
+
+                <a href="{{ url_for ('signup') }}">Sign Up</a>
+                {%else%}
                 <a href="{{ url_for ('cart') }}">Cart</a>
-                <a href="account.html">Account</a>
+                
+                <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
+                {%endif%}
             </nav>
         </div>
     </header>
