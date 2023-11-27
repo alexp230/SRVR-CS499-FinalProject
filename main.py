@@ -526,12 +526,26 @@ def pastOrders(email):
     return render_template("pastorders.html", past_orders=past_orders, email=email, meals=meals, boxes=boxes)
 
 @app.route('/aboutus')
-def aboutus():
-    return render_template("aboutus.html") 
+@app.route('/aboutus/<string:email>')
+def aboutus(email=None):
+    if session.get("logged_in") == True:
+        email = session["email"]
+        logged_in = True
+        return render_template("aboutus.html", email=email, logged_in=logged_in)
+    else:
+        not_logged_in = True
+        return render_template("aboutus.html", not_logged_in=not_logged_in)
 
 @app.route('/howitworks')
+@app.route('/howitworks/<string:email>')
 def howitworks():
-    return render_template("howitworks.html")
+    if session.get("logged_in") == True:
+        email = session["email"]
+        logged_in = True
+        return render_template("howitworks.html", email=email, logged_in=logged_in)
+    else:
+        not_logged_in = True
+        return render_template("howitworks.html", not_logged_in=not_logged_in)
 
 def is_subscription_due(delivery_day, current_date):
     # Implement logic to check if the subscription is due for renewal
