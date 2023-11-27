@@ -53,11 +53,11 @@
     </div>
 
     <section class="usrhome-container">
+        <h2>Upcoming Meals</h2>
         <div class="upcoming-meals">
-            <h2>Upcoming Meals</h2>
             <!-- Loops through each of the four upcomingBoxes -->
             {% for row in upcoming_meals %} 
-                <div class="meal-row">
+                <div id="mealsContainer" class="meals-container">
                     <h3>Box {{ loop.index0 + 1 }}:</h3>
                     <!-- The set of meals for each upcomingBox -->
                     {% set box = boxes[loop.index0] %}
@@ -65,16 +65,24 @@
                     {% set meals = box[2].split(', ') %}
                     
                     {% for meal in row %}
-                        <div class="meal-item">
-                            <img src="{{ image_url }}" alt="{{ meal.name }} {{row}}">
-                            <h2 style="text-align: center">Meal {{loop.index0 + 1 }}: {{ meals[loop.index0] }}</h2>
-                            <button type="button" onclick="modifyMeal('{{ meal.name }}')">Modify</button>
-                        </div>
+                        {% set loop_value = loop.index0 %}
+                        {% set mn = meals[loop.index0] %}
+                        {% for meal_name in all_meals %}
+                        {% if meal_name[1] == mn %}
+                            <div class="meals-grid-item">
+                                <img src="{{ meal_name[3] }}" alt="{{ meals[loop.index0] }}" class="meal-image">
+                                <h2 style="text-align: center">Meal {{loop_value + 1 }}: {{ meals[loop_value] }}</h2>
+                                <button type="button" onclick="modifyMeal('{{ meals[loop.index0] }}')">Modify</button>
+                            </div>
+                        {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </div>
             {% endfor %}
         </div>
     </section>
+
+
         <script>
             function modifyMeal(mealName) {
                 // Implement logic to handle modifying the selected meal
@@ -95,6 +103,20 @@
             button {
                 padding: 0.5%;
                 width: 100%;
+            }
+
+            .meals-container
+            {
+                padding: 10px;
+            }
+
+            .meals-grid-item
+            {
+                width: 400px; /* Set the desired width of your container */
+                white-space: nowrap; /* Prevent text from wrapping to the next line */
+                /*overflow: hidden; /* Hide the overflow content */
+                /*text-overflow: ellipsis; /* Display an ellipsis (...) to indicate overflow */
+                
             }
         </style>
     </body>
