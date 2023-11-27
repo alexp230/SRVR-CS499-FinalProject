@@ -98,7 +98,9 @@ def login():
 def usrhome(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
-    user_id = srvrdb.select_specific_data(cursor, "userTable", "email", email)[0]   
+    all_box_ids = check_SUBS(user)
+
+    user_id = user[0]   
     upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     query = """
     SELECT boxTable.* FROM boxTable JOIN upcomingOrdersTable ON boxTable.box_id = upcomingOrdersTable.box_id WHERE upcomingOrdersTable.user_id = %s
@@ -108,7 +110,7 @@ def usrhome(email):
     boxes = cursor.fetchall()
     # boxes = srvrdb.select_specific_data_many(cursor, "boxTable", )
     
-    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes)
+    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_box_ids=all_box_ids)
 
 # Function is used to display the paymentform.html only, the uses manageSubscription() to process the data.
 # Function works properly, do not touch. - Josh Patton
@@ -649,6 +651,7 @@ def check_SUBS(user) -> list:
 
     RETURN: a list of the IDs of the boxes added
     """
+    
     # Initialize important variables
     user_id = user[0]
     user_fname = user[1]
@@ -656,12 +659,14 @@ def check_SUBS(user) -> list:
     user_email = user[3]
     user_address = user[5]
     user_paymentMethod = srvrdb.select_specific_data(cursor, "pymntTable", "user_id", user_id)[2]
-    user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
 
     # Gets user subscription and check if they have one
     active_subscription = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)
     if (not active_subscription):
         print ("user does not have subscription")
+        return
+    
+    user_subscriptionType = srvrdb.select_specific_data(cursor, "subscriptionTable", "user_id", user_id)[3]
 
     # Gets the next four days for meals to be shipped
     last_delivery = srvrdb.get_most_recent_delivery(user_id) #tuple
@@ -712,9 +717,6 @@ def check_SUBS(user) -> list:
 
     return allboxes
     
-
-
-check_SUBS(srvrdb.select_specific_data(cursor, "userTable", "firstname", "Obie"))
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
