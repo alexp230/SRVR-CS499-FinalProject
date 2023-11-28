@@ -384,13 +384,15 @@ def main():
         table_names = get_table_names()
         print("Table Names:")
         for table_name in table_names:
-            if (table_name == "mealTable"):
+            if (table_name != "boxTable"):
                 continue
             print()
             print(table_name)
             rows = fetch_all_rows(table_name)
             for row in rows:
                 print(row)
+
+        
 
         
 

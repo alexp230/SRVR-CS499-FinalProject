@@ -55,15 +55,20 @@
     <section class="usrhome-container">
         <h2>Upcoming Meals</h2>
         <div class="upcoming-meals">
+            <!-- If meal change successful displays message -->
+            {% if msg %}
+            <script>
+                alert("{{ msg }}");
+            </script>
+            {% endif %}
             <!-- Loops through each of the four upcomingBoxes -->
             {% for row in upcoming_meals %} 
-                <div id="mealsContainer" class="meals-container">
+                    <div id="mealsContainer" class="meals-container">
                     <h3>Box {{ loop.index0 + 1 }}:</h3>
                     <!-- The set of meals for each upcomingBox -->
                     {% set box = boxes[loop.index0] %}
                     <!-- The seven meals separated into a list -->
                     {% set meals = box[2].split(', ') %}
-                    
                     {% for meal in row %}
                         {% set loop_value = loop.index0 %}
                         {% set mn = meals[loop.index0] %}
@@ -73,14 +78,20 @@
                                 <img src="{{ meal_name[3] }}" alt="{{ meals[loop.index0] }}" class="meal-image">
                                 <h2 style="text-align: center">Meal {{loop_value + 1 }}: {{ meals[loop_value] }}</h2>
 
-                                <!-- if statement to check date -->
-                                <select id="modifyMealSelect" onchange="modifyMeal(this.value)">                            
-                                    <option value="">Change Meal</option>
-                                    {% for meal_name in all_meals %}
-                                        <option value="{{ meal_name[1] }}">{{ meal_name[1] }}</option>
-                                    {% endfor %}
-                                </select>
-                                
+                                <!-- IF STATEMENT TO CHECK DATE TO BE ADDED HERE -->  
+
+                                <form id = "{{box[0]}},{{meal_name[0]}}" action="/update_meal" method="POST" >
+                                    <!-- Inputs to store id values for use in main -->
+                                    <input type="hidden" id="box_id" name="box_id" value="{{box[0]}}">
+                                    <input type="hidden" id="meal_id" name="meal_id" value="{{meal_name[0]}}">
+                                    <select id="modifyMealSelect" name="new_meal_name">
+                                        <!-- All meal names added to dropdown -->
+                                        {% for meal_name in all_meals %}
+                                            <option value="{{ meal_name[1] }}">{{ meal_name[1] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="submit" value="ChangeMeal">
+                                </form>
                             </div>
                         {% endif %}
                         {% endfor %}
@@ -89,16 +100,6 @@
             {% endfor %}
         </div>
     </section>
-
-
-        <script>
-            function modifyMeal(meal_name) {
-                // get box id
-                // replace meal id in box with new meal id (only 1 of each meal in each box)
-                // update_data1
-                alert("Meal Changed To: " + meal_name);
-            }
-        </script>
 
         <style type="text/css">
             .message,

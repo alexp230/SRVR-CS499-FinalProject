@@ -15,6 +15,7 @@ import datetime
 import calendar
 from datetime import datetime, timedelta
 import dbms as srvrdb
+from dbms import update_data1
 
 basedir = os.path.abspath(os.path.dirname(__file__)) 
 app = Flask (__name__)
@@ -733,6 +734,39 @@ def check_SUBS(user) -> list:
 
     return allboxes
     
+@app.route('/update_meal', methods=['POST'])
+def update_meal():
+
+    # Initialize variables 
+    email = session["email"]
+    user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
+    user_id = user[0]   
+    upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+    all_meals = srvrdb.fetch_all_rows("mealTable")
+    query = """
+    SELECT boxTable.* FROM boxTable JOIN upcomingOrdersTable ON boxTable.box_id = upcomingOrdersTable.box_id WHERE upcomingOrdersTable.user_id = %s
+"""
+    
+    # Get needed information from tempusrhome.html form
+    box_id = request.form.get("box_id")
+    current_meal_id = request.form.get("meal_id")
+    new_meal_name = request.form.get("new_meal_name")
+
+    # Get ordered meals string from box and current meal name
+    ordered_meals = srvrdb.select_specific_data(cursor, "boxTable", "box_id", box_id)[2]
+    current_meal_name = srvrdb.select_specific_data(cursor, "mealTable", "meal_id", current_meal_id)[1]
+
+    # Replace current meal in box with new meal and update boxTable in database
+    updated_meals = ordered_meals.replace(current_meal_name, new_meal_name)
+    update_data1(cursor, "boxTable", "ordered_meals",  updated_meals, "box_id", box_id)
+    
+    # Execute the query
+    cursor.execute(query, (user_id,))
+    boxes = cursor.fetchall()
+    conn.commit()
+    msg = "Meal Updated!"
+    return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_meals=all_meals, msg=msg)
+
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
