@@ -1,80 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Menus</title>
-    <!-- Link to CSS page -->
-    <link rel="stylesheet" type="text/css" href="../static/styles.css">
-</head>
-
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Browse Menus</title>
+        <!-- Link to CSS page -->
+        <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    </head>
+    <!-- <body> -->
+    
     <!-- Navbar -->
     <header>
         <div class="left-section">
-            {%if not_logged_in%}
-                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
-                {%else%}
-                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
-            {%endif%}
+            <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
         </div>
-
+    
         <div class="center-section">
             <nav class="navbar">
                 <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
-                <a href="{{url_for('howitworks')}}">How it Works</a>
+                <a href="{{ url_for ('howitworks') }}">How it Works</a>
                 <a href="{{url_for('aboutus')}}">About Us</a>
             </nav>
         </div>
-
+    
         <div class="right-section">
             <nav class="navbar">
-
-                {%if not_logged_in%}
-                <a href="{{ url_for ('login') }}">Login</a>
-
-                <a href="{{ url_for ('signup') }}" class="signup-button">Sign Up</a>
-                {%else%}
-                {%if not subscription_status %}
                 <a href="{{ url_for ('cart') }}">Cart</a>
-                {%endif%}
                 <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
-                {%endif%}
             </nav>
         </div>
     </header>
-    <!-- Navbar End-->
+    <body class="pastorders-container">
+        <div class="pastorders-card">
+            <!-- page to display past orders -->
+            <h1 style="text-align:center;margin-top: 25px;">Past Orders</h1>
 
-     <!-- page to display past orders -->
-     <h1>Past Orders</h1>
+            {% for order in past_orders %}
+            <div class="order-container" style="margin-top: 25px;">
+                <ul>
+                    <li>
+                        <span class="green-text">Transaction ID:</span> <span class="black-text">{{ order[0] }}</span></p>
+                    </li>
+                    <li>
+                        <span class="green-text">Shipping Address:</span> <span class="black-text">{{ order[4] }}</span></p>
+                    </li>
+                    <li>
+                        <span class="green-text">Date:</span> <span class="black-text">{{ order[6] }}</span></p>
+                    </li>
+                    <li>
+                        {% for box in boxes %}
+                            {% if order[2] == box[0] %}
+                                <p class="green-text">MEALS IN BOX:</p> {{ box[2]|replace('_', ' ') }}
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+            <br>
+            {% endfor %}
 
-     <ul>
-         {% for order in past_orders %}
-             <li>
-                 <strong>Transaction ID:</strong> {{ order[0]}}<br>
-                 <strong>Shipping Address:</strong> {{ order[4] }}<br>
-                 <strong>Date:</strong> {{ order[6] }} <br>
-                 {% for box in boxes %}
-                 {% if order[2] == box[0] %}
-                 <strong>Meals in box:</strong> {{ box[2] }}
-                 {% endif %}
-                 {% endfor %}
-             </li>
-             <br>
-         {% endfor %}
-     </ul>
- 
-     <style type="text/css">
-         .message, p, h1, form, ul{
-             text-align: center;
-             margin: auto;
-             width: 30%;
-             padding: 10px;
-         }
-     </style>
-</body>
-
+            <p style="text-align: center; margin-top: 5px;">-----------</p>
+           
+        </div>
+    </body>
 </html>
-

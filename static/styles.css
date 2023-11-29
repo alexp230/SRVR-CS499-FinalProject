@@ -797,9 +797,9 @@ strong {
   cursor: pointer;
 } 
 
-
-
 /*end of usrhome.html*/
+
+
 
 /*start of cart.html styles*/
 
@@ -961,3 +961,40 @@ strong {
 }
 
 /*end of subscribe.html styles*/
+
+
+
+
+
+
+/*start of pastorders.html styles*/
+
+.pastorders-container .pastorders-card{
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.pastorders-container  ul{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+}
+
+.green-text {
+  color: var(--green);
+}
+
+.black-text {
+  color: black;
+}
+
+.order-container li {
+  margin-bottom: 10px;
+}
+
+/*end of pastorders.html styles*/
