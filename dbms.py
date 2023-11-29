@@ -119,7 +119,7 @@ def create_tables(cursor):
     cursor.execute(create_subscriptionTable_query)
     cursor.execute(create_upcomingOrdersTable_query)
 
-# Delete a specfied table by table_name 
+# Delete a specified table by table_name 
 def delete_table(cursor, table_name):
     delete_table_query = f'DROP TABLE IF EXISTS {table_name}'
     cursor.execute(delete_table_query)
@@ -197,7 +197,7 @@ def update_data5(cursor, table_name, mod_colum_name1, mod_val1, mod_colum_name2,
 
 # Deletes a record from a specified table by table_name.
 # match_column_name is the name of the column as it shows is database that is used to identify which record you want to delete (ie. to delete John's record; match_column_name = "firstname").
-# match_val is the value used to loacate the specific record to delete (ie. to delete John's record; match_val = "John").
+# match_val is the value used to locate the specific record to delete (ie. to delete John's record; match_val = "John").
 def delete_data(cursor, table_name, match_column_name, match_val):
     # Delete data
     delete_query = "DELETE FROM "+table_name+" WHERE "+match_column_name+"=%s"
@@ -417,14 +417,14 @@ def main():
         # schema = "(firstname, lastname, email, password, address)"
         # valueformat = "(%s, %s, %s, %s, %s)"
         # user_data_to_insert = [('Josh', 'Patton', 'jpatt@uab.edu', 'password1', '555 Main St, Birmingham AL'), 
-        #                        ('Alex', 'Pruit', 'alexp@uab.edu', 'password2', '556 Main St, Birmingham AL'), 
+        #                        ('Alex', 'Pruitt', 'alexp@uab.edu', 'password2', '556 Main St, Birmingham AL'), 
         #                        ('Obie', 'Carnathan', 'obiec@uab.edu', 'password3', '557 Main St, Birmingham AL')]
         # insert_data(cursor, user_data_to_insert, "userTable")
         # conn.commit()
 
         # # Insert data into pymntTable(card_number, card_holder_name, card_exp_date, card_CCV)
         # pymnt_data_to_insert = [('1111222233334444', 'Josh Patton', '12/30', '222'), 
-        #                         ('2222444466668888', 'Alex Pruit', '3/30', '333'), 
+        #                         ('2222444466668888', 'Alex Pruitt', '3/30', '333'), 
         #                         ('9999888877776666', 'Obie Carnathan', '4/28', '444')]
         # insert_data(cursor, pymnt_data_to_insert, "pymntTable")
         # conn.commit()
