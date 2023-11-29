@@ -807,6 +807,37 @@ def update_meal():
     msg = "Meal Updated!"
     return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_meals=all_meals, msg=msg)
 
+@app.route('/cancelsubform/<string:email>', methods=['GET', 'POST'])
+def cancelsubform(email):
+    return render_template('cancelsub.html', email=session['email'])
+
+@app.route('/cancelsub/<string:email>', methods=['GET', 'POST'])
+def cancelsub(email):
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+    
+    if request.method == 'POST':
+        curpass = request.form.get('password')
+        conpass = request.form.get('confirm_password')
+
+        if (curpass != conpass):
+                msg = "New passwords do not match! Please try again!"
+                return render_template('cancelsub.html', email=session["email"], msg=msg)
+        
+        orderup = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
+        print(orderup)
+
+        if orderup:
+            session["subscription_status"] = False
+            srvrdb.delete_data(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
+            srvrdb.delete_data(cursor, "subscriptionTable", "user_id", session['user_id'])
+            conn.commit()
+            print(orderup)
+        else:
+            print("There are no upcoming orders to cancel")
+    
+    return redirect(url_for("usrhome", email=session["email"]))
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host

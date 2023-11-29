@@ -437,11 +437,11 @@ def main():
         # for row in rows:
         #     print(row)
 
-        # # Select all data from pymntTable
-        # rows = select_data(cursor, "pymntTable")
-        # print("Data in pymntTable:")
-        # for row in rows:
-        #     print(row)
+        # Select all data from pymntTable
+        rows = select_data(cursor, "upcomingOrdersTable")
+        print("Data in upcomingOrdersTable:")
+        for row in rows:
+            print(row)
 
         # # # Updating records in userTable from just 1 column (update_data1) to all 5 columns (update_data5).
         # # update_data1(cursor, "userTable", "firstname", "Jack", "email", "jpatt@uab.edu")

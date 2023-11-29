@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>SRVR User Settings</title>
+        <style>
+        /* our menu, how it works, about us */
+        .center-section {
+        display: inline-block;
+        text-align: center;
+        margin-left: -9rem;
+        }
+    </style>
+</head>
+<body>
+    <!--navbar-->
+    <header>
+        <div class="left-section">
+            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+        </div>
+
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{url_for('browsemenu')}}">Browse Menu</a>
+                <a href="{{url_for('howitworks')}}">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+    </header>
+    <div class="form-container">
+        <form action="/cancelsub/{{email}}" method="post" enctype="multipart/form-data">
+            <h3>Enter your current password to confirm cancellation</h3>
+            <input type="password" name="password" required placeholder="Enter your password">
+            <input type="password" name="confirm_password" required placeholder="Confirm your password">
+            <input type="submit" value="Cancel Subscription" class="form-btn">
+            <p>Back to <a href="tempusrhome.html">Home</a></p>
+        </form>
+        {% if msg %}
+            <div class="message" style="color: red">
+                {{ msg }}
+            </div>
+        {% endif %}
+    </div>
+    <!-- <style>
+        .form-container{
+            padding-top: 7%;
+        }
+    </style> -->
+</body>
+</html>
