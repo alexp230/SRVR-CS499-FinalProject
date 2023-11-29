@@ -143,7 +143,7 @@ def admin():
     orders = srvrdb.select_data(cursor, "pastOrdersTable")
     return render_template("admin.html", users=users, orders=orders)
 
-# Function used to process the input from usrsettings.html. Upon sucessful submission, redirects user to tempusrhome.html
+# Function used to process the input from usrsettings.html. Upon successful submission, redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton
 @app.route('/updateInfo/<string:email>', methods = ["GET", "POST"])
 def updateInfo(email):
@@ -183,7 +183,7 @@ def updateInfo(email):
 
         return redirect(url_for("usrhome", email=user[3]))
               
-# Function is used to process data from changepass.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function is used to process data from changepass.html. Upon successful submission redirects user to tempusrhome.html
 # Function is working properly. Still need to implement hashing for password. - Josh Patton
 @app.route('/changepass/<string:email>', methods = ["GET", "POST"])
 def changepass(email):
@@ -226,7 +226,7 @@ def changepass(email):
 
     return redirect(url_for("usrhome", email=session["email"]))
 
-# Function is used to process data from signupform.html. Upon sucessful submission redirects user to thankyou.html
+# Function is used to process data from signupform.html. Upon successful submission redirects user to thankyou.html
 # Function works properly, do not touch. - Josh Patton
 @app.route("/add", methods = ["POST"])
 def add():
@@ -465,7 +465,7 @@ def manageSubscription():
 
     return render_template("thankyou.html", msg=msg)
 
-# Function is used to process data from paymentform.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function is used to process data from paymentform.html. Upon successful submission redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton 
 @app.route('/addNewCard/<string:email>', methods = ["GET", "POST"])
 def addNewCard(email):
@@ -703,7 +703,6 @@ def check_SUBS(user) -> list:
         delivery_date_list.append(str(last_delivery_date + timedelta(days=(7 * i))))
 
    # Initialize important variable 
-    max_amount_of_orders = 4
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
 
@@ -739,6 +738,7 @@ def check_SUBS(user) -> list:
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
 
+    max_amount_of_orders = 4
     # If amount of upcoming orders is/exceeds max
     if (current_future_orders >= max_amount_of_orders):
         print("User needs no more boxes")
@@ -807,6 +807,37 @@ def update_meal():
     msg = "Meal Updated!"
     return render_template("tempusrhome.html", email=session["email"], user=user, upcoming_meals=upcoming_meals, boxes=boxes, all_meals=all_meals, msg=msg)
 
+@app.route('/cancelsubform/<string:email>', methods=['GET', 'POST'])
+def cancelsubform(email):
+    return render_template('cancelsub.html', email=session['email'])
+
+@app.route('/cancelsub/<string:email>', methods=['GET', 'POST'])
+def cancelsub(email):
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+    
+    if request.method == 'POST':
+        curpass = request.form.get('password')
+        conpass = request.form.get('confirm_password')
+
+        if (curpass != conpass):
+                msg = "New passwords do not match! Please try again!"
+                return render_template('cancelsub.html', email=session["email"], msg=msg)
+        
+        orderup = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
+        print(orderup)
+
+        if orderup:
+            session["subscription_status"] = False
+            srvrdb.delete_data(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
+            srvrdb.delete_data(cursor, "subscriptionTable", "user_id", session['user_id'])
+            conn.commit()
+            print(orderup)
+        else:
+            print("There are no upcoming orders to cancel")
+    
+    return redirect(url_for("usrhome", email=session["email"]))
 
 if __name__ == "__main__":
      app.run(host="127.0.0.1", port=8080, debug=True) # Run the app on local host
