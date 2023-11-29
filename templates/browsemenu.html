@@ -244,7 +244,7 @@
         <!-- Help/Contact us -->
         <div class="footer-row">
             <h3>Contact and Support:</h3>
-            <p><a href="howitworks.html">How it Works</a></p>
+            <p><a href="{{url_for('howitworks')}}">How it Works</a></p>
             <p><a href="mailto:contact@srvr.com">contact@srvr.com</a></p>
             <p>(205)123-4567</p>
         </div>
@@ -256,9 +256,9 @@
         </div>
         <div class="footer-row">
             <h3>Company:</h3>
-            <p><a href="main.html">Home</a></p>
-            <p><a href="ourmenu.html">Our Menu</a></p>
-            <p><a href="aboutus.html">About Us</a></p>
+            <p><a href="{{url_for('home')}}">Home</a></p>
+            <p><a href="{{url_for('browsemenu')}}">Our Menu</a></p>
+            <p><a href="{{url_for('aboutus')}}">About Us</a></p>
         </div>
     </div>
     <div class="social-media">
