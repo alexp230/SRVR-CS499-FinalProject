@@ -1,36 +1,80 @@
 <!DOCTYPE html>
-{% extends "menu.html" %}
-{% block header %}{% endblock %}
-{% block content %}
-    <div class="message">
-        {{ msg }}
-    </div>
+<html lang="en">
 
-    <!-- page to display past orders -->
-    <h1>Past Orders</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Menus</title>
+    <!-- Link to CSS page -->
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
 
-    <ul>
-        {% for order in past_orders %}
-            <li>
-                <strong>Transaction ID:</strong> {{ order[0]}}<br>
-                <strong>Shipping Address:</strong> {{ order[4] }}<br>
-                <strong>Date:</strong> {{ order[6] }} <br>
-                {% for box in boxes %}
-                {% if order[2] == box[0] %}
-                <strong>Meals in box:</strong> {{ box[2] }}
-                {% endif %}
-                {% endfor %}
-            </li>
-            <br>
-        {% endfor %}
-    </ul>
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="left-section">
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
+        </div>
 
-    <style type="text/css">
-        .message, p, h1, form, ul{
-            text-align: center;
-            margin: auto;
-            width: 30%;
-            padding: 10px;
-        }
-    </style>
-{% endblock %}
+        <div class="center-section">
+            <nav class="navbar">
+                <a href="{{ url_for ('browsemenu') }}">Browse Menu</a>
+                <a href="{{url_for('howitworks')}}">How it Works</a>
+                <a href="{{url_for('aboutus')}}">About Us</a>
+            </nav>
+        </div>
+
+        <div class="right-section">
+            <nav class="navbar">
+
+                {%if not_logged_in%}
+                <a href="{{ url_for ('login') }}">Login</a>
+
+                <a href="{{ url_for ('signup') }}" class="signup-button">Sign Up</a>
+                {%else%}
+                {%if not subscription_status %}
+                <a href="{{ url_for ('cart') }}">Cart</a>
+                {%endif%}
+                <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
+                {%endif%}
+            </nav>
+        </div>
+    </header>
+    <!-- Navbar End-->
+
+     <!-- page to display past orders -->
+     <h1>Past Orders</h1>
+
+     <ul>
+         {% for order in past_orders %}
+             <li>
+                 <strong>Transaction ID:</strong> {{ order[0]}}<br>
+                 <strong>Shipping Address:</strong> {{ order[4] }}<br>
+                 <strong>Date:</strong> {{ order[6] }} <br>
+                 {% for box in boxes %}
+                 {% if order[2] == box[0] %}
+                 <strong>Meals in box:</strong> {{ box[2] }}
+                 {% endif %}
+                 {% endfor %}
+             </li>
+             <br>
+         {% endfor %}
+     </ul>
+ 
+     <style type="text/css">
+         .message, p, h1, form, ul{
+             text-align: center;
+             margin: auto;
+             width: 30%;
+             padding: 10px;
+         }
+     </style>
+</body>
+
+</html>
+
