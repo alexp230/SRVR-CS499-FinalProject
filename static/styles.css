@@ -772,6 +772,33 @@ strong {
   margin: auto;
 }
 
+.meals-grid-item .meals-grid select {
+  font-size: 20px; 
+  padding: 10px; 
+  width: 300px; 
+  margin-right: 50px;
+  cursor: pointer;
+}
+
+.meals-grid-item h2 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+  text-transform: capitalize;
+  font-size: 16px;
+}
+
+.meals-grid-item .meals-grid input {
+  font-size: 20px; 
+  padding: 10px; 
+  width: 300px; 
+  margin-right: 50px;
+  cursor: pointer;
+} 
+
+
+
 /*end of usrhome.html*/
 
 /*start of cart.html styles*/
@@ -932,3 +959,5 @@ strong {
   margin-bottom: 20px;
   color: white;
 }
+
+/*end of subscribe.html styles*/

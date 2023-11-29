@@ -79,11 +79,11 @@
                         {% if meal_name[1] == mn %}
                             <div class="meals-grid-item">
                                 <img src="{{ meal_name[3] }}" alt="{{ meals[loop.index0] }}" class="meal-image">
-                                <h2 style="text-align: center">Meal {{loop_value + 1 }}: {{ meals[loop_value] }}</h2>
+                                <h2>Meal {{loop_value + 1 }}: {{ meals[loop_value] }}</h2>
 
                                 <!-- IF STATEMENT TO CHECK DATE TO BE ADDED HERE -->  
 
-                                <form id = "{{box[0]}},{{meal_name[0]}}" action="/update_meal" method="POST" >
+                                <form class="meals-grid" id = "{{box[0]}},{{meal_name[0]}}" action="/update_meal" method="POST" >
                                     <!-- Inputs to store id values for use in main -->
                                     <input type="hidden" id="box_id" name="box_id" value="{{box[0]}}">
                                     <input type="hidden" id="meal_id" name="meal_id" value="{{meal_name[0]}}">
