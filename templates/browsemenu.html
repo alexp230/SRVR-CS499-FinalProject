@@ -69,7 +69,7 @@
             <div class="meals-grid-item" data-category="{{ meal[2] }}">
                 <img src="{{ meal[3] }}" alt="{{ meal[1] }}" onclick="openPDF('{{ meal[3] }}')" class="meal-image">
                 <p>{{ meal[1]|replace('_', ' ') }}</p>
-                {%if logged_in%}
+                {% if logged_in and not subscription_status %}
                 <button onclick="addToCart('{{ meal[1] }}')">Add to Cart</button>
                 {%endif%}
                 {%if not_logged_in%}
