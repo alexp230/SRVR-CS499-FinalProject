@@ -143,7 +143,7 @@ def admin():
     orders = srvrdb.select_data(cursor, "pastOrdersTable")
     return render_template("admin.html", users=users, orders=orders)
 
-# Function used to process the input from usrsettings.html. Upon sucessful submission, redirects user to tempusrhome.html
+# Function used to process the input from usrsettings.html. Upon successful submission, redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton
 @app.route('/updateInfo/<string:email>', methods = ["GET", "POST"])
 def updateInfo(email):
@@ -183,7 +183,7 @@ def updateInfo(email):
 
         return redirect(url_for("usrhome", email=user[3]))
               
-# Function is used to process data from changepass.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function is used to process data from changepass.html. Upon successful submission redirects user to tempusrhome.html
 # Function is working properly. Still need to implement hashing for password. - Josh Patton
 @app.route('/changepass/<string:email>', methods = ["GET", "POST"])
 def changepass(email):
@@ -226,7 +226,7 @@ def changepass(email):
 
     return redirect(url_for("usrhome", email=session["email"]))
 
-# Function is used to process data from signupform.html. Upon sucessful submission redirects user to thankyou.html
+# Function is used to process data from signupform.html. Upon successful submission redirects user to thankyou.html
 # Function works properly, do not touch. - Josh Patton
 @app.route("/add", methods = ["POST"])
 def add():
@@ -465,7 +465,7 @@ def manageSubscription():
 
     return render_template("thankyou.html", msg=msg)
 
-# Function is used to process data from paymentform.html. Upon sucessful submission redirects user to tempusrhome.html
+# Function is used to process data from paymentform.html. Upon successful submission redirects user to tempusrhome.html
 # Function works properly, do not touch. - Josh Patton 
 @app.route('/addNewCard/<string:email>', methods = ["GET", "POST"])
 def addNewCard(email):
