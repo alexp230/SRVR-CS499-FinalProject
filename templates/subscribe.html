@@ -34,50 +34,52 @@
         </nav>
     </div>
 </header>
+<!-- End of Navbar -->
 
-<h1>Subscription Setup</h1>
-<form action="/manageSubscription" method="POST">
-    <p> <br> </p>
-    <p> <br> </p>
-    <p></p>
-    <label for="delivery-date">Select Delivery Date:</label>
-    <input type="date" id="delivery-date" name="delivery-date">
+<h1 class="sub-setup">Subscription Setup</h1>
+<div class="sub-form-container">
+    <form class="sub-form" action="/manageSubscription" method="POST">
+        <p> <br> </p>
+        <p> <br> </p>
+        <p></p>
+        <label for="delivery-date">Select Delivery Date:</label>
+        <input type="date" id="delivery-date" name="delivery-date" placeholder="Open Calendar">
 
-    <label for="household-size">Household Size:</label><br>
-    <input type="radio" id="size-2" name="household-size" value="2">
-    <label for="size-2">2</label><br>
-    <input type="radio" id="size-4" name="household-size" value="4">
-    <label for="size-4">4</label><br><br>
-    <select id="card" name="card">
-        {% for card in cards%}
-        {% set last_four_digits = card[2][-4:] %}
-        <option value="{{ last_four_digits }}">XXXX-XXXX-XXXX-{{ last_four_digits }}</option>
-        {% endfor %}
-        <!-- Add more options for other days -->
-    </select>
-
-    <!-- Other subscription-related form fields -->
-
-    <!-- If including meal selection -->
-    <h2>Meals:</h2>
-        {% if selected_meals %}
-        <ul>
-            {% for meal in selected_meals %}
-                <li>{{ meal }} $5.99 per serving</li>
+        <label for="household-size">Household Size:</label><br>
+       
+        <label for="size-2"> <input class="multiple-choice-bubble" type="radio" id="size-2" name="household-size" value="2">  2</label><br>
+        
+        <label for="size-4"><input class="multiple-choice-bubble" type="radio" id="size-4" name="household-size" value="4">  4</label><br><br>
+        <select id="card" name="card">
+            {% for card in cards%}
+            {% set last_four_digits = card[2][-4:] %}
+            <option value="{{ last_four_digits }}">XXXX-XXXX-XXXX-{{ last_four_digits }}</option>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
+            <!-- Add more options for other days -->
+        </select>
 
-    <input type="submit" value="Subscribe">
-    {% if msg %}
-    <div class="message" style="color: red">
-        {{ msg }}
-    </div>
-    {% endif %}
-</form>
+        <!-- Other subscription-related form fields -->
 
+        <!-- If including meal selection -->
+        <h2>Meals:</h2>
+            {% if selected_meals %}
+            <ul class="meal-list">
+                {% for meal in selected_meals %}
+                    <li>{{ meal }} - $5.99 per serving</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+
+        <input class="submit-btn" type="submit" value="Subscribe">
+        {% if msg %}
+        <div class="message" style="color: red">
+            {{ msg }}
+        </div>
+        {% endif %}
+    </form>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     flatpickr('#delivery-date', {
