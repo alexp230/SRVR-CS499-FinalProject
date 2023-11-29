@@ -703,7 +703,6 @@ def check_SUBS(user) -> list:
         delivery_date_list.append(str(last_delivery_date + timedelta(days=(7 * i))))
 
    # Initialize important variable 
-    max_amount_of_orders = 4
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
 
@@ -739,6 +738,7 @@ def check_SUBS(user) -> list:
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
 
+    max_amount_of_orders = 4
     # If amount of upcoming orders is/exceeds max
     if (current_future_orders >= max_amount_of_orders):
         print("User needs no more boxes")
