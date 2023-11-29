@@ -331,8 +331,8 @@ def browsemenu(fname=None):
         fname = session["fname"]
         logged_in = True
         all_meals = srvrdb.fetch_all_rows("mealTable")
-
-        return render_template("browsemenu.html", all_meals=all_meals,fname=fname,logged_in=logged_in)
+        subscription_status = session["subscription_status"]
+        return render_template("browsemenu.html", all_meals=all_meals,fname=fname,logged_in=logged_in, subscription_status=subscription_status)
     else:
         all_meals = srvrdb.fetch_all_rows("mealTable")
         not_logged_in = True
