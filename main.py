@@ -813,7 +813,6 @@ def cancelsubform(email):
 
 @app.route('/cancelsub/<string:email>', methods=['GET', 'POST'])
 def cancelsub(email):
-    today_date = datetime.today().date()
 
     if not session.get("logged_in"):
         return redirect(url_for("login"))
@@ -829,11 +828,10 @@ def cancelsub(email):
         orderup = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
         print(orderup)
 
-        print(checkDeliveryDate(orderup[6]))
-
         if orderup:
             session["subscription_status"] = False
             srvrdb.delete_data(cursor, "upcomingOrdersTable", "user_id", session['user_id'])
+            srvrdb.delete_data(cursor, "subscriptionTable", "user_id", session['user_id'])
             conn.commit()
             print(orderup)
         else:
