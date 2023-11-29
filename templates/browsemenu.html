@@ -34,8 +34,9 @@
 
                 <a href="{{ url_for ('signup') }}">Sign Up</a>
                 {%else%}
+                {%if not subscription_status %}
                 <a href="{{ url_for ('cart') }}">Cart</a>
-                
+                {%endif%}
                 <a href="{{url_for('usrhome',email=session['email'])}}">Account</a>
                 {%endif%}
             </nav>
