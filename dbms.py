@@ -366,9 +366,9 @@ def main():
         # conn.commit()
         # create_tables(cursor)
         # schema = "(user_id, box_id, payment_method, shipping_address, subscription_type, order_date)"
-        # data = (58, "1111222233334444", "44th Street Avenue J", 2, "2023-11-24")
+        # data = (65, 100, "1111111111111111", "My House", 2, "2023-11-24")
         # insert_data(cursor, data, "upcomingOrdersTable")
-        # delete_data(cursor, "upcomingOrdersTable", "order_id", 3)
+        # # delete_data(cursor, "upcomingOrdersTable", "order_id", 3)
         # conn.commit()
 
         # counter = 0
@@ -378,13 +378,16 @@ def main():
         #     conn.commit()
         #     counter += 1
 
+        # delete_data(cursor, "upcomingOrdersTable", "box_id", 233)
+        # conn.commit()
+
 
         # Call the function to get table names and print them
         create_tables(cursor)
         table_names = get_table_names()
         print("Table Names:")
         for table_name in table_names:
-            if (table_name != "boxTable"):
+            if (table_name == "boxTable"):
                 continue
             print()
             print(table_name)

@@ -99,6 +99,8 @@ def login():
 def usrhome(email):
     user = srvrdb.select_specific_data(cursor, "userTable", "email", email)
 
+    check_SUBS(user)
+
     user_id = user[0]   
     upcoming_meals = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
 
@@ -661,6 +663,11 @@ def check_subscriptions():
 #check_subscriptions()
 # print(len(get_random_meals()))
 
+def Update_Payment_Table(user):
+    return
+    
+
+
 
 def check_SUBS(user) -> list:
     """
@@ -700,6 +707,39 @@ def check_SUBS(user) -> list:
     all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
     current_future_orders = len(all_upcomingOrders)
 
+    modify_deadline = 3
+    # Loops through all upcoming orders and checks to see if it needs to go past orders
+    for order in all_upcomingOrders:
+        # Gets the date from upcoming order and turns it into date object
+        _date = order[6]
+        date_object = datetime.strptime(_date, '%Y-%m-%d')
+
+        # Get today's date
+        today = datetime.now().date()
+
+        # Calculate the difference in days between upcoming order and today
+        days_difference = (date_object.date() - today).days
+
+        # If upcoming meal date is past deadline
+        if (days_difference <= modify_deadline):
+            # Get the current date and time
+            current_time = datetime.now().time()
+            order_datetime = datetime.combine(datetime.strptime(_date, "%Y-%m-%d").date(), current_time)
+            
+            # Adds the upcoming meal to the past order table
+            past_meal_data = [int(user_id), int(order[2]), str(str(order[3])[-4:]), str(order[4]), str(order[5]), str(order[6]), str(order_datetime)]
+            srvrdb.insert_data(cursor, past_meal_data, "pastOrdersTable")
+
+            # Delete upcoming meal from the upcoming meals table
+            delete_query = "DELETE FROM upcomingOrdersTable WHERE user_id = %s AND order_date = %s"
+            cursor.execute(delete_query, (user_id, order[6]))
+            conn.commit()
+
+    # Get all upcoming orders if modified in previous forloop
+    all_upcomingOrders = srvrdb.select_specific_data_many(cursor, "upcomingOrdersTable", "user_id", user_id)
+    current_future_orders = len(all_upcomingOrders)
+
+    # If amount of upcoming orders is/exceeds max
     if (current_future_orders >= max_amount_of_orders):
         print("User needs no more boxes")
         return
