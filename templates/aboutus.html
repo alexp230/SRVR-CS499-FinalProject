@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/styles.css">
-    <title>SRVR About Us</title>
+    <title>SRVR How It Works</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    
 </head>
 <body>
 
@@ -42,21 +42,87 @@
     </header>
 
 
-    <section class="about">
-        <div class="aboutusmain">
-            <img src="../static/images/aboutus.jpg" alt="image coming">
-            <div class="about-text">
-                <h1>About Us</h1>
-                <h5>From The <span>SRVR</span> Development Team</h5>
-                <p>"Welcome to our senior project website! 
-                    We are a dedicated team of five individuals who have spent the greater half of this past semester collaborating on a mission we are passionate about. 
-                    With diverse backgrounds and skill sets, we came together to tackle a challenging project, driven by our shared commitment to innovation and excellence. 
-                    Our journey has been marked by countless hours of research, brainstorming, and problem-solving, as we worked tirelessly to bring our vision to life. 
-                    As we present our senior project to you, we hope you'll see the dedication, creativity, and teamwork that have gone into its creation. 
-                    Thank you for joining us on this exciting venture, and we can't wait to share our achievements with you."</p>
-                <button type="button">Contact Us</button>
+    <!-- How it Works Section - step by step guide manual -->
+    <section class="howitworks">
+        <h2 style="text-align: center; font-size: 40px; margin-top: 5px; margin-bottom: 45px;">About SRVR</h2>
+    
+        <h2 style="font-size: 30px; margin-top: 55px; margin-bottom: 5px; color: var(--green);">Who We Are</h2>
+        <p class="ordered-list-description">
+            Welcome to SRVR, where passion for food meets the convenience of doorstep delivery. We are more than just a food delivery service; we are culinary 
+            enthusiasts dedicated to bringing you a delightful and nutritious dining experience without leaving the comfort of your home.
+        </p>
+
+        <h2 style="font-size: 30px; margin-top: 55px; margin-bottom: 5px; color: var(--green);">Our Values</h2>
+        <p class="ordered-list-description">
+            Here at SRVR: our mission is simple: to make every meal memorable. We believe that taste and time doesn't have to be sacrificed 
+            when making nutritious and cost-effective meals. We value everyone's schedules and dietary preferences to fit each lifestyle. 
+            That's why we're committed to curating a diverse selection of top-notch cuisines, ensuring there's something for every taste bud and occasion.
+        </p>
+        <section class="home-bottom" id="home-bottom">
+            <div class="why-srvr-images">
+                <div class="why-srvr-item"; style="justify-content: space-between;">
+                    <img src="../static/images/food-icon.png" alt="food icon" class="food-icon" style="width: 180px; height: 180px;">
+                    <p style="font-weight: bold;">Nutritional Excellence</p>
+                </div>
+                <div class="why-srvr-item"; style="justify-content: space-between;">
+                    <img src="../static/images/time.png" alt="food icon" class="time" style="width: 180px; height: 180px;">
+                    <p style="font-weight: bold;">Time-Saving Simplicity</p>
+                </div>
+                <div class="why-srvr-item">
+                    <img src="../static/images/culinary.png" alt="food icon" class="culinary-freedom" style="width: 180px; height: 180px;">
+                    <p style="font-weight: bold;">Culinary Freedom</p>
+                </div>
+                <div class="why-srvr-item">
+                    <img src="../static/images/food-wellness.png" alt="food icon" class="food-wellness" style="width: 180px; height: 180px;">
+                    <p style="font-weight: bold;">Wellness Without Compromise</p>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <h2 style="font-size: 30px; margin-top: 55px; margin-bottom: 5px; color: var(--green);">Our Story</h2>
+        <p class="ordered-list-description">
+            In 2023, we realized that the food delivery business has become more and more expensive over the years, and we have
+            discovered that inflation has prevented a lot of lower income residents from having access to nutritious, delicious,
+            and time saving meals. With SRVR we aim to offer healthy and simple meal options that fit any budget and lifestlye.
+        </p>
+        
+
     </section>
+
+
 </body>
+
+<footer>
+    <div class="footer-container">
+        <!-- Help/Contact us -->
+        <div class="footer-row">
+            <h3>Contact and Support:</h3>
+            <p><a href="{{url_for('howitworks')}}">How it Works</a></p>
+            <p><a href="mailto:contact@srvr.com">contact@srvr.com</a></p>
+            <p>(205)123-4567</p>
+        </div>
+        <div class="footer-row">
+            <h3>Accepted Payment:</h3>
+            <p>Visa</p>
+            <p>Mastercard</p>
+            <p>Discover</p>
+        </div>
+        <div class="footer-row">
+            <h3>Company:</h3>
+            <p><a href="{{url_for('home')}}">Home</a></p>
+            <p><a href="{{url_for('browsemenu')}}">Our Menu</a></p>
+            <p><a href="{{url_for('aboutus')}}">About Us</a></p>
+        </div>
+    </div>
+    <div class="social-media">
+        <a href="https://www.facebook.com/"><img src="../static/images/facebook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com"><img src="../static/images/instagram.png" alt="Instagram"></a>
+        <a href="https://www.pinterest.com"><img src="../static/images/pinterest.png" alt="Pinterest"></a>
+        <a href="https://www.twitter.com"><img src="../static/images/twitter.png" alt="Twitter"></a>
+        <a href="https://www.youtube.com"><img src="../static/images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <p style="text-align: center; margin-top: 10px;">© SRVR, LLC 2023</p>
+</footer>
+
 </html>
