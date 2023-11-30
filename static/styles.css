@@ -922,3 +922,65 @@ strong {
 
 /*end of pastorders.html styles*/
 
+/*usersettings.html styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of usersettings.html styles*/
+
+/*change password styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of change password styles*/
+
+/*changepass.html styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of changepass.html styles*/
