@@ -20,13 +20,17 @@
     <!--navbar-->
     <header>
         <div class="left-section">
-            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
         </div>
 
         <div class="center-section">
             <nav class="navbar">
-                <a href="ourmenu.html">Our Menu</a>
-                <a href="howitworks.html">How it Works</a>
+                <a href="{{url_for('browsemenu')}}">Our Menu</a>
+                <a href="{{url_for('howitworks')}}">How it Works</a>
                 <a href="{{url_for('aboutus')}}">About Us</a>
             </nav>
         </div>

@@ -20,7 +20,11 @@
     <!--navbar-->
     <header>
         <div class="left-section">
-            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
         </div>
 
         <div class="center-section">
@@ -42,7 +46,7 @@
             <input type="password" name="oldpassword" required placeholder="Enter your current password">
             <input type="password" name="newpassword" required placeholder="Enter your new password">
             <input type="password" name="confirmpassword" required placeholder="Confirm your new password">
-            <input type="submit" value="Submit Changes" class="form-btn">
+            <input type="submit" value="Submit Changes" class="submit-btn">
             <!-- <p>Back to <a href="tempusrhome.html">Home</a></p> -->
         </form>
         {% if msg %}

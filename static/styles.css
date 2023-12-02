@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Ubuntu&display=swap");
 
 :root{
-  --red:#ee231e;
+  --red:#da3d3a;
   --tan: #f2d1ad;
   --gray: #35383d;
   --green: #4CAF50;
@@ -381,7 +381,7 @@ footer {
     width: 100%;
     background:var(--green);
     margin-top: 20px;
-    padding: 10px;
+    padding: 10px;                         
     font-size: 20px;
     color: #fff;
     border-radius: 10px;
@@ -461,79 +461,6 @@ footer {
   margin-top: 20px;
 }
 /* end of signupform.html and loginform.html styles */
-
-/* start of aboutus.html styles */ 
-
-.about{
-  min-height: 100vh;
-  background: var(--gray);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-flow: column;
-  padding-bottom: 60px;
-  padding-top: 5%;
-}
-
-.about img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.about-text{
-  text-align: center;
-  color: var(--tan);
-  margin-bottom: 20px;
-}
-
-.aboutusmain{
-  font-size: 30px;
-  margin-bottom: 20px;
-}
-
-.about-text h1{
-  color: white;
-  font-size: 50px;
-  margin-bottom: 20px;
-}
-
-.about h5{
-  color: white;
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.about h5 span{
-  color: var(--red);
-}
-
-.about p{
-  color: white;
-  font-size: 18px;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-  line-height: 28px;
-  text-transform: capitalize;
-}
-
-.about button{
-  background: var(--red);
-  color: var(--gray);
-  text-transform: capitalize;
-  font-size: 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  padding: 10px 20px;
-  border: none;
-}
-
-.about button:hover{
-  background: var(--green);
-  color: #fff;
-}
-/* end of aboutus.html styles */
 
 
 
@@ -765,4 +692,295 @@ strong {
   margin-top: 20px; /* Example margin */
 }
 
+.usrhome-container  h2{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+}
+
+.meals-grid-item .meals-grid select {
+  font-size: 20px; 
+  padding: 10px; 
+  width: 300px; 
+  margin-right: 50px;
+  cursor: pointer;
+}
+
+.meals-grid-item h2 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+  text-transform: capitalize;
+  font-size: 16px;
+}
+
+.meals-grid-item .meals-grid input {
+  font-size: 20px; 
+  padding: 10px; 
+  width: 300px; 
+  margin-right: 50px;
+  cursor: pointer;
+} 
+
 /*end of usrhome.html*/
+
+
+
+/*start of cart.html styles*/
+
+.cart-container .cart-card{
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.cart-container  ul{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+}
+
+.cart-container  ul li{
+  list-style: none;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-container .checkout-btn{
+  background: var(--gray);
+  color: white;
+  text-transform: capitalize;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: none;
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.cart-container .checkout-btn:hover{
+  background: var(--green);
+  color: #fff;
+}
+
+.cart-container p{
+  color: var(--red);
+  margin-top: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
+/*end of cart.html styles*/
+
+/*start of subscribe.html styles*/
+
+.sub-setup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; 
+  margin-top: 20px;
+}
+
+.sub-form-container {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  padding-bottom: 60px;
+  padding-top: 2%;
+}
+
+.sub-form-container .sub-form{
+  background: var(--gray);
+  border-radius: 5px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 600px;
+}
+
+.sub-form-container .sub-form label{
+  display: block;
+  color: white;
+  padding-bottom: 5px;
+  margin-top: 20px;
+}
+
+.sub-form-container .sub-form input{
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.3);
+  color: #444;
+  background-color: white;
+}
+
+.sub-form-container .sub-form .submit-btn{
+  background: white;
+  color: var(--gray);
+  text-transform: capitalize;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: none;
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+  margin-top: 20px;
+}
+
+.sub-form-container .sub-form .submit-btn:hover{
+  background: var(--green);
+  color: #fff;
+}
+
+.sub-form-container .sub-form .multiple-choice-bubble{
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.3);
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.sub-form-container .sub-form select{
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.3);
+  color: #444;
+  background-color: white;
+}
+
+.sub-form-container .sub-form h2{
+  color: white;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.sub-form-container .sub-form .meal-list{
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.sub-form-container .sub-form  li{
+  margin-right: 20px;
+  list-style: none;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/*end of subscribe.html styles*/
+
+
+/*start of pastorders.html styles*/
+
+.pastorders-container .pastorders-card{
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.pastorders-container  ul{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin: auto;
+}
+
+.green-text {
+  color: var(--green);
+}
+
+.black-text {
+  color: black;
+}
+
+.order-container li {
+  margin-bottom: 10px;
+}
+
+/*end of pastorders.html styles*/
+
+/*usersettings.html styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of usersettings.html styles*/
+
+/*change password styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of change password styles*/
+
+/*changepass.html styles*/
+
+.form-container form .submit-btn{
+    width: 100%;
+    background:var(--green);
+    margin-top: 20px;
+    padding: 10px;                         
+    font-size: 20px;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s linear;
+}
+
+.form-container form .submit-btn:hover{
+    letter-spacing: 2px;
+    opacity: .8;
+}
+
+/*end of changepass.html styles*/

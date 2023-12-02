@@ -11,7 +11,11 @@
     <!-- Navbar -->
     <header>
         <div class="left-section">
-            <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
         </div>
 
         <div class="center-section">
@@ -27,7 +31,7 @@
                 {%if not_logged_in%}
                 <a href="{{ url_for ('login') }}">Login</a>
 
-                <a href="{{ url_for ('signup') }}">Sign Up</a>
+                <a href="{{ url_for ('signup') }}" class="signup-button">Sign Up</a>
                 {%else%}
                 <a href="{{ url_for ('cart') }}">Cart</a>
                 
@@ -201,4 +205,38 @@
     </section>
 
 </body>
+
+<footer>
+    <div class="footer-container">
+        <!-- Help/Contact us -->
+        <div class="footer-row">
+            <h3>Contact and Support:</h3>
+            <p><a href="{{url_for('howitworks')}}">How it Works</a></p>
+            <p><a href="mailto:contact@srvr.com">contact@srvr.com</a></p>
+            <p>(205)123-4567</p>
+        </div>
+        <div class="footer-row">
+            <h3>Accepted Payment:</h3>
+            <p>Visa</p>
+            <p>Mastercard</p>
+            <p>Discover</p>
+        </div>
+        <div class="footer-row">
+            <h3>Company:</h3>
+            <p><a href="{{url_for('home')}}">Home</a></p>
+            <p><a href="{{url_for('browsemenu')}}">Our Menu</a></p>
+            <p><a href="{{url_for('aboutus')}}">About Us</a></p>
+        </div>
+    </div>
+    <div class="social-media">
+        <a href="https://www.facebook.com/"><img src="../static/images/facebook.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com"><img src="../static/images/instagram.png" alt="Instagram"></a>
+        <a href="https://www.pinterest.com"><img src="../static/images/pinterest.png" alt="Pinterest"></a>
+        <a href="https://www.twitter.com"><img src="../static/images/twitter.png" alt="Twitter"></a>
+        <a href="https://www.youtube.com"><img src="../static/images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <p style="text-align: center; margin-top: 10px;">© SRVR, LLC 2023</p>
+</footer>
+
 </html>

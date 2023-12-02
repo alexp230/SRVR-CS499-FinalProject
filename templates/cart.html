@@ -15,7 +15,11 @@
     <!-- Navbar -->
     <header>
         <div class="left-section">
-            <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
         </div>
     
         <div class="center-section">
@@ -33,25 +37,25 @@
             </nav>
         </div>
     </header>
-<body>
+    <body class="cart-container">
+        <div class="cart-card">
+            <h1 style="text-align: center; margin-top: 25px">Your Shopping Cart</h1>
 
-<h1 style="text-align: center; margin-top: 25px">Your Shopping Cart</h1>
-
-{% if selected_meals %}
-    <ul>
-        {% for meal in selected_meals %}
-            <li>{{ meal }} $5.99 per serving</li>
-        {% endfor %}
-    </ul>
-    {% if selected_meals | length == 7 %}
-        <a href="{{ url_for('subscribe') }}">Proceed to Checkout</a>
-    {% else %}
-    <p><br></p>
-        <p>You have selected {{ selected_meals | length }} meal(s). You need to select {{ 7 - selected_meals | length }} more meal(s) to proceed to checkout.</p>
-    {% endif %}
-{% else %}
-    <p>Your cart is empty.</p>
-{% endif %}
-
-</body>
+            {% if selected_meals %}
+                <ul>
+                    {% for meal in selected_meals %}
+                        <li>{{ meal }} - $5.99 per serving</li>
+                    {% endfor %}
+                </ul>
+                {% if selected_meals | length == 7 %}
+                    <a class="checkout-btn" href="{{ url_for('subscribe') }}">Proceed to Checkout</a>
+                {% else %}
+                <p><br></p>
+                    <p>You have selected {{ selected_meals | length }} meal(s). You need to select {{ 7 - selected_meals | length }} more meal(s) to proceed to checkout.</p>
+                {% endif %}
+            {% else %}
+                <p>Your cart is empty.</p>
+            {% endif %}
+        </div>
+    </body>
 </html>

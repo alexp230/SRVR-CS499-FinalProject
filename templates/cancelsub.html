@@ -18,7 +18,11 @@
     <!--navbar-->
     <header>
         <div class="left-section">
-            <a href="main.html" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%if not_logged_in%}
+                <a href="{{url_for('home')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+                {%else%}
+                <a href="{{url_for('browsemenu')}}" class="logo">SRVR<i class="bi bi-badge-tm"></i></a>
+            {%endif%}
         </div>
 
         <div class="center-section">
@@ -35,8 +39,8 @@
             <h3>Enter your current password to confirm cancellation</h3>
             <input type="password" name="password" required placeholder="Enter your password">
             <input type="password" name="confirm_password" required placeholder="Confirm your password">
-            <input type="submit" value="Cancel Subscription" class="form-btn">
-            <p>Back to <a href="tempusrhome.html">Home</a></p>
+            <input type="submit" value="Cancel Subscription" class="submit-btn">
+            <p>Back to <a href="{{url_for('usrhome',email=session['email'])}}">Home</a></p>
         </form>
         {% if msg %}
             <div class="message" style="color: red">
